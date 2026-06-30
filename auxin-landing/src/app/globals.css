@@ -1,0 +1,24 @@
+/* auxin-landing/src/app/globals.css */
+/* Minimal CSS — no Tailwind dependency in landing page */
+
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --green:   #1B5E20;
+  --green-l: #2E7D32;
+  --gold:    #C9A227;
+  --ivory:   #FAF9F6;
+  --charcoal:#1C1C1C;
+  --muted:   #6B7280;
+}
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--ivory); color: var(--charcoal); line-height: 1.6; }
+
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+@keyframes pulse    { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.fade-up { animation: fadeUp 0.6s ease-out both; }
+.fade-up-d1 { animation-delay: 0.1s; }
+.fade-up-d2 { animation-delay: 0.2s; }
+.fade-up-d3 { animation-delay: 0.35s; }

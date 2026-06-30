@@ -1,0 +1,75 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Auxin — .gitignore
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# ── Secrets — NEVER commit files with real credentials ────────────────────────
+# Root backend secrets
+.env
+.env.development
+.env.production
+
+# Frontend/Admin secrets (.env.local files)
+.env.local
+auxin-frontend/.env*
+!auxin-frontend/.env.example
+auxin-admin/.env*
+!auxin-admin/.env.example
+auxin-landing/.env*
+!auxin-landing/.env.example
+
+# Safe to commit (safe templates, placeholder values only):
+#   .env.example
+#   auxin-frontend/.env.example
+#   auxin-admin/.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Test artefacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Alembic (leave versions/ tracked — part of migration history)
+# alembic/versions/*.py  ← do NOT ignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node.js / Next.js
+node_modules/
+.next/
+.nuxt/
+out/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-error.log
+
+# Coverage
+coverage/
+
+# Docker artifacts
+*.dockerenv

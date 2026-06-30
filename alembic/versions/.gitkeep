@@ -1,0 +1,2 @@
+# alembic/versions/ — Alembic migration files live here.
+# Run: alembic revision --autogenerate -m "initial_schema"

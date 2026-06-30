@@ -1,0 +1,16 @@
+{
+  "name": "Auxin — Farm Fresh Marketplace",
+  "short_name": "Auxin",
+  "description": "Fresh farm produce, delivered directly to you.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF9F6",
+  "theme_color": "#1B5E20",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

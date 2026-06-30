@@ -1,0 +1,70 @@
+services:
+  # ──────────────────────────────────────────────────────────────────
+  # Auxin FastAPI Backend
+  # Deploy on Render: https://render.com
+  # ──────────────────────────────────────────────────────────────────
+  - type: web
+    name: auxin-api
+    runtime: python
+    region: singapore    # Closest to South Asia users
+
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    startCommand: |
+      alembic upgrade head && \
+      gunicorn main:app \
+        --worker-class uvicorn.workers.UvicornWorker \
+        --workers 2 \
+        --bind 0.0.0.0:$PORT \
+        --timeout 120 \
+        --keep-alive 5
+
+    # Health check — Render uses this to verify the service is alive
+    healthCheckPath: /health
+
+    envVars:
+      # ── Application ──────────────────────────────────────────────
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: ALLOWED_ORIGINS
+        value: https://YOUR_MAIN_APP_DOMAIN,https://YOUR_ADMIN_DOMAIN
+
+      # ── Database (Supabase PostgreSQL) ───────────────────────────
+      # Get from: Supabase Dashboard → Project Settings → Database → URI
+      # Format: postgresql+asyncpg://postgres:PASSWORD@db.PROJECT.supabase.co:5432/postgres
+      # Set this in Render Dashboard → Environment → Add Secret Variable
+      - key: DATABASE_URL
+        sync: false
+
+      # ── Supabase Auth ────────────────────────────────────────────
+      # Find all three in: Supabase Dashboard → Project Settings → API
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+
+      # ── Razorpay ─────────────────────────────────────────────────
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_SECRET
+        sync: false
+
+      # ── Security ─────────────────────────────────────────────────
+      - key: BANK_ACCOUNT_ENCRYPTION_KEY
+        sync: false
+
+      # ── Delivery ─────────────────────────────────────────────────
+      - key: DELIVERY_OTP_EXPIRY_MINUTES
+        value: "10"
+      - key: DELIVERY_ASSIGNMENT_TIMEOUT_MINUTES
+        value: "30"
+      - key: DELIVERY_GEOFENCE_RADIUS_METERS
+        value: "100.0"
