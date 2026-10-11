@@ -2,6 +2,25 @@ import type { NextConfig } from "next";
 
 const IS_PROD = process.env.NEXT_PUBLIC_APP_ENV === "production";
 
+// Origins the browser may call. Derived from env so the CSP matches whatever
+// API / Supabase project this build is configured for (no hard-coded hosts).
+const originOf = (value?: string): string => {
+  try {
+    return value ? new URL(value).origin : "";
+  } catch {
+    return "";
+  }
+};
+const API_ORIGIN = originOf(process.env.NEXT_PUBLIC_API_URL);
+const SUPABASE_ORIGIN = originOf(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const CONNECT_SRC = [
+  "'self'",
+  API_ORIGIN,
+  SUPABASE_ORIGIN,
+  "https://nominatim.openstreetmap.org",
+  "https://api.razorpay.com",
+].filter(Boolean).join(" ");
+
 const nextConfig: NextConfig = {
   // ── Output ──────────────────────────────────────────────────────────────────
   // standalone: self-contained output — works with Docker, Railway, Render.
@@ -51,12 +70,12 @@ const nextConfig: NextConfig = {
               // Next.js needs 'unsafe-inline' for styles in dev; in prod inline styles are minimal
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://images.unsplash.com",
+              "img-src 'self' data: blob: https://images.unsplash.com https://*.tile.openstreetmap.org https://raw.githubusercontent.com https://unpkg.com",
               // Razorpay checkout script
               "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com",
               // Razorpay iframe
               "frame-src https://api.razorpay.com https://checkout.razorpay.com",
-              "connect-src 'self' https://api.auxin.in https://api.razorpay.com",
+              `connect-src ${CONNECT_SRC}`,
               "object-src 'none'",
               "base-uri 'self'",
             ].join("; "),
