@@ -62,7 +62,7 @@ if not exist "venv\Scripts\python.exe" (
 call :needs_install "venv\.deps-ok" "requirements.txt"
 if errorlevel 1 (
   echo  [..] Installing core API dependencies
-  "venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check -r requirements.txt
+  "venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check --default-timeout=120 --retries 5 -r requirements.txt
   if errorlevel 1 ( echo  [X] pip install failed. & goto :fail )
   echo ok> "venv\.deps-ok"
 )
@@ -77,7 +77,7 @@ if not exist "Milo_AI\.venv\Scripts\python.exe" (
 call :needs_install "Milo_AI\.venv\.deps-ok" "Milo_AI\requirements.txt"
 if errorlevel 1 (
   echo  [..] Installing Milo AI dependencies
-  "Milo_AI\.venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check -r "Milo_AI\requirements.txt"
+  "Milo_AI\.venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check --default-timeout=120 --retries 5 -r "Milo_AI\requirements.txt"
   if errorlevel 1 ( echo  [X] Milo pip install failed. & goto :fail )
   echo ok> "Milo_AI\.venv\.deps-ok"
 )
