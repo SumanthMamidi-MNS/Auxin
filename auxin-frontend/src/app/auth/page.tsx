@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Leaf, Loader2, Truck, ShoppingBag, Mail, Key, UserPlus, LogIn, Sparkles, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { sendOtp, verifyOtp, getMe, DEMO_LOGIN_ENABLED } from "@/lib/auth";
+import { sendOtp, verifyOtp, getMe } from "@/lib/auth";
 import { profileApi } from "@/lib/profile";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/store/authStore";
@@ -142,36 +142,6 @@ export default function AuthPage() {
     } finally { setLoading(false); }
   }
 
-  async function handleQuickDemoLogin(demoEmail: string) {
-    setLoading(true);
-    try {
-      const resSend = await sendOtp(demoEmail);
-      if (!resSend.success) {
-        toast.error(resSend.error ?? "Failed to initiate demo handshake.");
-        return;
-      }
-      
-      const resVerify = await verifyOtp(demoEmail, "111111");
-      if (!resVerify.success) {
-        toast.error(resVerify.error ?? "Demo handshake verification failed.");
-        return;
-      }
-      
-      const me = await getMe();
-      if (me) {
-        setAuth(me);
-        toast.success(`Welcome to Auxin Sandbox, ${me.name.split(" ")[0]}!`);
-        redirectByRole(me, router);
-      } else {
-        toast.error("Failed to load authenticated profile.");
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Demo sign-in failed.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function handleVerifyOtp(e: React.FormEvent) {
     e.preventDefault();
     if (!otp.trim()) { toast.error("Please enter the OTP."); return; }
@@ -193,7 +163,11 @@ export default function AuthPage() {
         const profileExists = await profileApi.getProfile().then(() => true).catch(() => false);
         setAuth(me);
         if (profileExists) {
-          toast.success(`Welcome back, ${me.name.split(" ")[0]}!`);
+          toast.success(
+            mode === "signup"
+              ? "This email already has an account, so we signed you in."
+              : `Welcome back, ${me.name.split(" ")[0]}!`
+          );
           redirectByRole(me, router);
         } else {
           toast.success("Please complete your profile.");
@@ -720,57 +694,10 @@ export default function AuthPage() {
           )}
         </div>
 
-        {/* ── Demo Accounts Quick Login Panel (only when NEXT_PUBLIC_DEMO_MODE=true) ── */}
-        {DEMO_LOGIN_ENABLED && (
-        <div
-          className="mt-6 rounded-3xl p-6 text-center space-y-4 shadow-xl"
-          style={{
-            background: "rgba(255, 255, 255, 0.85)",
-            backdropFilter: "blur(20px)",
-            border: "1.5px solid rgba(255, 255, 255, 0.95)",
-            boxShadow: "0 10px 30px rgba(21,128,61,0.1)",
-            animation: mounted ? "staggerIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.55s both" : "none",
-          }}
-        >
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <Sparkles size={16} className="text-emerald-600" />
-            <h3 className="font-black text-sm text-gray-800 uppercase tracking-wider">Demo Sandbox Access</h3>
-          </div>
-          <p className="text-[11px] text-gray-500 leading-relaxed font-semibold">
-            Click below to login as customer, farmer, or delivery driver instantly (OTP 111111).
-          </p>
-          <div className="grid grid-cols-3 gap-2.5">
-            <button
-              onClick={() => handleQuickDemoLogin("demo.customer@auxin.app")}
-              disabled={loading}
-              className="flex flex-col items-center gap-1.5 py-3 rounded-2xl border bg-white border-emerald-100 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer active:scale-95"
-            >
-              <ShoppingBag size={18} className="text-blue-500" />
-              <span className="text-[10px] font-bold text-gray-700">Customer</span>
-            </button>
-            <button
-              onClick={() => handleQuickDemoLogin("demo.farmer@auxin.app")}
-              disabled={loading}
-              className="flex flex-col items-center gap-1.5 py-3 rounded-2xl border bg-white border-emerald-100 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer active:scale-95"
-            >
-              <Leaf size={18} className="text-emerald-500" />
-              <span className="text-[10px] font-bold text-gray-700">Farmer</span>
-            </button>
-            <button
-              onClick={() => handleQuickDemoLogin("demo.delivery@auxin.app")}
-              disabled={loading}
-              className="flex flex-col items-center gap-1.5 py-3 rounded-2xl border bg-white border-emerald-100 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all duration-200 cursor-pointer active:scale-95"
-            >
-              <Truck size={18} className="text-purple-500" />
-              <span className="text-[10px] font-bold text-gray-700">Courier</span>
-            </button>
-          </div>
-          
-          <div className="text-[10px] text-emerald-700 font-bold border-t border-emerald-100/60 pt-2.5">
-            Super Admin? Access via the <a href={ADMIN_URL} className="underline hover:text-emerald-800">auxin-admin portal</a>.
-          </div>
-        </div>
-        )}
+        <p className="mt-6 text-center text-xs font-semibold text-white/80">
+          Administrator?{" "}
+          <a href={ADMIN_URL} className="underline hover:text-white">Open the admin portal</a>
+        </p>
 
         {/* Footer */}
         <div

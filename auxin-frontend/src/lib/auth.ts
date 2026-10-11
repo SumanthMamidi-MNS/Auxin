@@ -126,7 +126,6 @@ export async function verifyOtp(
   return { success: true };
 }
 
-export const DEMO_LOGIN_ENABLED = DEMO_MODE && DEMO_PASSWORD !== "";
 
 // ---------------------------------------------------------------------------
 // Sign out

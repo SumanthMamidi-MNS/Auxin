@@ -371,7 +371,7 @@ def main():
         print(f"\n{BOLD}{GREEN}Demo workspace:{RESET}")
         print(f"   * Admin portal -> Demo Workspace: {BOLD}http://localhost:3001/demo-workspace{RESET}  (Super Admin; Reset Sandbox button)")
         print("   * Demo accounts: demo.customer@ / demo.farmer@ / demo.delivery@ / demo.admin@auxin.app")
-        print("   * One-click demo sign-in buttons are on the main app login page (needs NEXT_PUBLIC_DEMO_PASSWORD).")
+        print("   * Demo accounts sign in on the normal login form with code 111111 (needs NEXT_PUBLIC_DEMO_PASSWORD).")
         print(f"\n{YELLOW}Press Ctrl+C at any time in this window to stop all services.{RESET}\n")
 
         # Keep main thread alive permanently until Ctrl+C

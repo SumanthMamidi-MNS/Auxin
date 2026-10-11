@@ -62,9 +62,9 @@ Exactly five special accounts exist next to the real users:
   the fresh state above. The dashboard counters return to baseline; real users and real orders are untouched.
 - **Demo walkthrough:** Reset → Approvals → approve the demo Farmer and Courier → customer sees the produce →
   order → farmer packs → courier delivers with the customer's 6-digit code.
-- **One-click sign-in:** the main app's login page shows Customer / Farmer / Courier buttons when
-  `NEXT_PUBLIC_DEMO_PASSWORD` is set in `auxin-frontend\.env.local` (the launcher turns demo mode on for that app).
-  Real sign-up, sign-in and approval requests work exactly as before.
+- **Signing in as a demo account:** use the normal login form with the demo email and code `111111`. This works
+  once `NEXT_PUBLIC_DEMO_PASSWORD` is set in `auxin-frontend\.env.local`. There is no demo panel on the login page.
+  Real sign-up (email → OTP → details form → admin approval) is unchanged.
 
 ## What works offline vs. what needs the internet
 
