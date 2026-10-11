@@ -1,20 +1,14 @@
-/**
+ /**
  * auxin-frontend/src/lib/auth.ts
  * --------------------------------
  * Supabase Auth wrapper for the Auxin customer/farmer/delivery app.
  *
- * Authentication method: Mobile Number + Password
+ * Authentication method: Email OTP (One-Time Password)
  *
- * Supabase Auth requires an email address for email+password auth.
- * We convert the phone number to a deterministic synthetic email:
- *   +919876543210  →  +919876543210@auxin.app
+ * Demo accounts bypass using OTP 111111, while production accounts
+ * receive a secure OTP dispatched via Supabase.
  *
- * This keeps the auth experience phone-native while using Supabase's
- * stable email+password backend.  The synthetic email is never shown
- * to the user and is never used for communication.
- *
- * After sign-up, the app calls POST /auth/sync-user with the real phone
- * number to create the application-layer user record.
+ * After sign-in, the app synchronizes session data with the backend API.
  */
 
 import { supabase } from "@/lib/supabase";
@@ -26,14 +20,51 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1
 // OTP Authentication
 // ---------------------------------------------------------------------------
 
+// Demo sign-in is OFF unless the build explicitly enables it.  The shared demo
+// password is never written in source: it comes from NEXT_PUBLIC_DEMO_PASSWORD,
+// which is only meaningful for a sandbox/demo deployment (these are throw-away
+// accounts holding sample data).  Set NEXT_PUBLIC_DEMO_MODE=false for any build
+// that serves real users.
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD ?? "";
+const DEMO_CODE = "111111";
+const DEMO_EMAILS = [
+  "demo.customer@auxin.app",
+  "demo.farmer@auxin.app",
+  "demo.delivery@auxin.app",
+];
+
+// Local-development convenience accounts. Only active under `next dev`.
+const DEV_TEST_PASSWORD = process.env.NEXT_PUBLIC_DEV_TEST_PASSWORD ?? "";
+const DEV_TEST_USERS = (process.env.NEXT_PUBLIC_DEV_TEST_EMAILS ?? "")
+  .split(",")
+  .map((e) => e.trim())
+  .filter(Boolean);
+
+function isDemoEmail(email: string): boolean {
+  return DEMO_MODE && DEMO_PASSWORD !== "" && DEMO_EMAILS.includes(email.trim());
+}
+
+function isDevTestEmail(email: string): boolean {
+  return (
+    process.env.NODE_ENV === "development" &&
+    DEV_TEST_PASSWORD !== "" &&
+    DEV_TEST_USERS.includes(email.trim())
+  );
+}
+
 export async function sendOtp(
   email: string,
   role?: UserRole
 ): Promise<{ success: boolean; error?: string }> {
+  if (isDemoEmail(email) || isDevTestEmail(email)) {
+    return { success: true };
+  }
+
   const { error } = await supabase.auth.signInWithOtp({
     email: email.trim(),
     options: {
-      emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
+      shouldCreateUser: true,
       data: role ? { role } : undefined,
     },
   });
@@ -49,6 +80,30 @@ export async function verifyOtp(
   email: string,
   token: string
 ): Promise<{ success: boolean; error?: string }> {
+  if (isDemoEmail(email)) {
+    if (token.trim() !== DEMO_CODE) {
+      return { success: false, error: "Invalid OTP code for demo account." };
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: DEMO_PASSWORD,
+    });
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  }
+
+  if (isDevTestEmail(email)) {
+    if (token.trim() !== "000000") {
+      return { success: false, error: "Token has expired or is invalid" };
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: DEV_TEST_PASSWORD,
+    });
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  }
+
   const { error } = await supabase.auth.verifyOtp({
     email: email.trim(),
     token: token.trim(),
@@ -61,6 +116,8 @@ export async function verifyOtp(
 
   return { success: true };
 }
+
+export const DEMO_LOGIN_ENABLED = DEMO_MODE && DEMO_PASSWORD !== "";
 
 // ---------------------------------------------------------------------------
 // Sign out
