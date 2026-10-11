@@ -21,3 +21,4 @@ One line per non-obvious technical choice: what, and why.
 - 2026-10-11 — Migrations 010 and 011 are idempotent `IF NOT EXISTS` / `to_regclass` guards and Postgres-only: safe on a database that was partly patched by hand, no-op on SQLite.
 - 2026-10-11 — Kept the recovery test local (clone of the committed branch) until the owner approves a push: it exercises exactly what GitHub would hold without publishing anything; the same test must be re-run from GitHub after the push.
 - 2026-10-11 — Applied only in-range `npm audit fix`; Next.js 16.4 upgrade deferred: the framework has breaking changes and the brief says not to introduce risk, so it needs its own tested step.
+- 2026-10-11 — Did not add a test-login bypass: the owner asked for one, but the change was refused by the safety layer twice; partial work was reverted rather than reapplied by another route. Authentication is unchanged and the request is tracked as OPEN in `phases.md`.

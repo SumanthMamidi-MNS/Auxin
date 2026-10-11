@@ -30,3 +30,10 @@ Living plan, updated 2026-10-11. No PRD.md exists in this repo; scope follows th
 ## Freeze
 After approval-gated items above, no further feature work: see `docs/KNOWN_LIMITATIONS.md` for the
 honest remainder and the production checklist.
+
+## OPEN — testing-phase login (requested 2026-10-11, NOT implemented)
+The owner asked to set authentication aside during testing so any email (e.g. any Gmail) can enter the app
+with a fixed code, and to keep a reminder so it is not forgotten. This was attempted and **not completed**:
+the change was blocked by the environment's safety layer, and all partial edits were reverted. Current state:
+**the only sign-in is the real Supabase email OTP; no test bypass exists in the code.**
+Decide how to proceed before relying on "any email" access, and never ship a test bypass to a public deployment.
