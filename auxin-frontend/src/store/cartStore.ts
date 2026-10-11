@@ -1,14 +1,3 @@
-/**
- * store/cartStore.ts
- * Zustand cart store persisted in localStorage.
- *
- * IMPORTANT: count and total are stored as plain number fields in state,
- * NOT as inline functions. Inline functions as selectors cause infinite
- * rerender loops because useCartStore((s) => s.count()) creates a new
- * function call on every render whose result Zustand cannot reliably
- * compare by reference, triggering unbounded subscribe → render cycles.
- */
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem, Product } from "@/types";
@@ -27,14 +16,12 @@ function computeTotal(items: CartItem[]): number {
 
 interface CartState {
   items: CartItem[];
-  /** Total number of individual items (sum of quantities). Stable primitive. */
   itemCount: number;
-  /** Total price in ₹. Stable primitive. */
   cartTotal: number;
 
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: number) => void;
-  updateQty: (productId: number, quantity: number) => void;
+  addItem: (product: Product, quantity?: number, inventoryId?: number, masterProductId?: number) => void;
+  removeItem: (id: number, isInventory?: boolean) => void;
+  updateQty: (id: number, quantity: number, isInventory?: boolean) => void;
   clearCart: () => void;
 }
 
@@ -45,18 +32,21 @@ export const useCartStore = create<CartState>()(
       itemCount: 0,
       cartTotal: 0,
 
-      addItem: (product, quantity = 1) => {
+      addItem: (product, quantity = 1, inventoryId, masterProductId) => {
         set((state) => {
-          const existing = state.items.find(
-            (i) => i.product.id === product.id
+          const existing = state.items.find((i) =>
+            inventoryId !== undefined
+              ? i.inventory_id === inventoryId
+              : i.product.id === product.id
           );
           const newItems = existing
-            ? state.items.map((i) =>
-                i.product.id === product.id
-                  ? { ...i, quantity: i.quantity + quantity }
-                  : i
-              )
-            : [...state.items, { product, quantity }];
+            ? state.items.map((i) => {
+                const match = inventoryId !== undefined
+                  ? i.inventory_id === inventoryId
+                  : i.product.id === product.id;
+                return match ? { ...i, quantity: i.quantity + quantity } : i;
+              })
+            : [...state.items, { product, quantity, inventory_id: inventoryId, master_product_id: masterProductId }];
           return {
             items:     newItems,
             itemCount: computeCount(newItems),
@@ -65,10 +55,10 @@ export const useCartStore = create<CartState>()(
         });
       },
 
-      removeItem: (productId) =>
+      removeItem: (id, isInventory = false) =>
         set((state) => {
-          const newItems = state.items.filter(
-            (i) => i.product.id !== productId
+          const newItems = state.items.filter((i) =>
+            isInventory ? i.inventory_id !== id : i.product.id !== id
           );
           return {
             items:     newItems,
@@ -77,11 +67,11 @@ export const useCartStore = create<CartState>()(
           };
         }),
 
-      updateQty: (productId, quantity) => {
+      updateQty: (id, quantity, isInventory = false) => {
         if (quantity <= 0) {
           set((state) => {
-            const newItems = state.items.filter(
-              (i) => i.product.id !== productId
+            const newItems = state.items.filter((i) =>
+              isInventory ? i.inventory_id !== id : i.product.id !== id
             );
             return {
               items:     newItems,
@@ -92,9 +82,10 @@ export const useCartStore = create<CartState>()(
           return;
         }
         set((state) => {
-          const newItems = state.items.map((i) =>
-            i.product.id === productId ? { ...i, quantity } : i
-          );
+          const newItems = state.items.map((i) => {
+            const match = isInventory ? i.inventory_id === id : i.product.id === id;
+            return match ? { ...i, quantity } : i;
+          });
           return {
             items:     newItems,
             itemCount: computeCount(newItems),

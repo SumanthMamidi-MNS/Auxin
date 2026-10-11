@@ -1,14 +1,15 @@
 "use client";
 /**
- * components/layout/BottomNav.tsx — Auxin v2.0
- * Dark theme mobile bottom navigation, role-adaptive with cart badge.
+ * components/layout/BottomNav.tsx — Auxin v3.0
+ * Role-adaptive mobile bottom navigation bar with active indicator lines,
+ * badge counters, and safe-area padding.
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import {
   Home, Package, ShoppingCart, ClipboardList,
-  Truck, LayoutDashboard, Wallet,
+  Truck, Wallet, User as UserIcon, Heart,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
@@ -22,9 +23,9 @@ interface NavItem {
 }
 
 export function BottomNav() {
-  const { user }  = useAuthStore();
+  const { user } = useAuthStore();
   const cartCount = useCartStore((s) => s.itemCount);
-  const pathname  = usePathname();
+  const pathname = usePathname();
 
   if (!user || isAdminRole(user.role)) return null;
 
@@ -32,20 +33,26 @@ export function BottomNav() {
     switch (user.role) {
       case "customer":
         return [
-          { href: "/customer/home",   label: "Home",   icon: Home },
-          { href: "/customer/cart",   label: "Cart",   icon: ShoppingCart, badge: cartCount || 0 },
+          { href: "/customer/home", label: "Home", icon: Home },
+          { href: "/customer/cart", label: "Cart", icon: ShoppingCart, badge: cartCount || 0 },
+          { href: "/customer/wishlist", label: "Wishlist", icon: Heart },
           { href: "/customer/orders", label: "Orders", icon: ClipboardList },
+          { href: "/profile", label: "Profile", icon: UserIcon },
         ];
       case "farmer":
         return [
-          { href: "/farmer/dashboard", label: "Dashboard", icon: LayoutDashboard },
-          { href: "/farmer/products",  label: "Products",  icon: Package },
-          { href: "/farmer/orders",    label: "Orders",    icon: ClipboardList },
+          { href: "/farmer/dashboard", label: "Home", icon: Home },
+          { href: "/farmer/inventory", label: "Inventory", icon: Package },
+          { href: "/farmer/orders", label: "Orders", icon: ClipboardList },
+          { href: "/farmer/earnings", label: "Earnings", icon: Wallet },
+          { href: "/farmer/profile", label: "Profile", icon: UserIcon },
         ];
       case "delivery":
         return [
           { href: "/delivery/dashboard", label: "Deliveries", icon: Truck },
-          { href: "/delivery/earnings",  label: "Earnings",   icon: Wallet },
+          { href: "/delivery/history", label: "History", icon: ClipboardList },
+          { href: "/delivery/earnings", label: "Earnings", icon: Wallet },
+          { href: "/delivery/profile", label: "Profile", icon: UserIcon },
         ];
       default:
         return [];
@@ -56,11 +63,10 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50"
+      className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-300 lg:hidden"
       style={{
-        background: "#0F0F10",
-        borderTop: "1px solid #1A1A1D",
-        boxShadow: "0 -8px 32px rgba(0,0,0,0.6)",
+        background: "var(--surface)",
+        borderTop: "1px solid var(--border)",
       }}
     >
       <div className="flex items-stretch max-w-lg mx-auto pb-safe">
@@ -70,39 +76,52 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 relative"
+              aria-current={active ? "page" : undefined}
+              className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 px-1 relative group select-none"
             >
-              {/* Active glow underline at top */}
-              {active && (
-                <span
-                  className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full"
-                  style={{ background: "#22C55E", boxShadow: "0 0 8px rgba(34,197,94,0.6)" }}
-                />
-              )}
+              {/* Active top indicator border line */}
+              <span
+                className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 rounded-b-full transition-all duration-300"
+                style={{
+                  width: active ? "28px" : "0px",
+                  background: "var(--primary)",
+                  boxShadow: active ? "0 0 8px rgba(34,197,94,0.3)" : "none",
+                  opacity: active ? 1 : 0,
+                }}
+              />
 
-              <div className="relative">
+              {/* Icon Container */}
+              <div
+                className="relative flex items-center justify-center w-9 h-7 rounded-full transition-all duration-200"
+                style={{
+                  background: active ? "var(--primary-glow)" : "transparent",
+                }}
+              >
                 <Icon
-                  className={clsx(
-                    "w-5 h-5 transition-colors duration-150",
-                    active ? "text-[#22C55E]" : "text-[#52525B]"
-                  )}
+                  className="transition-all duration-200"
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    color: active ? "var(--primary)" : "var(--text-secondary)",
+                  }}
                   strokeWidth={active ? 2.5 : 1.75}
                 />
                 {badge !== undefined && badge > 0 && (
                   <span
-                    className="absolute -top-1.5 -right-1.5 text-[#052E16] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none"
-                    style={{ background: "#22C55E" }}
+                    className="absolute -top-1 -right-1 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center leading-none"
+                    style={{ background: "var(--primary)" }}
                   >
                     {badge > 9 ? "9+" : badge}
                   </span>
                 )}
               </div>
 
+              {/* Label */}
               <span
-                className={clsx(
-                  "text-[10px] font-medium transition-colors duration-150",
-                  active ? "text-[#22C55E]" : "text-[#52525B]"
-                )}
+                className="text-[10px] font-bold transition-colors duration-200 truncate max-w-[60px]"
+                style={{
+                  color: active ? "var(--text-primary)" : "var(--text-secondary)",
+                }}
               >
                 {label}
               </span>
@@ -113,3 +132,5 @@ export function BottomNav() {
     </nav>
   );
 }
+
+export default BottomNav;

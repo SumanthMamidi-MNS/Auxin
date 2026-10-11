@@ -136,6 +136,14 @@ class ProductRepository:
         harvest_date: date,
         image_url: str,
     ) -> Product:
+        from app.models.farmer import Farmer
+        from app.models.user import User
+        from sqlalchemy import select
+        res = await self._db.execute(
+            select(User.is_demo).join(Farmer, Farmer.user_id == User.id).where(Farmer.id == farmer_id)
+        )
+        is_demo_val = res.scalar() or False
+
         product = Product(
             farmer_id=farmer_id,
             name=name,
@@ -146,6 +154,7 @@ class ProductRepository:
             harvest_date=harvest_date,
             image_url=image_url,
             is_active=True,
+            is_demo=is_demo_val,
         )
         self._db.add(product)
         await self._db.flush()

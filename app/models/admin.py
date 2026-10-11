@@ -23,9 +23,13 @@ from sqlalchemy import (
     Index,
     Integer,
     Text,
+    JSON,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+# Use PostgreSQL JSONB in production/dev, but fallback to SQLite compatible JSON for tests
+JSON_TYPE = JSONB().with_variant(JSON, "sqlite")
 
 from app.db.base import Base
 
@@ -41,6 +45,19 @@ class AdminActionType(str, enum.Enum):
     reinstate_user  = "reinstate_user"
     resolve_dispute = "resolve_dispute"
     reject_dispute  = "reject_dispute"
+    approve_delivery = "approve_delivery"
+    reject_delivery = "reject_delivery"
+    deactivate_product = "deactivate_product"
+    update_product = "update_product"
+    create_admin = "create_admin"
+    disable_admin = "disable_admin"
+    activate_admin = "activate_admin"
+    remove_admin = "remove_admin"
+    order_status_updated = "order_status_updated"
+    order_cancelled = "order_cancelled"
+    remove_product = "remove_product"
+    reset_demo_data = "reset_demo_data"
+    reset_demo_environment = "reset_demo_environment"
 
 
 class DisputeStatus(str, enum.Enum):
@@ -83,7 +100,6 @@ class AdminAction(Base):
         Integer,
         ForeignKey("users.id", ondelete="RESTRICT"),
         nullable=False,
-        index=True,
     )
 
     action_type: Mapped[AdminActionType] = mapped_column(
@@ -96,14 +112,13 @@ class AdminAction(Base):
         Integer,
         ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True,
-        index=True,
     )
 
     # Free-form JSON metadata (e.g. farmer_id, dispute_id, reason, notes)
     # Named action_metadata to avoid shadowing SQLAlchemy's reserved
     # DeclarativeBase.metadata attribute (which causes Alembic introspection bugs)
     action_metadata: Mapped[dict] = mapped_column(
-        JSONB,
+        JSON_TYPE,
         nullable=False,
         default=dict,
     )
@@ -152,14 +167,12 @@ class Dispute(Base):
         Integer,
         ForeignKey("orders.id", ondelete="RESTRICT"),
         nullable=False,
-        index=True,
     )
 
     raised_by: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="RESTRICT"),
         nullable=False,
-        index=True,
     )
 
     reason: Mapped[str] = mapped_column(Text, nullable=False)
@@ -168,7 +181,6 @@ class Dispute(Base):
         Enum(DisputeStatus, name="disputestatus", create_constraint=True),
         nullable=False,
         default=DisputeStatus.open,
-        index=True,
     )
 
     # Populated by admin when resolving or rejecting

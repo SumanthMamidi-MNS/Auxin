@@ -1,45 +1,117 @@
 "use client";
 /**
- * app/customer/cart/page.tsx — Auxin v2.0
- * Premium dark cart with Razorpay checkout flow.
+ * app/customer/cart/page.tsx — Auxin v3.0
+ * GOAT-Level Cart & Escrow Checkout Experience:
+ *  - 2-Column Responsive Split on Desktop (7 cols items / 5 cols sticky summary)
+ *  - QuantityStepper integration with smooth micro-motion
+ *  - Address selector with mini-preview
+ *  - Razorpay Escrow Trust Signal Badge
+ *  - EmptyCart illustration
+ *  - Prominent 52px high-contrast checkout action
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
-  Minus, Plus, Trash2, ShoppingCart, ArrowRight,
-  CreditCard, Shield, ChevronLeft,
+  Trash2, ShoppingBag, ArrowRight,
+  CreditCard, Shield, ChevronLeft, MapPin, Loader2, X, Leaf, Sparkles
 } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/Card";
+import { QuantityStepper } from "@/components/ui/QuantityStepper";
+import { TrustBadge } from "@/components/ui/TrustBadge";
+import { EmptyCartIllustration } from "@/components/illustrations/EmptyCart";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { ordersApi } from "@/lib/orders";
 import { paymentsApi, openRazorpayCheckout } from "@/lib/payments";
+import { profileApi } from "@/lib/profile";
 import { getErrorMessage } from "@/lib/api";
+import type { Address } from "@/types";
 import toast from "react-hot-toast";
-import Link from "next/link";
-
-const FALLBACK = "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=200&q=70";
+import { getProductImage } from "@/components/features/ProductCard";
+import { AddressManagerSheet } from "@/components/features/AddressManagerSheet";
+import { CartSkeleton } from "@/components/ui/Skeletons";
+import { clsx } from "clsx";
 
 type CheckoutStep = "idle" | "placing" | "paying" | "verifying";
 
+function formatAddress(addr: Address) {
+  return [
+    addr.house_flat, addr.building, addr.street,
+    addr.area, addr.landmark, addr.city, addr.state, addr.pin_code,
+  ].filter(Boolean).join(", ");
+}
+
 export default function CartPage() {
   const router  = useRouter();
-  const { items, updateQty, removeItem, cartTotal, clearCart } = useCartStore();
+  const { items, updateQty, removeItem, cartTotal, clearCart, itemCount } = useCartStore();
   const { user } = useAuthStore();
   const [step, setStep] = useState<CheckoutStep>("idle");
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">("razorpay");
+
+  const [address, setAddress]               = useState<Address | null>(null);
+  const [addresses, setAddresses]           = useState<Address[]>([]);
+  const [loadingAddress, setLoadingAddress] = useState(true);
+  const [showAddressSelect, setShowAddressSelect] = useState(false);
+  const [sheetTab, setSheetTab]             = useState<"list" | "add">("list");
+
+  const refreshAddresses = async (silent = false) => {
+    if (!silent) setLoadingAddress(true);
+    try {
+      const addrRes = await profileApi.listAddresses();
+      const addrs = addrRes.data || [];
+      setAddresses(addrs);
+      if (addrs.length === 0) {
+        toast.error("Please add a delivery address to complete your checkout.");
+        router.replace("/profile/create");
+        return;
+      }
+      if (address) {
+        const stillExists = addrs.find((a) => a.id === address.id);
+        if (stillExists) {
+          setAddress(stillExists);
+        } else {
+          const def = addrs.find((a) => a.is_default) || addrs[0];
+          setAddress(def);
+        }
+      } else {
+        const def = addrs.find((a) => a.is_default) || addrs[0];
+        setAddress(def);
+      }
+    } catch (err) {
+      console.error("Failed to load address details:", err);
+    } finally {
+      if (!silent) setLoadingAddress(false);
+    }
+  };
+
+  useEffect(() => {
+    profileApi.getProfile()
+      .then(() => refreshAddresses())
+      .catch((e) => {
+        if (e.response?.status === 404) {
+          toast.error("Please set up your profile first.");
+          router.replace("/profile/create");
+        }
+      });
+  }, [router]);
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
+    if (!address) { toast.error("Please select a delivery address."); return; }
     setStep("placing");
 
     let orderId: number;
     try {
-      const payload = items.map((i) => ({ product_id: i.product.id, quantity: i.quantity }));
-      const { data: order } = await ordersApi.create(payload);
+      const payload = items.map((i) => ({
+        product_id: i.inventory_id ? undefined : i.product.id,
+        inventory_id: i.inventory_id || undefined,
+        quantity: i.quantity
+      }));
+      const { data: order } = await ordersApi.create(payload, paymentMethod);
       orderId = order.id;
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -50,7 +122,13 @@ export default function CartPage() {
     setStep("paying");
     try {
       const paymentData = await paymentsApi.createPayment(orderId);
-
+      if (paymentData.status === "paid") {
+        setStep("verifying");
+        clearCart();
+        toast.success("Demo checkout successful! Order placed 🎉");
+        router.push("/customer/orders");
+        return;
+      }
       openRazorpayCheckout(
         paymentData,
         { name: user?.name, phone: user?.phone },
@@ -62,16 +140,12 @@ export default function CartPage() {
             router.push("/customer/orders");
           },
           onFailure: (errMsg) => {
-            toast.error(`Payment failed: ${errMsg}. Your order is saved — retry from My Orders.`);
-            clearCart();
+            toast.error(`Payment failed: ${errMsg}. Please try again.`);
             setStep("idle");
-            router.push("/customer/orders");
           },
           onDismiss: () => {
-            toast("Payment cancelled. You can pay later from My Orders.", { icon: "ℹ️" });
-            clearCart();
+            toast("Payment cancelled. You can try again.", { icon: "ℹ️" });
             setStep("idle");
-            router.push("/customer/orders");
           },
         },
       );
@@ -82,162 +156,221 @@ export default function CartPage() {
   };
 
   const isLoading = step !== "idle";
-  const stepLabel = {
-    idle:      `Pay  ₹${cartTotal.toFixed(2)}`,
-    placing:   "Creating order…",
-    paying:    "Opening payment…",
-    verifying: "Verifying payment…",
-  }[step];
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0B" }}>
+    <div className="min-h-screen pb-32" style={{ background: "var(--bg)" }}>
       <TopBar title="My Cart" showBack />
 
-      {items.length === 0 ? (
-        <div className="px-4 py-8">
-          <EmptyState
-            icon={<ShoppingCart className="w-8 h-8" />}
-            title="Your cart is empty"
-            description="Add fresh produce from the home page"
-            action={
-              <Button onClick={() => router.push("/customer/home")} icon={<ChevronLeft className="w-4 h-4" />}>
-                Browse Products
-              </Button>
-            }
-          />
-        </div>
-      ) : (
-        <div className="px-4 py-5 space-y-4 pb-36">
-          {/* Cart items */}
-          <div className="space-y-2">
-            {items.map(({ product, quantity }) => (
-              <div
-                key={product.id}
-                className="flex gap-4 p-4 rounded-2xl animate-fade-in"
-                style={{ background: "#111113", border: "1px solid #27272A" }}
-              >
-                {/* Product image */}
-                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-[#18181B] flex-shrink-0">
-                  <Image
-                    src={product.image_url ?? FALLBACK}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                  />
+      <div className="page-content py-4 sm:py-6">
+        {loadingAddress ? (
+          <div className="py-6">
+            <CartSkeleton />
+          </div>
+        ) : items.length === 0 ? (
+          <div className="py-12">
+            <EmptyState
+              illustration={<EmptyCartIllustration className="w-24 h-24" />}
+              title="Your Harvest Cart is Empty"
+              description="Explore farm-fresh organic vegetables, fruits, and grains harvested this morning."
+              action={
+                <Button onClick={() => router.push("/customer/home")} icon={<ChevronLeft className="w-4 h-4" />}>
+                  Browse Fresh Produce
+                </Button>
+              }
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+            {/* ── Left Column: Cart Items (7 cols on desktop) ───────────── */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--divider)]">
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                    Cart Items ({itemCount})
+                  </h2>
+                  <p className="text-xs text-[var(--text-secondary)]">Direct from regional farmers</p>
+                </div>
+                <button
+                  onClick={clearCart}
+                  className="text-xs font-semibold text-[var(--danger)] hover:underline cursor-pointer"
+                >
+                  Clear All
+                </button>
+              </div>
+
+              {/* Items List */}
+              <div className="space-y-3.5">
+                {items.map((item) => {
+                  const { product, quantity, inventory_id } = item;
+                  const itemId = inventory_id || product.id;
+                  const isInv = !!inventory_id;
+                  const itemKey = inventory_id ? `inv-${inventory_id}` : `prod-${product.id}`;
+
+                  return (
+                    <div
+                      key={itemKey}
+                      className="flex gap-4 p-4 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs animate-fade-in items-center"
+                    >
+                      {/* Product Thumbnail */}
+                      <div className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden flex-shrink-0 bg-[var(--surface-2)]">
+                        <Image
+                          src={getProductImage(product.name, product.image_url)}
+                          alt={product.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+
+                      {/* Info & Quantity Controls */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h3 className="font-bold text-sm sm:text-base text-[var(--text-primary)] truncate" style={{ fontFamily: "var(--font-heading)" }}>
+                              {product.name}
+                            </h3>
+                            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                              ₹{product.price}/{product.unit} {inventory_id ? "· Fresh Harvest" : ""}
+                            </p>
+                          </div>
+
+                          <button
+                            onClick={() => removeItem(itemId, isInv)}
+                            aria-label="Remove item"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--danger)] hover:bg-[var(--danger-bg)] transition-all"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-[var(--divider)]">
+                          <QuantityStepper
+                            quantity={quantity}
+                            onIncrement={() => updateQty(itemId, quantity + 1, isInv)}
+                            onDecrement={() => updateQty(itemId, quantity - 1, isInv)}
+                            size="sm"
+                          />
+
+                          <span className="font-black text-sm sm:text-base text-[var(--text-primary)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
+                            ₹{(product.price * quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Trust Badge Card */}
+              <div className="pt-2">
+                <TrustBadge type="escrow" variant="card" />
+              </div>
+            </div>
+
+            {/* ── Right Column: Summary & Checkout (5 cols on desktop) ─── */}
+            <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+              {/* Delivery Address Card */}
+              <div className="p-5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-3.5">
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--divider)]">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-[var(--primary-subtle)] text-[var(--primary)] flex items-center justify-center">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <h3 className="font-bold text-sm text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                      Delivery Address
+                    </h3>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSheetTab("list");
+                      setShowAddressSelect(true);
+                    }}
+                    className="text-xs font-bold text-[var(--primary)] hover:underline cursor-pointer"
+                  >
+                    Change
+                  </button>
                 </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#FAFAFA] text-sm truncate">{product.name}</p>
-                  <p className="text-[#71717A] text-xs mt-0.5">₹{product.price}/{product.unit}</p>
-
-                  <div className="flex items-center justify-between mt-3">
-                    {/* Qty controls */}
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => updateQty(product.id, quantity - 1)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center transition-all active:scale-90"
-                        style={{ background: "#1F1F23", border: "1px solid #27272A" }}
-                      >
-                        <Minus className="w-3 h-3 text-[#FAFAFA]" />
-                      </button>
-                      <span className="text-sm font-bold text-[#FAFAFA] w-5 text-center">
-                        {quantity}
+                {address ? (
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-sm text-[var(--text-primary)]">{user?.name}</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--primary-subtle)] text-[var(--primary-deep)] uppercase tracking-wider">
+                        {address.address_type}
                       </span>
-                      <button
-                        onClick={() => updateQty(product.id, quantity + 1)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center transition-all active:scale-90"
-                        style={{ background: "#22C55E" }}
-                      >
-                        <Plus className="w-3 h-3 text-[#052E16]" strokeWidth={2.5} />
-                      </button>
                     </div>
+                    <p className="text-[var(--text-secondary)] leading-relaxed">
+                      {formatAddress(address)}
+                    </p>
+                    <p className="text-[var(--text-tertiary)]">{user?.phone}</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-[var(--text-tertiary)]">No address selected</p>
+                )}
+              </div>
 
-                    {/* Subtotal + delete */}
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-[#FAFAFA] text-sm">
-                        ₹{(product.price * quantity).toFixed(2)}
-                      </span>
-                      <button
-                        onClick={() => removeItem(product.id)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center transition-all active:scale-90"
-                        style={{ background: "rgba(239,68,68,0.1)" }}
-                      >
-                        <Trash2 className="w-3.5 h-3.5 text-[#EF4444]" />
-                      </button>
-                    </div>
+              {/* Bill Details Summary Card */}
+              <div className="p-5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-3.5">
+                <h3 className="font-bold text-sm text-[var(--text-primary)] pb-3 border-b border-[var(--divider)]" style={{ fontFamily: "var(--font-heading)" }}>
+                  Bill Details
+                </h3>
+
+                <div className="space-y-2 text-xs sm:text-sm">
+                  <div className="flex justify-between text-[var(--text-secondary)]">
+                    <span>Item Total ({itemCount} {itemCount === 1 ? "item" : "items"})</span>
+                    <span className="font-semibold text-[var(--text-primary)] tabular-nums">₹{cartTotal.toFixed(2)}</span>
+                  </div>
+
+                  <div className="flex justify-between text-[var(--text-secondary)]">
+                    <span>Delivery Fee (25 KM Direct)</span>
+                    <span className="font-bold text-[var(--primary)] uppercase tracking-wider text-xs">FREE</span>
+                  </div>
+
+                  <div className="flex justify-between text-[var(--text-secondary)]">
+                    <span>Escrow Protection Fee</span>
+                    <span className="font-bold text-[var(--primary)] uppercase tracking-wider text-xs">FREE</span>
+                  </div>
+
+                  <div className="pt-3 border-t border-[var(--divider)] flex justify-between items-baseline font-black">
+                    <span className="text-sm text-[var(--text-primary)]">To Pay</span>
+                    <span className="text-xl sm:text-2xl text-[var(--primary-deep)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
+                      ₹{cartTotal.toFixed(2)}
+                    </span>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
 
-          {/* Order summary */}
-          <div
-            className="p-5 rounded-2xl space-y-3"
-            style={{ background: "#111113", border: "1px solid #27272A" }}
-          >
-            <h3 className="font-bold text-[#FAFAFA] mb-1">Order Summary</h3>
-            {items.map(({ product, quantity }) => (
-              <div key={product.id} className="flex justify-between text-sm">
-                <span className="text-[#71717A] truncate max-w-[200px]">
-                  {product.name} × {quantity}
-                </span>
-                <span className="text-[#FAFAFA] font-medium ml-4">
-                  ₹{(product.price * quantity).toFixed(2)}
-                </span>
+                {/* Primary Checkout Button */}
+                <div className="pt-2">
+                  <Button
+                    variant="primary"
+                    size="xl"
+                    fullWidth
+                    loading={isLoading}
+                    onClick={handleCheckout}
+                    iconRight={<ArrowRight className="w-4 h-4" />}
+                  >
+                    {isLoading ? "Processing Payment…" : `Proceed to Payment · ₹${cartTotal.toFixed(2)}`}
+                  </Button>
+                </div>
               </div>
-            ))}
-            <div
-              className="flex justify-between items-center pt-3"
-              style={{ borderTop: "1px solid #27272A" }}
-            >
-              <span className="font-bold text-[#FAFAFA]">Total</span>
-              <span className="font-black text-[#22C55E] text-xl">₹{cartTotal.toFixed(2)}</span>
             </div>
           </div>
+        )}
+      </div>
 
-          {/* Trust signal */}
-          <div
-            className="flex items-center gap-3 rounded-2xl px-4 py-3"
-            style={{
-              background: "rgba(34,197,94,0.06)",
-              border: "1px solid rgba(34,197,94,0.15)",
-            }}
-          >
-            <Shield className="w-4 h-4 text-[#22C55E] flex-shrink-0" />
-            <div>
-              <p className="text-xs font-semibold text-[#22C55E]">Secured by Razorpay</p>
-              <p className="text-xs text-[#71717A] mt-0.5">
-                Payment held in escrow until delivery confirmed
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Sticky checkout bar */}
-      {items.length > 0 && (
-        <div
-          className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto px-4 py-4 pb-safe"
-          style={{
-            background: "rgba(10,10,11,0.95)",
-            backdropFilter: "blur(20px)",
-            borderTop: "1px solid #1A1A1D",
+      {/* Address Selection Modal Sheet */}
+      {showAddressSelect && (
+        <AddressManagerSheet
+          isOpen={showAddressSelect}
+          onClose={() => setShowAddressSelect(false)}
+          selectedAddressId={address?.id}
+          onSelect={(addr) => {
+            setAddress(addr);
+            setShowAddressSelect(false);
           }}
-        >
-          <Button
-            fullWidth
-            size="lg"
-            variant="primary"
-            loading={isLoading}
-            onClick={handleCheckout}
-            icon={<CreditCard className="w-5 h-5" />}
-            iconRight={!isLoading ? <ArrowRight className="w-4 h-4" /> : undefined}
-          >
-            {stepLabel}
-          </Button>
-        </div>
+          initialTab={sheetTab}
+        />
       )}
     </div>
   );

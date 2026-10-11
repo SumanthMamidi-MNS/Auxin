@@ -41,6 +41,7 @@ from app.db.base import Base
 class DeliveryStatus(str, enum.Enum):
     pending = "pending"           # delivery record created, no partner yet
     assigned = "assigned"         # partner assigned
+    accepted = "accepted"         # partner accepted assignment
     picked_up = "picked_up"       # partner picked up goods from farmer
     out_for_delivery = "out_for_delivery"   # en-route to customer
     delivered = "delivered"       # OTP verified, complete
@@ -51,7 +52,8 @@ class DeliveryStatus(str, enum.Enum):
 # Key: current status → set of legal next statuses.
 DELIVERY_TRANSITIONS: dict[DeliveryStatus, set[DeliveryStatus]] = {
     DeliveryStatus.pending: {DeliveryStatus.assigned, DeliveryStatus.failed},
-    DeliveryStatus.assigned: {DeliveryStatus.picked_up, DeliveryStatus.failed},
+    DeliveryStatus.assigned: {DeliveryStatus.accepted, DeliveryStatus.failed},
+    DeliveryStatus.accepted: {DeliveryStatus.picked_up, DeliveryStatus.failed},
     DeliveryStatus.picked_up: {DeliveryStatus.out_for_delivery, DeliveryStatus.failed},
     DeliveryStatus.out_for_delivery: {DeliveryStatus.delivered, DeliveryStatus.failed},
     # Terminal states — no further transitions
@@ -87,9 +89,23 @@ class DeliveryPartner(Base):
     # Partner toggles this to go online/offline for new assignments
     is_available: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
+    # Bank credentials
+    bank_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    account_holder_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    bank_account_number: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    ifsc_code: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    upi_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    # Vehicle & License info
+    vehicle_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    vehicle_number: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    driving_license: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
     # Real-time GPS position – nullable until first location update
     current_latitude: Mapped[float | None] = mapped_column(Float, nullable=True)
     current_longitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    location_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    location_accuracy: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -150,11 +166,12 @@ class Delivery(Base):
         Enum(DeliveryStatus, name="deliverystatus", create_constraint=True),
         nullable=False,
         default=DeliveryStatus.pending,
-        index=True,
     )
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
 
     # OTP for final delivery confirmation (bcrypt-hashed)
     otp_code: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    plain_otp: Mapped[str | None] = mapped_column(String(6), nullable=True)
     otp_expires_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )

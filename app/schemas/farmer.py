@@ -15,7 +15,7 @@ import re
 import phonenumbers
 from pydantic import BaseModel, Field, field_validator
 
-_IFSC_PATTERN = re.compile(r"^[A-Z]{4}0[A-Z0-9]{6}$")
+_IFSC_PATTERN = re.compile(r"^[A-Z]{4}[A-Z0-9]{7}$")
 _BANK_ACC_PATTERN = re.compile(r"^\d{9,18}$")
 
 
@@ -27,6 +27,12 @@ def _validate_e164_phone(value: str) -> str:
         raise ValueError(f"Phone number could not be parsed: {exc}") from exc
     if not phonenumbers.is_valid_number(parsed):
         raise ValueError("Phone number is not a valid international number.")
+        
+    digits = str(parsed.national_number)
+    from app.core.security import is_fake_phone_number
+    if is_fake_phone_number(digits):
+        raise ValueError("Invalid phone number sequence.")
+        
     return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
 
 
@@ -68,7 +74,7 @@ class CreateFarmerProfileRequest(BaseModel):
         v = v.strip().upper()
         if not _IFSC_PATTERN.match(v):
             raise ValueError(
-                "IFSC code must be 11 characters: 4 letters, '0', then 6 alphanumeric "
+                "IFSC code must be exactly 11 characters: 4 letters followed by 7 alphanumeric "
                 "(e.g. HDFC0001234)."
             )
         return v
@@ -84,7 +90,7 @@ class CreateFarmerProfileRequest(BaseModel):
 # ---------------------------------------------------------------------------
 
 class FarmerProfileOut(BaseModel):
-    """Safe public representation — bank account is NEVER returned."""
+    """Safe public representation — bank account is now returned if requested by user profile page."""
 
     id: int
     user_id: int
@@ -94,8 +100,25 @@ class FarmerProfileOut(BaseModel):
     ifsc_code: str
     is_approved: bool
     created_at: str   # ISO-8601
+    bank_name: str | None = None
+    account_holder_name: str | None = None
+    bank_account_number: str | None = None
+    upi_id: str | None = None
+    farm_name: str | None = None
+    farm_category: str | None = None
 
     model_config = {"from_attributes": True}
+
+
+class UpdateFarmerProfileRequest(BaseModel):
+    location: str | None = None
+    bank_name: str | None = None
+    account_holder_name: str | None = None
+    bank_account_number: str | None = None
+    ifsc_code: str | None = None
+    upi_id: str | None = None
+    farm_name: str | None = None
+    farm_category: str | None = None
 
 
 class FarmerApprovalOut(BaseModel):

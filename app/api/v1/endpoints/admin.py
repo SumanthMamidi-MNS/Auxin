@@ -26,7 +26,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import require_roles
+from app.core.dependencies import require_roles, require_super_admin
 from app.db.session import get_db
 from app.models.user import User, UserRole
 from app.schemas.admin import (
@@ -44,6 +44,18 @@ from app.schemas.admin import (
     ResolveDisputeRequest,
     SuspendUserOut,
     SuspendUserRequest,
+    RejectApprovalRequest,
+    PaginatedPendingDeliveryPartnersOut,
+    DeliveryPartnerApprovalActionOut,
+    CreateAdminRequest,
+    AdminUserOut,
+    PaginatedAdminsOut,
+    PaginatedAdminActivityLogsOut,
+    AdminActivityLogOut,
+    SettingsChangeRequest,
+    DemoResetRequest,
+    SystemHealthOut,
+    ServiceHealthItem,
 )
 from app.services.admin_service import AdminService
 from app.services.dispute_service import DisputeService
@@ -154,8 +166,8 @@ async def list_pending_farmers(
     )
 
 
-@router.put(
-    "/farmers/{farmer_id}/approve",
+@router.patch(
+    "/farmers/{id}/approve",
     response_model=FarmerApprovalActionOut,
     status_code=status.HTTP_200_OK,
     summary="Approve a farmer profile",
@@ -165,19 +177,19 @@ async def list_pending_farmers(
     ),
 )
 async def approve_farmer(
-    farmer_id:    int,
+    id:           int,
     current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
     db:           Annotated[AsyncSession, Depends(get_db)],
 ) -> FarmerApprovalActionOut:
     svc = AdminService(db)
     return await svc.approve_farmer(
         requesting_user=current_user,
-        farmer_id=farmer_id,
+        farmer_id=id,
     )
 
 
-@router.put(
-    "/farmers/{farmer_id}/reject",
+@router.patch(
+    "/farmers/{id}/reject",
     response_model=FarmerApprovalActionOut,
     status_code=status.HTTP_200_OK,
     summary="Reject / revoke a farmer approval",
@@ -187,14 +199,81 @@ async def approve_farmer(
     ),
 )
 async def reject_farmer(
-    farmer_id:    int,
+    id:           int,
+    body:         RejectApprovalRequest,
     current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
     db:           Annotated[AsyncSession, Depends(get_db)],
 ) -> FarmerApprovalActionOut:
     svc = AdminService(db)
     return await svc.reject_farmer(
         requesting_user=current_user,
-        farmer_id=farmer_id,
+        farmer_id=id,
+        rejection_reason=body.rejection_reason,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Delivery Partner approval
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/delivery/pending",
+    response_model=PaginatedPendingDeliveryPartnersOut,
+    status_code=status.HTTP_200_OK,
+    summary="List pending delivery partner approvals",
+    description="Returns a paginated list of delivery partner profiles that are pending approval.",
+)
+async def list_pending_delivery(
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+    page:         int = Query(1,  ge=1),
+    page_size:    int = Query(20, ge=1, le=100),
+) -> PaginatedPendingDeliveryPartnersOut:
+    svc = AdminService(db)
+    return await svc.list_pending_delivery(
+        requesting_user=current_user,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.patch(
+    "/delivery/{id}/approve",
+    response_model=DeliveryPartnerApprovalActionOut,
+    status_code=status.HTTP_200_OK,
+    summary="Approve a delivery partner profile",
+    description="Marks the delivery partner as approved, enabling them to accept deliveries.",
+)
+async def approve_delivery(
+    id:           int,
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> DeliveryPartnerApprovalActionOut:
+    svc = AdminService(db)
+    return await svc.approve_delivery(
+        requesting_user=current_user,
+        partner_id=id,
+    )
+
+
+@router.patch(
+    "/delivery/{id}/reject",
+    response_model=DeliveryPartnerApprovalActionOut,
+    status_code=status.HTTP_200_OK,
+    summary="Reject a delivery partner profile",
+    description="Rejects the delivery partner, preventing them from accepting deliveries.",
+)
+async def reject_delivery(
+    id:           int,
+    body:         RejectApprovalRequest,
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> DeliveryPartnerApprovalActionOut:
+    svc = AdminService(db)
+    return await svc.reject_delivery(
+        requesting_user=current_user,
+        partner_id=id,
+        rejection_reason=body.rejection_reason,
     )
 
 
@@ -332,9 +411,10 @@ async def resolve_dispute(
 async def get_stats(
     current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
     db:           Annotated[AsyncSession, Depends(get_db)],
+    is_demo:      bool = False,
 ) -> AdminStatsOut:
     svc = AdminService(db)
-    return await svc.get_stats(requesting_user=current_user)
+    return await svc.get_stats(requesting_user=current_user, is_demo=is_demo)
 
 
 # ---------------------------------------------------------------------------
@@ -407,4 +487,350 @@ async def list_deliveries(
         page=page,
         page_size=page_size,
     )
+
+
+# ---------------------------------------------------------------------------
+# Phase 2.1A: Admins & Activity Logs
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/admins",
+    response_model=PaginatedAdminsOut,
+    status_code=status.HTTP_200_OK,
+    summary="List all admins (Super Admin only)",
+)
+async def list_admins(
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+    page:         int = Query(1,  ge=1),
+    page_size:    int = Query(20, ge=1, le=100),
+) -> PaginatedAdminsOut:
+    svc = AdminService(db)
+    return await svc.list_admins(
+        requesting_user=current_user,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.post(
+    "/admins",
+    response_model=AdminUserOut,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new admin account (Super Admin only)",
+)
+async def create_admin(
+    body:         CreateAdminRequest,
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> AdminUserOut:
+    svc = AdminService(db)
+    return await svc.create_admin(
+        requesting_user=current_user,
+        name=body.name,
+        phone=body.phone,
+        email=body.email,
+        password=body.password,
+    )
+
+
+@router.put(
+    "/admins/{admin_id}/disable",
+    response_model=AdminUserOut,
+    status_code=status.HTTP_200_OK,
+    summary="Disable/suspend an admin account (Super Admin only)",
+)
+async def disable_admin(
+    admin_id:     int,
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> AdminUserOut:
+    svc = AdminService(db)
+    return await svc.disable_admin(
+        requesting_user=current_user,
+        admin_id=admin_id,
+    )
+
+
+@router.put(
+    "/admins/{admin_id}/activate",
+    response_model=AdminUserOut,
+    status_code=status.HTTP_200_OK,
+    summary="Activate/reinstate an admin account (Super Admin only)",
+)
+async def activate_admin(
+    admin_id:     int,
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> AdminUserOut:
+    svc = AdminService(db)
+    return await svc.activate_admin(
+        requesting_user=current_user,
+        admin_id=admin_id,
+    )
+
+
+@router.delete(
+    "/admins/{admin_id}",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Delete/remove an admin account permanently (Super Admin only)",
+)
+async def remove_admin(
+    admin_id:     int,
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> dict:
+    svc = AdminService(db)
+    return await svc.remove_admin(
+        requesting_user=current_user,
+        admin_id=admin_id,
+    )
+
+
+@router.get(
+    "/activity-logs",
+    response_model=PaginatedAdminActivityLogsOut,
+    status_code=status.HTTP_200_OK,
+    summary="List admin activity audit logs (Super Admin only)",
+)
+async def list_activity_logs(
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+    admin_id:     int | None = Query(None, description="Filter by admin user ID"),
+    action_type:  str | None = Query(None, description="Filter by action type"),
+    start_date:   str | None = Query(None, description="Start date filter (YYYY-MM-DD)"),
+    end_date:     str | None = Query(None, description="End date filter (YYYY-MM-DD)"),
+    search:       str | None = Query(None, description="Search by admin name or target"),
+    order:        str = Query("desc", description="Sort order: desc (newest first) or asc (oldest first)"),
+    page:         int = Query(1,  ge=1),
+    page_size:    int = Query(50, ge=1, le=100),
+) -> PaginatedAdminActivityLogsOut:
+    svc = AdminService(db)
+    return await svc.list_activity_logs(
+        requesting_user=current_user,
+        admin_id=admin_id,
+        action_type=action_type,
+        start_date=start_date,
+        end_date=end_date,
+        search=search,
+        order=order,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.get(
+    "/my-activity-logs",
+    response_model=PaginatedAdminActivityLogsOut,
+    status_code=status.HTTP_200_OK,
+    summary="List own activity logs (any admin)",
+)
+async def list_my_activity_logs(
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+    page:         int = Query(1,  ge=1),
+    page_size:    int = Query(50, ge=1, le=100),
+) -> PaginatedAdminActivityLogsOut:
+    svc = AdminService(db)
+    return await svc.list_activity_logs(
+        requesting_user=current_user,
+        admin_id=current_user.id,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.put(
+    "/products/{product_id}/activate",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Activate / restore product",
+)
+async def activate_product(
+    product_id:   int,
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> dict:
+    svc = AdminService(db)
+    return await svc.activate_product(
+        requesting_user=current_user,
+        product_id=product_id,
+    )
+
+
+@router.put(
+    "/orders/{order_id}/cancel",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Cancel order (admin)",
+)
+async def cancel_order(
+    order_id:     int,
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> dict:
+    svc = AdminService(db)
+    return await svc.cancel_order(
+        requesting_user=current_user,
+        order_id=order_id,
+    )
+
+
+@router.post(
+    "/settings",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Simulate settings change (Super Admin only)",
+)
+async def update_settings(
+    body:         SettingsChangeRequest,
+    current_user: Annotated[User, Depends(require_super_admin)],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> dict:
+    svc = AdminService(db)
+    return await svc.update_settings(
+        requesting_user=current_user,
+        key=body.key,
+        value=body.value,
+    )
+
+
+@router.post(
+    "/demo/reset",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Reset and restore all demo data to seeded state (Admin authorized)",
+)
+async def reset_demo_environment(
+    body:         DemoResetRequest,
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> dict:
+    svc = AdminService(db)
+    return await svc.reset_demo_environment(
+        requesting_user=current_user,
+        password_confirm=body.password_confirm,
+    )
+
+
+@router.get(
+    "/reviews/analytics",
+    status_code=status.HTTP_200_OK,
+    summary="Get review analytics (Admin only)",
+)
+async def get_review_analytics(
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+):
+    from app.services.review_service import ReviewService
+    from app.schemas.review import AdminReviewAnalyticsOut
+
+    svc = ReviewService(db)
+    analytics = await svc.get_admin_review_analytics()
+    return AdminReviewAnalyticsOut.model_validate(analytics)
+
+
+@router.get(
+    "/system/health",
+    response_model=SystemHealthOut,
+    status_code=status.HTTP_200_OK,
+    summary="Live system health telemetry (Admin only)",
+)
+async def get_system_health(
+    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    db:           Annotated[AsyncSession, Depends(get_db)],
+) -> SystemHealthOut:
+    import time
+    from datetime import datetime, timezone
+    from sqlalchemy import text
+    from app.core.config import settings
+    from app.schemas.admin import ServiceHealthItem, SystemHealthOut
+
+    # 1. Database live ping
+    db_start = time.perf_counter()
+    db_ok = False
+    db_latency = 0.0
+    try:
+        await db.execute(text("SELECT 1"))
+        db_ok = True
+        db_latency = round((time.perf_counter() - db_start) * 1000, 2)
+    except Exception:
+        db_ok = False
+
+    # 2. Milo AI RAG Engine ping
+    milo_ok = False
+    milo_latency = None
+    import urllib.request
+    try:
+        m_start = time.perf_counter()
+        req = urllib.request.Request("http://127.0.0.1:8001/api/chat/health", method="GET")
+        with urllib.request.urlopen(req, timeout=1.5) as resp:
+            if resp.status == 200:
+                milo_ok = True
+                milo_latency = round((time.perf_counter() - m_start) * 1000, 2)
+    except Exception:
+        milo_ok = False
+
+    # 3. Storage access
+    storage_ok = True
+    storage_detail = "Local Media Storage"
+    import os
+    if not os.path.exists("./static") and not os.path.exists("./app"):
+        storage_ok = False
+
+    # 4. Auth service
+    auth_ok = True
+    auth_detail = "Supabase Auth Gateway Active"
+    if not settings.SUPABASE_URL:
+        auth_detail = "Local Dev Auth Mode"
+
+    # 5. Payment gateway
+    payment_mode = "Razorpay Test / Escrow Mock Mode Active"
+
+    # Database Engine Name
+    db_engine_name = "SQLite (WAL Mode)"
+    if "postgresql" in str(settings.DATABASE_URL):
+        db_engine_name = "PostgreSQL v15 (Supabase)"
+
+    return SystemHealthOut(
+        status="operational" if (db_ok and milo_ok) else "degraded",
+        database=ServiceHealthItem(
+            name="Core Database",
+            status="online" if db_ok else "offline",
+            latency_ms=db_latency if db_ok else None,
+            detail=f"{db_engine_name} - Connection Pool Active"
+        ),
+        api_gateway=ServiceHealthItem(
+            name="API Core Gateway",
+            status="online",
+            latency_ms=0.5,
+            detail="FastAPI ASGI Runtime Operational"
+        ),
+        milo_ai=ServiceHealthItem(
+            name="Milo AI Engine",
+            status="online" if milo_ok else "offline",
+            latency_ms=milo_latency,
+            detail="RAG Microservice (Port 8001)" if milo_ok else "Microservice Unreachable"
+        ),
+        auth_service=ServiceHealthItem(
+            name="Authentication Gateway",
+            status="online" if auth_ok else "warning",
+            detail=auth_detail
+        ),
+        storage=ServiceHealthItem(
+            name="Storage Engine",
+            status="online" if storage_ok else "warning",
+            detail=storage_detail
+        ),
+        payment_gateway=ServiceHealthItem(
+            name="Escrow Payment Gateway",
+            status="online",
+            detail=payment_mode
+        ),
+        server_time=datetime.now(timezone.utc).isoformat(),
+        environment=settings.APP_ENV.upper(),
+        database_engine=db_engine_name,
+    )
+
 

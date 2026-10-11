@@ -74,12 +74,17 @@ class PaymentRepository:
         currency: str = "INR",
     ) -> Payment:
         """Persist a new payment record in 'created' status."""
+        from app.models.order import Order
+        res = await self._db.execute(select(Order.is_demo).where(Order.id == order_id))
+        is_demo_val = res.scalar() or False
+
         payment = Payment(
             order_id=order_id,
             razorpay_order_id=razorpay_order_id,
             amount=amount,
             currency=currency,
             status=PaymentStatus.created,
+            is_demo=is_demo_val,
             created_at=_utc_now(),
             updated_at=_utc_now(),
         )
@@ -131,12 +136,16 @@ class PaymentRepository:
         note: str | None = None,
     ) -> Transaction:
         """Append an immutable transaction record."""
+        res = await self._db.execute(select(Payment.is_demo).where(Payment.id == payment_id))
+        is_demo_val = res.scalar() or False
+
         txn = Transaction(
             payment_id=payment_id,
             type=type,
             amount=amount,
             status=status,
             note=note,
+            is_demo=is_demo_val,
             created_at=_utc_now(),
         )
         self._db.add(txn)

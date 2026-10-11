@@ -250,6 +250,17 @@ class DeliveryDestinationUnknownError(AuxinException):
     detail = "Delivery destination coordinates are not set on this order."
 
 
+class DeliveryBusyError(AuxinException):
+    status_code = 409
+    detail = "You already have an active delivery in progress. Complete your current trip before claiming a new delivery."
+
+
+class DeliveryNotAvailableError(AuxinException):
+    status_code = 409
+    detail = "This delivery is no longer available or was claimed by another partner."
+
+
+
 # ---------------------------------------------------------------------------
 # Payment exceptions
 # ---------------------------------------------------------------------------
@@ -340,3 +351,22 @@ class DisputeInvalidTransitionError(AuxinException):
 class DisputeResolutionRequiredError(AuxinException):
     status_code = 422
     detail = "A resolution note is required when resolving or rejecting a dispute."
+
+
+# ---------------------------------------------------------------------------
+# Address exceptions
+# ---------------------------------------------------------------------------
+
+class AddressNotFoundError(AuxinException):
+    status_code = 404
+    detail = "Address not found."
+
+
+# ---------------------------------------------------------------------------
+# User validation exceptions
+# ---------------------------------------------------------------------------
+
+class UserInvalidStatusTransitionError(AuxinException):
+    status_code = 400
+    detail = "Invalid account status transition. Only pending accounts can be approved or rejected."
+

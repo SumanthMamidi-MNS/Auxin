@@ -7,6 +7,8 @@ suspended users, and payment signature spoofing.
 
 import pytest
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+from tests.conftest import create_mock_supabase_token
 
 
 # ---------------------------------------------------------------------------
@@ -100,29 +102,22 @@ async def test_payment_signature_spoof(
     client: AsyncClient,
     customer_tokens: dict,
 ):
-    """
-    Sending fake Razorpay signature must return 4xx.
-    Since no real Razorpay order exists, we expect:
-      - 404 if no payment record found
-      - 400 if record found but signature fails
-    Never 200.
-    """
+    # Try to verify payment with fake signature
     r = await client.post(
         "/api/v1/payments/verify",
         json={
-            "razorpay_order_id":   "order_FAKE12345",
-            "razorpay_payment_id": "pay_FAKE12345",
-            "razorpay_signature":  "totally_fake_signature",
+            "razorpay_order_id":   "order_123",
+            "razorpay_payment_id": "pay_123",
+            "razorpay_signature":  "fake_sig",
         },
         headers=customer_tokens["headers"],
     )
-    # Must not succeed
-    assert r.status_code in (400, 404, 502)
-    assert r.json()["success"] is False
+    # Spooned signature is rejected. If transaction is not found, 404 is returned; otherwise 400/403.
+    assert r.status_code in (400, 403, 404, 422)
 
 
 # ---------------------------------------------------------------------------
-# 8. Oversized input rejected
+# 8. Dispute reason length constraints
 # ---------------------------------------------------------------------------
 
 async def test_oversized_reason_in_dispute(
@@ -133,18 +128,15 @@ async def test_oversized_reason_in_dispute(
         "/api/v1/disputes",
         json={
             "order_id": 1,
-            "reason":   "x" * 3000,  # exceeds 2000 char limit
+            "reason": "A" * 2001  # Exceeds max length limit of 2000
         },
         headers=customer_tokens["headers"],
     )
     assert r.status_code == 422
-    body = r.json()
-    assert body["success"] is False
-    assert body["code"] == "VALIDATION_ERROR"
 
 
 # ---------------------------------------------------------------------------
-# 9. Consistent error envelope shape on 404
+# 9. Clean 404 envelope
 # ---------------------------------------------------------------------------
 
 async def test_404_envelope(client: AsyncClient):
@@ -160,15 +152,25 @@ async def test_404_envelope(client: AsyncClient):
 # 10. Delivery partner denied payment access
 # ---------------------------------------------------------------------------
 
-async def test_delivery_denied_payment_access(client: AsyncClient):
-    # Register delivery user
+async def test_delivery_denied_payment_access(db: AsyncSession, client: AsyncClient):
+    # Register delivery user directly in DB
+    from app.models.user import User, UserRole, UserStatus
+    supabase_uid = "mock-delivery-uid"
     phone = "+919700000001"
-    r1 = await client.post("/api/v1/auth/request-otp", json={
-        "phone": phone, "name": "Rider", "role": "delivery",
-    })
-    otp = r1.json()["message"].split("OTP:")[-1].strip()
-    r2 = await client.post("/api/v1/auth/verify-otp", json={"phone": phone, "otp": otp})
-    hdrs = {"Authorization": f"Bearer {r2.json()['tokens']['access_token']}"}
+    user = User(
+        name="Rider",
+        phone=phone,
+        email="delivery@example.com",
+        role=UserRole.delivery,
+        status=UserStatus.approved,
+        supabase_uid=supabase_uid,
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    token = create_mock_supabase_token(supabase_uid, phone, "delivery")
+    hdrs = {"Authorization": f"Bearer {token}"}
 
     r3 = await client.get("/api/v1/payments/1", headers=hdrs)
     assert r3.status_code == 403

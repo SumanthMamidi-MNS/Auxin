@@ -1,7 +1,7 @@
 "use client";
 /**
  * app/(admin)/disputes/page.tsx — Auxin Admin v2.0
- * Dispute resolution with status tabs, per-card inline resolve form.
+ * Premium Dispute resolution with status tabs, per-card inline resolve form.
  */
 
 import { useState } from "react";
@@ -38,13 +38,13 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
 
   const resolveMutation = useMutation({
     mutationFn: () =>
-      adminApi.resolveDispute(dispute.id, {
+      adminApi.resolveDispute(dispute?.id ?? 0, {
         new_status: action,
         resolution_note: note,
         trigger_refund: triggerRefund,
       }),
     onSuccess: () => {
-      toast.success(`Dispute #${dispute.id} ${action}`);
+      toast.success(`Dispute #${dispute?.id ?? 0} ${action}`);
       setResolveOpen(false);
       setNote("");
       setTriggerRefund(false);
@@ -54,8 +54,21 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
     onError: () => toast.error("Failed to update dispute"),
   });
 
-  const canResolve = dispute.status === "open" || dispute.status === "in_review";
-  const isResolved = dispute.status === "resolved" || dispute.status === "rejected";
+  const canResolve = dispute?.status === "open" || dispute?.status === "in_review";
+  const isResolved = dispute?.status === "resolved" || dispute?.status === "rejected";
+
+  const dateSubmitted = dispute?.created_at && !isNaN(new Date(dispute.created_at).getTime())
+    ? new Date(dispute.created_at).toLocaleDateString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric",
+      })
+    : "—";
+
+  const showUpdated = dispute?.updated_at && dispute.updated_at !== dispute.created_at && !isNaN(new Date(dispute.updated_at).getTime());
+  const dateUpdated = showUpdated
+    ? new Date(dispute.updated_at).toLocaleDateString("en-IN", {
+        day: "2-digit", month: "short",
+      })
+    : "—";
 
   return (
     <Card className="animate-slide-up">
@@ -63,41 +76,38 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(239,68,68,0.1)" }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center bg-red-950/10 border border-red-900/10"
           >
-            <ShieldAlert className="w-4 h-4 text-[#EF4444]" />
+            <ShieldAlert className="w-4 h-4 text-[var(--danger)]" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#F4F4F5]">
-              Dispute #{dispute.id}
+            <p className="text-sm font-bold text-[var(--text-primary)]">
+              Dispute #{dispute?.id ?? 0}
             </p>
-            <p className="text-xs text-[#71717A]">
-              Order #{dispute.order_id} · Customer #{dispute.raised_by}
+            <p className="text-xs text-[var(--text-tertiary)]">
+              Order #{dispute?.order_id ?? 0} · Customer #{dispute?.raised_by ?? 0}
             </p>
           </div>
         </div>
-        <Badge label={dispute.status} dot />
+        <Badge label={dispute?.status} dot />
       </div>
 
       {/* Reason */}
       <div
-        className="p-3 rounded-xl mb-3 text-sm text-[#A1A1AA] leading-relaxed"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid #27272A" }}
+        className="p-3 rounded-xl mb-3 text-sm text-[var(--text-secondary)] leading-relaxed bg-white/[0.02] border border-[var(--border-2)]"
       >
-        <p className="text-xs font-semibold text-[#52525B] uppercase tracking-wider mb-1.5">
+        <p className="text-xs font-semibold text-[var(--text-placeholder)] uppercase tracking-wider mb-1.5">
           Reason
         </p>
-        {dispute.reason || "No reason provided."}
+        {dispute?.reason || "No reason provided."}
       </div>
 
       {/* Resolution note (if already resolved) */}
-      {dispute.resolution_note && (
+      {dispute?.resolution_note && (
         <div
-          className="p-3 rounded-xl mb-3 text-sm text-[#A1A1AA]"
-          style={{ background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)" }}
+          className="p-3 rounded-xl mb-3 text-sm text-[var(--text-secondary)] bg-emerald-950/5 border border-emerald-900/15"
         >
-          <p className="text-xs font-semibold text-[#22C55E] uppercase tracking-wider mb-1.5">
+          <p className="text-xs font-semibold text-[var(--primary)] uppercase tracking-wider mb-1.5">
             Resolution Note
           </p>
           {dispute.resolution_note}
@@ -105,17 +115,12 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
       )}
 
       {/* Timestamps */}
-      <p className="text-xs text-[#52525B] mb-3">
-        Opened{" "}
-        {new Date(dispute.created_at).toLocaleDateString("en-IN", {
-          day: "2-digit", month: "short", year: "numeric",
-        })}
-        {dispute.updated_at !== dispute.created_at && (
+      <p className="text-xs text-[var(--text-placeholder)] mb-3">
+        Opened {dateSubmitted}
+        {showUpdated && (
           <>
             {" · Updated "}
-            {new Date(dispute.updated_at).toLocaleDateString("en-IN", {
-              day: "2-digit", month: "short",
-            })}
+            {dateUpdated}
           </>
         )}
       </p>
@@ -135,8 +140,7 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
       {/* Inline resolve form */}
       {resolveOpen && (
         <div
-          className="mt-2 p-4 rounded-xl border border-[#27272A] space-y-3 animate-slide-down"
-          style={{ background: "rgba(255,255,255,0.01)" }}
+          className="mt-2 p-4 rounded-xl border border-[var(--border-2)] bg-white/[0.01] space-y-3 animate-slide-down"
         >
           {/* Action selector */}
           <div className="flex gap-2">
@@ -147,7 +151,7 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
                 className="flex-1 py-2 rounded-lg text-xs font-semibold capitalize transition-all duration-150"
                 style={
                   action === a
-                    ? a === "resolved"
+                    ? action === "resolved"
                       ? { background: "rgba(34,197,94,0.2)", color: "#22C55E", border: "1px solid rgba(34,197,94,0.4)" }
                       : { background: "rgba(239,68,68,0.2)", color: "#EF4444", border: "1px solid rgba(239,68,68,0.4)" }
                     : { background: "transparent", color: "#71717A", border: "1px solid #27272A" }
@@ -192,7 +196,7 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
                 }}
               >
                 {triggerRefund && (
-                  <CheckCircle2 className="w-3 h-3 text-[#052E16]" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#052E16]" />
                 )}
               </div>
             </div>
@@ -208,7 +212,9 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
               size="sm"
               loading={resolveMutation.isPending}
               disabled={!note.trim()}
-              onClick={() => resolveMutation.mutate()}
+              onClick={() => {
+                if (dispute?.id !== undefined) resolveMutation.mutate();
+              }}
               fullWidth
             >
               Submit {action === "resolved" ? "Resolution" : "Rejection"}
@@ -231,7 +237,7 @@ function DisputeCard({ dispute }: { dispute: Dispute }) {
       {isResolved && !resolveOpen && (
         <div className="flex items-center gap-2 text-xs text-[#52525B]">
           <CheckCircle2 className="w-3.5 h-3.5" />
-          This dispute has been {dispute.status}.
+          This dispute has been {dispute?.status}.
         </div>
       )}
     </Card>
@@ -318,8 +324,8 @@ export default function DisputesPage() {
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {disputes.map((d) => (
-            <DisputeCard key={d.id} dispute={d} />
+          {(disputes ?? []).map((d) => (
+            <DisputeCard key={d?.id ?? 0} dispute={d} />
           ))}
         </div>
       )}

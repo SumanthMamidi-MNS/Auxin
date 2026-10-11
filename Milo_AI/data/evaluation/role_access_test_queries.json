@@ -1,0 +1,46 @@
+[
+  {
+    "query": "How do I add a new product item to my cart and checkout?",
+    "requesting_role": "customer",
+    "expected_allowed_role": "customer",
+    "expected_category": "cart",
+    "should_succeed": true
+  },
+  {
+    "query": "How does KYC verification and farm land document approval work for farmers?",
+    "requesting_role": "farmer",
+    "expected_allowed_role": "farmer",
+    "expected_category": "farmer_approval",
+    "should_succeed": true
+  },
+  {
+    "query": "What is the delivery partner geofence radius and OTP handoff protocol?",
+    "requesting_role": "delivery",
+    "expected_allowed_role": "delivery",
+    "expected_category": "delivery_otp",
+    "should_succeed": true
+  },
+  {
+    "query": "How do administrators review disputed escrow transactions and issue manual refunds?",
+    "requesting_role": "admin",
+    "expected_allowed_role": "admin",
+    "expected_category": "admin_disputes",
+    "should_succeed": true
+  },
+  {
+    "query": "How do administrators review disputed escrow transactions and issue manual refunds?",
+    "requesting_role": "customer",
+    "expected_allowed_role": "admin",
+    "expected_category": "admin_disputes",
+    "should_succeed": false,
+    "expected_action": "isolate_admin_knowledge"
+  },
+  {
+    "query": "How does farmer payout ledger reconciliation and super admin privilege override work?",
+    "requesting_role": "farmer",
+    "expected_allowed_role": "admin",
+    "expected_category": "admin",
+    "should_succeed": false,
+    "expected_action": "isolate_admin_knowledge"
+  }
+]

@@ -45,15 +45,17 @@ _db_url, _connect_args = build_asyncpg_url(_active_db_url)
 # asyncpg accepts 'timeout' (seconds) as a connect argument.
 _connect_args.setdefault("timeout", 8.0)
 
-engine = create_async_engine(
-    _db_url,
-    connect_args=_connect_args,
-    echo=settings.DEBUG,        # Log SQL only in debug mode
-    pool_pre_ping=True,         # Validate connections before use
-    pool_size=10,               # Connections kept open
-    max_overflow=20,            # Extra connections when pool is saturated
-    pool_recycle=3600,          # Recycle connections older than 1 hour
-)
+engine_kwargs = {
+    "connect_args": _connect_args,
+    "echo": settings.DEBUG,
+    "pool_pre_ping": True,
+}
+if not _active_db_url.startswith("sqlite"):
+    engine_kwargs["pool_size"] = 10
+    engine_kwargs["max_overflow"] = 20
+    engine_kwargs["pool_recycle"] = 3600
+
+engine = create_async_engine(_db_url, **engine_kwargs)
 
 
 # ---------------------------------------------------------------------------

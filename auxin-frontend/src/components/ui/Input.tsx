@@ -1,13 +1,13 @@
 "use client";
 /**
- * components/ui/Input.tsx — Auxin v2.0
- * Dark theme inputs: Input, Textarea, Select
+ * components/ui/Input.tsx — Auxin v2.0 Phase 3.1
+ * Premium mobile-first form inputs using design system tokens.
  */
 
 import { clsx } from "clsx";
 import type { InputHTMLAttributes, TextareaHTMLAttributes, ReactNode } from "react";
 
-/* ── Field wrapper ──────────────────────────────────────────────────────── */
+/* ── Field Wrapper ──────────────────────────────────────────────────────── */
 
 function Field({
   label,
@@ -25,30 +25,35 @@ function Field({
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-[#FAFAFA]">
+        <label className="text-sm font-semibold text-[var(--text-primary)]">
           {label}
-          {required && <span className="text-[#EF4444] ml-0.5">*</span>}
+          {required && <span className="text-[var(--danger)] ml-0.5">*</span>}
         </label>
       )}
       {children}
       {error ? (
-        <p className="text-xs text-[#EF4444]">{error}</p>
+        <p className="text-xs text-[var(--danger)] flex items-center gap-1">
+          {error}
+        </p>
       ) : hint ? (
-        <p className="text-xs text-[#71717A]">{hint}</p>
+        <p className="text-xs text-[var(--text-tertiary)]">{hint}</p>
       ) : null}
     </div>
   );
 }
 
-/* ── Shared input classes ───────────────────────────────────────────────── */
+/* ── Shared Input Base ──────────────────────────────────────────────────── */
 
 const inputBase =
-  "w-full h-11 px-4 rounded-xl border bg-[#18181B] text-[#FAFAFA] text-sm placeholder:text-[#52525B] transition-all duration-150 focus:outline-none";
+  "w-full h-11 px-4 rounded-xl border " +
+  "bg-[var(--surface-2)] text-[var(--text-primary)] text-sm " +
+  "placeholder:text-[var(--text-placeholder)] " +
+  "transition-all duration-[150ms] ease-out focus:outline-none";
 
 const inputState = (error?: string) =>
   error
-    ? "border-[#EF4444]/50 focus:border-[#EF4444] focus:ring-2 focus:ring-[#EF4444]/20"
-    : "border-[#27272A] hover:border-[#3F3F46] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20";
+    ? "border-[var(--danger-border)] focus:border-[var(--danger)] focus:ring-2 focus:ring-[var(--danger-bg)]"
+    : "border-[var(--border)] hover:border-[var(--border-hover)] focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary-glow-sm)]";
 
 /* ── Input ──────────────────────────────────────────────────────────────── */
 
@@ -70,29 +75,27 @@ export function Input({
   required,
   ...props
 }: InputProps) {
-  const hasIcon = !!icon;
-  const hasIconRight = !!iconRight;
-
   return (
     <Field label={label} error={error} hint={hint} required={required}>
       <div className="relative">
-        {hasIcon && (
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52525B] pointer-events-none">
+        {icon && (
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-placeholder)] pointer-events-none">
             {icon}
           </span>
         )}
         <input
+          aria-invalid={error ? true : undefined}
           className={clsx(
             inputBase,
             inputState(error),
-            hasIcon && "pl-10",
-            hasIconRight && "pr-10",
+            icon && "pl-10",
+            iconRight && "pr-10",
             className
           )}
           {...props}
         />
-        {hasIconRight && (
-          <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#52525B]">
+        {iconRight && (
+          <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--text-placeholder)]">
             {iconRight}
           </span>
         )}
@@ -122,10 +125,13 @@ export function Textarea({
   return (
     <Field label={label} error={error} hint={hint} required={required}>
       <textarea
+        aria-invalid={error ? true : undefined}
         rows={rows}
         className={clsx(
-          "w-full px-4 py-3 rounded-xl border bg-[#18181B] text-[#FAFAFA] text-sm",
-          "placeholder:text-[#52525B] resize-none transition-all duration-150 focus:outline-none",
+          "w-full px-4 py-3 rounded-xl border",
+          "bg-[var(--surface-2)] text-[var(--text-primary)] text-sm",
+          "placeholder:text-[var(--text-placeholder)] resize-none",
+          "transition-all duration-[150ms] ease-out focus:outline-none",
           inputState(error),
           className
         )}
@@ -156,12 +162,8 @@ export function Select({
   return (
     <Field label={label} error={error} hint={hint} required={required}>
       <select
-        className={clsx(
-          inputBase,
-          inputState(error),
-          "cursor-pointer",
-          className
-        )}
+        aria-invalid={error ? true : undefined}
+        className={clsx(inputBase, inputState(error), "cursor-pointer", className)}
         style={{ colorScheme: "dark" }}
         {...props}
       >

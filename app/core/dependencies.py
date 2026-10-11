@@ -156,8 +156,31 @@ async def get_current_user_for_profile(
 
     if user.status == UserStatus.suspended:
         raise UserSuspendedError()
-    if user.status == UserStatus.rejected:
-        raise RejectedAccountError()
 
     return user
+
+
+def require_roles_for_profile(*allowed_roles: UserRole):
+    """
+    Dependency factory for profile-specific endpoints.
+    Allows access even if the account is in the pending approval state.
+    """
+    async def _check(
+        current_user: Annotated[User, Depends(get_current_user_for_profile)],
+    ) -> User:
+        if current_user.role not in allowed_roles:
+            raise PermissionDeniedError()
+        return current_user
+
+    return _check
+
+
+async def require_super_admin(
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> User:
+    """Enforces that the current authenticated user is a Super Admin."""
+    if current_user.role != UserRole.admin or not current_user.is_super_admin:
+        raise PermissionDeniedError("Only Super Admins can perform this action.")
+    return current_user
+
 

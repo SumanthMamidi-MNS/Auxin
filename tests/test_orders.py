@@ -6,6 +6,7 @@ Order module API tests: creation, status transitions, RBAC, edge cases.
 
 import pytest
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 # ---------------------------------------------------------------------------
@@ -38,7 +39,7 @@ async def _setup_farmer_product(
     farmer_profile_id = fp.json()["id"]
 
     # Admin approves
-    ap = await client.put(
+    ap = await client.patch(
         f"/api/v1/admin/farmers/{farmer_profile_id}/approve",
         headers=admin_hdrs,
     )
@@ -53,7 +54,7 @@ async def _setup_farmer_product(
             "name":         "Tomatoes",
             "description":  "Fresh tomatoes",
             "price":        50.0,
-            "stock":        100,
+            "quantity":     100,
             "unit":         "kg",
             "harvest_date": harvest_date,
         },
@@ -87,7 +88,7 @@ async def test_create_order_success(
     )
     assert r.status_code == 201, r.text
     data = r.json()
-    assert data["status"] == "pending"
+    assert data["status"] == "reserved"
     assert len(data["items"]) == 1
     assert data["items"][0]["quantity"] == 2
 
@@ -159,6 +160,7 @@ async def test_order_access_other_customer(
     customer_tokens: dict,
     farmer_tokens: dict,
     admin_tokens: dict,
+    db: AsyncSession,
 ):
     product_id = await _setup_farmer_product(
         client, farmer_tokens["headers"], admin_tokens["headers"], farmer_tokens["user"]["id"]
@@ -170,14 +172,25 @@ async def test_order_access_other_customer(
     )
     order_id = r.json()["id"]
 
-    # Create second customer
+    # Create second customer directly in DB
+    from app.models.user import User, UserRole, UserStatus
+    from tests.conftest import create_mock_supabase_token
     phone2 = "+919000000001"
-    r2 = await client.post("/api/v1/auth/request-otp", json={
-        "phone": phone2, "name": "Eve", "role": "customer",
-    })
-    otp = r2.json()["message"].split("OTP:")[-1].strip()
-    r3 = await client.post("/api/v1/auth/verify-otp", json={"phone": phone2, "otp": otp})
-    hdrs2 = {"Authorization": f"Bearer {r3.json()['tokens']['access_token']}"}
+    supabase_uid2 = "mock-customer2-uid"
+    user2 = User(
+        name="Eve",
+        phone=phone2,
+        email="eve@example.com",
+        role=UserRole.customer,
+        status=UserStatus.approved,
+        supabase_uid=supabase_uid2,
+    )
+    db.add(user2)
+    await db.commit()
+    await db.refresh(user2)
+
+    token2 = create_mock_supabase_token(supabase_uid2, phone2, "customer")
+    hdrs2 = {"Authorization": f"Bearer {token2}"}
 
     # Eve tries to access customer1's order
     r4 = await client.get(f"/api/v1/orders/{order_id}", headers=hdrs2)
@@ -194,6 +207,7 @@ async def test_cancel_order(
     customer_tokens: dict,
     farmer_tokens: dict,
     admin_tokens: dict,
+    db: AsyncSession,
 ):
     product_id = await _setup_farmer_product(
         client, farmer_tokens["headers"], admin_tokens["headers"], farmer_tokens["user"]["id"]
@@ -204,6 +218,13 @@ async def test_cancel_order(
         headers=customer_tokens["headers"],
     )
     order_id = r.json()["id"]
+
+    from app.models.order import Order, OrderStatus
+    from sqlalchemy import update
+    await db.execute(
+        update(Order).where(Order.id == order_id).values(status=OrderStatus.pending)
+    )
+    await db.commit()
 
     rc = await client.put(
         f"/api/v1/orders/{order_id}/cancel",

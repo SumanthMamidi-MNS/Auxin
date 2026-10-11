@@ -73,3 +73,13 @@ coverage/
 
 # Docker artifacts
 *.dockerenv
+
+# Database files
+*.sqlite
+*.db
+*.db-journal
+*.db-wal
+auxin.db
+
+# Scratch temporary files
+scratch/

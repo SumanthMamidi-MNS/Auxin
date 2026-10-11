@@ -34,6 +34,23 @@ export function isAdminRole(role: string): role is AdminRole {
   ].includes(role);
 }
 
+export interface Address {
+  id: number;
+  user_id: number;
+  house_flat: string;
+  building?: string | null;
+  street: string;
+  area: string;
+  landmark?: string | null;
+  city: string;
+  state: string;
+  pin_code: string;
+  address_type: string;
+  is_default: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
 export interface User {
   id: number;
   name: string;
@@ -42,7 +59,13 @@ export interface User {
   address?: string | null;
   role: UserRole;
   status: UserStatus;
+  is_demo?: boolean;
   created_at: string;
+  addresses?: Address[];
+  approved_by?: string | null;
+  approved_at?: string | null;
+  rejected_at?: string | null;
+  rejection_reason?: string | null;
 }
 
 // ── Farmer ──────────────────────────────────────────────────────────────
@@ -56,6 +79,12 @@ export interface Farmer {
   ifsc_code: string;
   is_approved: boolean;
   created_at: string;
+  bank_name?: string | null;
+  account_holder_name?: string | null;
+  bank_account_number?: string | null;
+  upi_id?: string | null;
+  farm_name?: string | null;
+  farm_category?: string | null;
 }
 
 // ── Product ──────────────────────────────────────────────────────────────
@@ -80,10 +109,19 @@ export interface Product {
 
 export type OrderStatus =
   | "pending"
+  | "reserved"
+  | "payment_pending"
+  | "payment_confirmed"
   | "accepted"
-  | "rejected"
+  | "packing"
+  | "ready_for_pickup"
+  | "picked_up"
+  | "out_for_delivery"
+  | "completed"
   | "cancelled"
-  | "completed";
+  | "rejected"
+  | "refund_pending"
+  | "refund_completed";
 
 export interface OrderItem {
   id: number;
@@ -94,14 +132,40 @@ export interface OrderItem {
   subtotal: number;
 }
 
+export interface OrderDeliveryPartner {
+  id: number;
+  full_name: string;
+  phone: string;
+}
+
+export interface OrderDelivery {
+  id: number;
+  delivery_partner_id?: number | null;
+  status: string;
+  assigned_at?: string | null;
+  picked_up_at?: string | null;
+  delivered_at?: string | null;
+  delivery_partner?: OrderDeliveryPartner | null;
+  otp?: string | null;
+  formatted_eta?: string | null;
+  expected_time?: string | null;
+  estimated_minutes_min?: number | null;
+  estimated_minutes_max?: number | null;
+  distance_to_target_km?: number | null;
+  current_latitude?: number | null;
+  current_longitude?: number | null;
+}
+
 export interface Order {
   id: number;
   customer_id: number;
   farmer_id: number;
-  farmer_name?: string;
+  farmer_name?: string | null;
   total_amount: number;
   status: OrderStatus;
   items: OrderItem[];
+  delivery?: OrderDelivery | null;
+  reviewed?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -109,21 +173,71 @@ export interface Order {
 // ── Delivery ──────────────────────────────────────────────────────────
 
 export type DeliveryStatus =
+  | "pending"
   | "assigned"
+  | "accepted"
   | "picked_up"
   | "out_for_delivery"
   | "delivered"
   | "failed";
 
+export interface DeliveryCustomer {
+  id: number;
+  name: string;
+  phone: string;
+  address?: string | null;
+}
+
+export interface DeliveryFarmer {
+  id: number;
+  full_name: string;
+  phone: string;
+  location: string;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
 export interface Delivery {
   id: number;
   order_id: number;
-  partner_id: number;
+  delivery_partner_id?: number | null;
+  partner_id?: number | null;
   status: DeliveryStatus;
-  otp_code?: string;
-  estimated_delivery?: string;
-  actual_delivery?: string;
+  destination_latitude?: number | null;
+  destination_longitude?: number | null;
+  assigned_at?: string | null;
+  picked_up_at?: string | null;
+  delivered_at?: string | null;
+  actual_delivery?: string | null;
+  estimated_delivery?: string | null;
   created_at: string;
+  customer?: DeliveryCustomer | null;
+  farmer?: DeliveryFarmer | null;
+}
+
+export interface AvailableDelivery {
+  id: number;
+  order_id: number;
+  status: DeliveryStatus;
+  total_amount: number;
+  item_count: number;
+  distance_to_farm_km?: number | null;
+  distance_to_customer_km?: number | null;
+  estimated_earnings: number;
+  created_at: string;
+  customer?: DeliveryCustomer | null;
+  farmer?: DeliveryFarmer | null;
+}
+
+export interface PaginatedAvailableDeliveries {
+  items: AvailableDelivery[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  partner_latitude?: number | null;
+  partner_longitude?: number | null;
+  matching_radius_km: number;
 }
 
 // ── Payment ──────────────────────────────────────────────────────────
@@ -178,4 +292,6 @@ export interface ApiError {
 export interface CartItem {
   product: Product;
   quantity: number;
+  inventory_id?: number;
+  master_product_id?: number;
 }

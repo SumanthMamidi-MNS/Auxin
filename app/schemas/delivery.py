@@ -43,6 +43,12 @@ class CreateDeliveryPartnerProfileRequest(BaseModel):
             raise ValueError(f"Phone number could not be parsed: {exc}") from exc
         if not phonenumbers.is_valid_number(parsed):
             raise ValueError("Phone number is not a valid international number.")
+            
+        digits = str(parsed.national_number)
+        from app.core.security import is_fake_phone_number
+        if is_fake_phone_number(digits):
+            raise ValueError("Invalid phone number sequence.")
+            
         return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
 
 
@@ -51,6 +57,7 @@ class UpdateLocationRequest(BaseModel):
 
     latitude: float = Field(..., ge=-90.0, le=90.0)
     longitude: float = Field(..., ge=-180.0, le=180.0)
+    accuracy: float | None = Field(None, ge=0.0, description="Accuracy in meters reported by GPS device")
 
 
 class UpdateDeliveryStatusRequest(BaseModel):
@@ -111,7 +118,56 @@ class DeliveryPartnerOut(BaseModel):
     is_available: bool
     current_latitude: float | None
     current_longitude: float | None
+    location_updated_at: str | None = None
+    location_accuracy: float | None = None
     created_at: str    # ISO-8601
+    bank_name: str | None = None
+    account_holder_name: str | None = None
+    bank_account_number: str | None = None
+    ifsc_code: str | None = None
+    upi_id: str | None = None
+    vehicle_type: str | None = None
+    vehicle_number: str | None = None
+    driving_license: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class UpdateDeliveryPartnerProfileRequest(BaseModel):
+    bank_name: str | None = None
+    account_holder_name: str | None = None
+    bank_account_number: str | None = None
+    ifsc_code: str | None = None
+    upi_id: str | None = None
+    vehicle_type: str | None = None
+    vehicle_number: str | None = None
+    driving_license: str | None = None
+
+
+class DeliveryCustomerOut(BaseModel):
+    id: int
+    name: str
+    phone: str
+    address: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class DeliveryFarmerOut(BaseModel):
+    id: int
+    full_name: str
+    phone: str
+    location: str
+    latitude: float | None = None
+    longitude: float | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class DeliveryPartnerMinimalOut(BaseModel):
+    id: int
+    full_name: str
+    phone: str
 
     model_config = {"from_attributes": True}
 
@@ -127,8 +183,38 @@ class DeliveryOut(BaseModel):
     picked_up_at: str | None
     delivered_at: str | None
     created_at: str
+    customer: DeliveryCustomerOut | None = None
+    farmer: DeliveryFarmerOut | None = None
+    delivery_partner: DeliveryPartnerMinimalOut | None = None
 
     model_config = {"from_attributes": True}
+
+
+class AvailableDeliveryOut(BaseModel):
+    id: int
+    order_id: int
+    status: DeliveryStatus
+    total_amount: float
+    item_count: int
+    distance_to_farm_km: float | None = None
+    distance_to_customer_km: float | None = None
+    estimated_earnings: float = 40.0
+    created_at: str
+    customer: DeliveryCustomerOut | None = None
+    farmer: DeliveryFarmerOut | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class PaginatedAvailableDeliveriesOut(BaseModel):
+    items: list[AvailableDeliveryOut]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+    partner_latitude: float | None = None
+    partner_longitude: float | None = None
+    matching_radius_km: float = 25.0
 
 
 class DeliveryStatusOut(BaseModel):

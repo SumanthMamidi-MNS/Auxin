@@ -1,61 +1,57 @@
 "use client";
 /**
- * app/not-found.tsx — Auxin v2.0
- * Dark theme 404 page. Prevents white-screen fallback.
+ * app/not-found.tsx — Auxin v3.0
+ * Brand-aligned 404 error screen with warm cream + forest green theme.
  */
 
 import Link from "next/link";
-import { Home, Leaf, AlertTriangle } from "lucide-react";
+import { Home, Leaf } from "lucide-react";
+import Image from "next/image";
 
 export default function NotFound() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-6"
-      style={{ background: "#0A0A0B" }}
+      style={{ background: "var(--bg)" }}
     >
-      {/* Radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 30%, rgba(34,197,94,0.06) 0%, transparent 60%)",
-        }}
-      />
-
       <div className="relative w-full max-w-md text-center space-y-6">
         {/* Logo */}
-        <div
-          className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-2"
-          style={{
-            background: "rgba(34,197,94,0.1)",
-            border: "1px solid rgba(34,197,94,0.2)",
-          }}
-        >
-          <Leaf className="w-7 h-7 text-[#22C55E]" />
+        <div className="flex flex-col items-center space-y-2">
+          <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center relative shadow-xs border-2 border-[var(--gold)]">
+            <Image
+              src="/logo-cropped.png"
+              alt="Auxin Logo"
+              fill
+              className="object-cover scale-110"
+            />
+          </div>
+          <span className="text-lg font-black text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+            Auxin
+          </span>
         </div>
 
-        {/* 404 */}
-        <div>
-          <p className="text-8xl font-black text-[#27272A] leading-none select-none">404</p>
-          <h1 className="text-2xl font-bold text-[#F4F4F5] mt-2">Page not found</h1>
-          <p className="text-[#71717A] text-sm mt-2 leading-relaxed">
-            This page doesn't exist or has been moved.
+        {/* 404 Content */}
+        <div className="p-8 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-sm space-y-4">
+          <p className="text-7xl font-black text-[var(--primary)] leading-none select-none tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
+            404
           </p>
-        </div>
+          <h1 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+            Harvest Field Not Found
+          </h1>
+          <p className="text-[var(--text-secondary)] text-xs leading-relaxed">
+            This produce page doesn&apos;t exist or was relocated. Let&apos;s get you back to fresh crops.
+          </p>
 
-        {/* Action */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-semibold transition-all active:scale-[0.98]"
-          style={{
-            background: "#22C55E",
-            color: "#052E16",
-            boxShadow: "0 4px 14px rgba(34,197,94,0.2)",
-          }}
-        >
-          <Home className="w-4 h-4" />
-          Go Home
-        </Link>
+          <div className="pt-2">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-2xl text-xs font-bold transition-all active:scale-[0.98] bg-[var(--primary)] text-white shadow-xs hover:bg-[var(--primary-hover)]"
+            >
+              <Home className="w-4 h-4" />
+              Return to Marketplace
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

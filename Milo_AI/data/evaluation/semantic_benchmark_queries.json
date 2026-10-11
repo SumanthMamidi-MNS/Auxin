@@ -1,0 +1,32 @@
+[
+  {
+    "query": "What happens if my OTP code expires during registration?",
+    "expected_keyword_matches": [
+      "expire",
+      "5 minutes",
+      "resend otp"
+    ],
+    "role": "customer",
+    "category": "otp_verification"
+  },
+  {
+    "query": "Can I filter vegetables to only see certified organic produce?",
+    "expected_keyword_matches": [
+      "organic",
+      "filter",
+      "badge"
+    ],
+    "role": "customer",
+    "category": "product_browsing"
+  },
+  {
+    "query": "How does escrow hold customer funds until delivery is verified?",
+    "expected_keyword_matches": [
+      "escrow",
+      "held",
+      "delivery"
+    ],
+    "role": "customer",
+    "category": "payments"
+  }
+]

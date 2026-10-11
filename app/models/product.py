@@ -57,6 +57,7 @@ class Product(Base):
     image_url: Mapped[str] = mapped_column(String(2048), nullable=False)
 
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

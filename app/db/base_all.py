@@ -42,3 +42,5 @@ from app.models.order import Order, OrderItem            # noqa: F401
 from app.models.delivery import DeliveryPartner, Delivery  # noqa: F401
 from app.models.payment import Payment, Transaction      # noqa: F401
 from app.models.admin import AdminAction, Dispute        # noqa: F401
+from app.models.address import Address                  # noqa: F401
+from app.models.review import Review                    # noqa: F401

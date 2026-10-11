@@ -1,4 +1,4 @@
-﻿/**
+/**
  * auxin-frontend/src/store/authStore.ts
  * ----------------------------------------
  * Zustand auth store for Auxin v2.0.
@@ -17,8 +17,9 @@ import type { User } from "@/types";
 
 interface AuthState {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
-  setAuth: (user: User) => void;
+  setAuth: (user: User, token?: string | null) => void;
   clearAuth: () => void;
   updateUser: (partial: Partial<User>) => void;
 }
@@ -29,20 +30,22 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
+      token: null,
       isAuthenticated: false,
 
-      setAuth: (user) =>
-        set({
+      setAuth: (user, token = null) =>
+        set((state) => ({
           user,
+          token: token ?? state.token,
           isAuthenticated: true,
-        }),
+        })),
 
       clearAuth: () => {
         // Clear cart on sign-out
         if (typeof window !== "undefined") {
           localStorage.removeItem("auxin_cart");
         }
-        set({ user: null, isAuthenticated: false });
+        set({ user: null, token: null, isAuthenticated: false });
       },
 
       updateUser: (partial) =>
@@ -55,9 +58,9 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() =>
         typeof window !== "undefined" ? localStorage : ({} as Storage)
       ),
-      // Persist only user and isAuthenticated — session tokens are owned by Supabase SDK
       partialize: (state) => ({
         user: state.user,
+        token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
     }

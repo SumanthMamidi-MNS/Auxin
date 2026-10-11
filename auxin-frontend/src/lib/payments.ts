@@ -26,6 +26,7 @@ export interface PaymentCreateOut {
   amount: number;              // Amount in paise
   currency: string;
   order_id: number;
+  status: string;
   prefill?: {
     name?: string;
     contact?: string;

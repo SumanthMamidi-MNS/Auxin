@@ -1,11 +1,12 @@
 "use client";
 /** app/customer/layout.tsx — Role guard: customer only */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { useAuthStore } from "@/store/authStore";
 import { PageLoader } from "@/components/ui/Card";
 import { isAdminRole } from "@/types";
+import { profileApi } from "@/lib/profile";
 
 // Admin portal lives on a separate domain/port — never in this app
 const ADMIN_URL =
@@ -14,17 +15,32 @@ const ADMIN_URL =
     ? "https://admin.auxin.in"
     : "http://localhost:3001");
 
+import { DesktopSidebar } from "@/components/layout/DesktopSidebar";
+
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user } = useAuthStore();
   const router = useRouter();
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     if (!isAuthenticated) { router.replace("/auth"); return; }
     if (!user) return;
     if (user.role === "customer") {
-      if (!user.address) {
-        router.replace("/profile/create");
-      }
+      (async () => {
+        try {
+          await profileApi.getProfile();
+        } catch (err: any) {
+          const status = err?.status ?? err?.response?.status;
+          if (status === 404) {
+            router.replace("/profile/create");
+          }
+        }
+      })();
       return;
     }
     // Wrong role — redirect to correct home
@@ -36,14 +52,22 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     if (user.role === "farmer") router.replace("/farmer/dashboard");
     else if (user.role === "delivery") router.replace("/delivery/dashboard");
     else router.replace("/auth");
-  }, [isAuthenticated, user, router]);
+  }, [hydrated, isAuthenticated, user, router]);
 
-  if (!isAuthenticated || !user) return <PageLoader />;
+  if (!hydrated || !isAuthenticated || !user) return <PageLoader />;
   if (user.role !== "customer") return <PageLoader />;
 
   return (
-    <div className="max-w-lg mx-auto min-h-screen" style={{ background: "#0A0A0B" }}>
-      <main className="pb-20">{children}</main>
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg)" }}>
+      {/* Desktop Navigation Sidebar */}
+      <DesktopSidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 min-w-0 flex flex-col lg:pl-[240px]">
+        <main className="flex-1 pb-24 lg:pb-12">{children}</main>
+      </div>
+
+      {/* Mobile/Tablet Bottom Navigation */}
       <BottomNav />
     </div>
   );

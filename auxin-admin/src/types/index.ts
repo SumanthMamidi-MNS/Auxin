@@ -67,11 +67,11 @@ export function hasPermission(role: AdminRole, permission: Permission): boolean 
 /** Human-readable label for admin sub-role */
 export function adminRoleLabel(role: string): string {
   const map: Record<string, string> = {
-    admin:             "Super Admin",
+    admin:             "Platform Admin",
     super_admin:       "Super Admin",
-    support_admin:     "Support",
-    operations_admin:  "Operations",
-    logistics_admin:   "Logistics",
+    support_admin:     "Support Admin",
+    operations_admin:  "Operations Admin",
+    logistics_admin:   "Logistics Admin",
   };
   return map[role] ?? "Admin";
 }
@@ -95,6 +95,8 @@ export interface User {
   email?: string | null;
   role: UserRole;
   status: UserStatus;
+  is_super_admin?: boolean;
+  supabase_uid?: string;
   created_at: string;
 }
 
@@ -109,6 +111,34 @@ export interface Farmer {
   ifsc_code: string;
   is_approved: boolean;
   created_at: string;
+  email?: string | null;
+  bank_name?: string | null;
+  account_holder_name?: string | null;
+  bank_account_number?: string | null;
+  upi_id?: string | null;
+  status?: string;
+}
+
+// ── Delivery Partner ──────────────────────────────────────────────────────────
+
+export interface DeliveryPartner {
+  id: number;
+  user_id: number;
+  full_name: string;
+  phone: string;
+  location?: string;
+  vehicle_type?: string;
+  vehicle_number?: string;
+  driving_license?: string;
+  is_approved: boolean;
+  created_at: string;
+  email?: string | null;
+  bank_name?: string | null;
+  account_holder_name?: string | null;
+  bank_account_number?: string | null;
+  ifsc_code?: string | null;
+  upi_id?: string | null;
+  status?: string;
 }
 
 // â”€â”€ Product â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -132,7 +162,20 @@ export interface Product {
 // â”€â”€ Order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type OrderStatus =
-  | "pending" | "accepted" | "rejected" | "cancelled" | "completed";
+  | "pending"
+  | "reserved"
+  | "payment_pending"
+  | "payment_confirmed"
+  | "accepted"
+  | "packing"
+  | "ready_for_pickup"
+  | "picked_up"
+  | "out_for_delivery"
+  | "completed"
+  | "cancelled"
+  | "rejected"
+  | "refund_pending"
+  | "refund_completed";
 
 export interface OrderItem {
   id: number;
@@ -216,8 +259,10 @@ export interface PaginatedResponse<T> {
 
 export interface AdminStats {
   total_users: number;
+  total_farmers: number;
   total_orders: number;
   total_products: number;
+  total_payments: number;
   total_disputes: number;
   pending_farmers: number;
   open_disputes: number;
@@ -254,5 +299,21 @@ export interface BusinessRule {
   value: string;
   description: string;
   editable_by: AdminRole[];
+}
+
+export interface AdminActivityLog {
+  id: number;
+  timestamp: string;
+  admin_name: string;
+  admin_email: string;
+  action: string;
+  action_type: string;
+  target: string;
+  target_type: string;
+  target_name: string;
+  target_id: number | null;
+  status: string;
+  remarks: string | null;
+  metadata: Record<string, any>;
 }
 

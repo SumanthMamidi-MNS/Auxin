@@ -92,14 +92,8 @@ class SyncUserRequest(BaseModel):
         if not digits.isdigit() or len(digits) != 10:
             raise ValueError("Phone number must contain exactly 10 digits.")
             
-        blacklist = {
-            "9999999999",
-            "1111111111",
-            "1234567890",
-            "0123456789",
-            "9876543210"
-        }
-        if digits in blacklist:
+        from app.core.security import is_fake_phone_number
+        if is_fake_phone_number(digits):
             raise ValueError("Invalid phone number sequence.")
             
         return f"+91{digits}"
@@ -129,6 +123,9 @@ class UserOut(BaseModel):
     email: str | None
     role: UserRole
     status: UserStatus
+    address: str | None = None
+    is_super_admin: bool = False
+    is_demo: bool = False
     created_at: str  # ISO-8601 string
 
     model_config = {"from_attributes": True}

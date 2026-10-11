@@ -1,7 +1,7 @@
-# Auxin v2.0 — Farm-fresh Marketplace
+# Auxin v3.0 — Farm-fresh Marketplace
 
 > **Farm-to-doorstep marketplace connecting farmers, customers, and delivery partners**  
-> Full-stack platform: FastAPI backend · Next.js frontends · Supabase Auth · Supabase PostgreSQL · Razorpay
+> Full-stack platform: FastAPI backend · Next.js frontends · Supabase Auth · Supabase PostgreSQL · Razorpay · Milo AI
 
 [![Backend](https://img.shields.io/badge/Backend-FastAPI%200.111-009688)](https://fastapi.tiangolo.com)
 [![Auth](https://img.shields.io/badge/Auth-Supabase-3ECF8E)](https://supabase.com)
@@ -423,10 +423,16 @@ $env:APP_ENV = "development"
 
 ---
 
-## 📄 License
+## 📄 License & Attribution
 
-MIT License — see [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+### Creator
+**Sumanth Mamidi**  
+AI & ML Engineer · Full-Stack Developer  
+* [GitHub](https://github.com/sumanthmamidi)
+* [LinkedIn](https://linkedin.com/in/sumanthmamidi)
 
 ---
 
-*Auxin v2.0 — Built with ❤️ by the Anti Gravity team*
+*Auxin v3.0 — Designed & Engineered by Sumanth Mamidi*

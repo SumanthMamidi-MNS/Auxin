@@ -25,6 +25,14 @@ from app.schemas.delivery import DeliveryPartnerOut
 
 
 def _to_out(partner: DeliveryPartner) -> DeliveryPartnerOut:
+    from app.core.encryption import decrypt_field
+    decrypted_acc = None
+    if partner.bank_account_number:
+        try:
+            decrypted_acc = decrypt_field(partner.bank_account_number)
+        except Exception:
+            decrypted_acc = partner.bank_account_number
+
     return DeliveryPartnerOut(
         id=partner.id,
         user_id=partner.user_id,
@@ -34,7 +42,17 @@ def _to_out(partner: DeliveryPartner) -> DeliveryPartnerOut:
         is_available=partner.is_available,
         current_latitude=partner.current_latitude,
         current_longitude=partner.current_longitude,
+        location_updated_at=partner.location_updated_at.isoformat() if partner.location_updated_at else None,
+        location_accuracy=partner.location_accuracy,
         created_at=partner.created_at.isoformat(),
+        bank_name=partner.bank_name,
+        account_holder_name=partner.account_holder_name,
+        bank_account_number=decrypted_acc,
+        ifsc_code=partner.ifsc_code,
+        upi_id=partner.upi_id,
+        vehicle_type=partner.vehicle_type,
+        vehicle_number=partner.vehicle_number,
+        driving_license=partner.driving_license,
     )
 
 
@@ -104,6 +122,46 @@ class DeliveryPartnerService:
             )
         return _to_out(partner)
 
+    async def update_profile(
+        self,
+        *,
+        user_id: int,
+        bank_name: str | None = None,
+        account_holder_name: str | None = None,
+        bank_account_number: str | None = None,
+        ifsc_code: str | None = None,
+        upi_id: str | None = None,
+        vehicle_type: str | None = None,
+        vehicle_number: str | None = None,
+        driving_license: str | None = None,
+    ) -> DeliveryPartnerOut:
+        from app.core.encryption import encrypt_field
+        partner = await self._repo.get_by_user_id(user_id)
+        if partner is None:
+            raise DeliveryPartnerNotFoundError()
+
+        if bank_name is not None:
+            partner.bank_name = bank_name
+        if account_holder_name is not None:
+            partner.account_holder_name = account_holder_name
+        if bank_account_number is not None:
+            partner.bank_account_number = encrypt_field(bank_account_number)
+        if ifsc_code is not None:
+            partner.ifsc_code = ifsc_code
+        if upi_id is not None:
+            partner.upi_id = upi_id
+        if vehicle_type is not None:
+            partner.vehicle_type = vehicle_type
+        if vehicle_number is not None:
+            partner.vehicle_number = vehicle_number
+        if driving_license is not None:
+            partner.driving_license = driving_license
+
+        self._db.add(partner)
+        await self._db.commit()
+        await self._db.refresh(partner)
+        return _to_out(partner)
+
     # ------------------------------------------------------------------
     # 3. Toggle availability
     # ------------------------------------------------------------------
@@ -147,21 +205,26 @@ class DeliveryPartnerService:
         requesting_user: User,
         latitude: float,
         longitude: float,
+        accuracy: float | None = None,
     ) -> DeliveryPartnerOut:
         """
-        Update the partner's current GPS coordinates.
+        Update the partner's current GPS coordinates with validation.
 
         Raises:
             PermissionDeniedError          – wrong role
             DeliveryPartnerNotFoundError   – no profile
+            ValueError                     – invalid coordinates
         """
         if requesting_user.role != UserRole.delivery:
             raise PermissionDeniedError(
                 "Only delivery users can update their location."
             )
+        from app.core.geolocation import validate_coordinates
+        lat_valid, lon_valid = validate_coordinates(latitude, longitude)
+
         partner = await self._repo.get_by_user_id(requesting_user.id)
         if partner is None:
             raise DeliveryPartnerNotFoundError()
 
-        partner = await self._repo.update_location(partner, latitude, longitude)
+        partner = await self._repo.update_location(partner, lat_valid, lon_valid, accuracy=accuracy)
         return _to_out(partner)

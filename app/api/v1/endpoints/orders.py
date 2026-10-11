@@ -57,6 +57,7 @@ async def create_order(
     return await service.create_order(
         requesting_user=current_user,
         cart_items=body.items,
+        payment_method=body.payment_method,
     )
 
 
@@ -96,7 +97,7 @@ async def list_my_orders(
     summary="List incoming orders for the farmer",
     description=(
         "Returns a paginated list of orders assigned to the authenticated farmer. "
-        "Includes orders in all statuses. "
+        "Optionally filter by status (pending, accepted, completed, rejected, cancelled). "
         "Caller must have role='farmer'."
     ),
 )
@@ -105,12 +106,14 @@ async def list_farmer_incoming_orders(
     db: Annotated[AsyncSession, Depends(get_db)],
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=100),
+    order_status: str | None = Query(None, alias="status", description="Filter by order status"),
 ) -> PaginatedOrdersOut:
     service = OrderService(db)
     return await service.list_farmer_orders(
         requesting_user=current_user,
         page=page,
         page_size=page_size,
+        status=order_status,
     )
 
 
@@ -244,3 +247,83 @@ async def complete_order(
         order_id=order_id,
         requesting_user=current_user,
     )
+
+
+@router.put(
+    "/{order_id}/packing",
+    response_model=OrderStatusOut,
+    status_code=status.HTTP_200_OK,
+    summary="Mark order as packing",
+    description="Farmer marks an accepted order as packing (status: accepted → packing).",
+)
+async def mark_order_packing(
+    order_id: int,
+    current_user: Annotated[User, Depends(require_roles(UserRole.farmer))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> OrderStatusOut:
+    service = OrderService(db)
+    return await service.mark_packing(
+        order_id=order_id,
+        requesting_user=current_user,
+    )
+
+
+@router.put(
+    "/{order_id}/ready-for-pickup",
+    response_model=OrderStatusOut,
+    status_code=status.HTTP_200_OK,
+    summary="Mark order as ready for pickup",
+    description="Farmer marks packing order as ready for pickup (status: packing → ready_for_pickup).",
+)
+async def mark_order_ready_for_pickup(
+    order_id: int,
+    current_user: Annotated[User, Depends(require_roles(UserRole.farmer))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> OrderStatusOut:
+    service = OrderService(db)
+    return await service.mark_ready_for_pickup(
+        order_id=order_id,
+        requesting_user=current_user,
+    )
+
+
+@router.post(
+    "/{order_id}/review",
+    status_code=status.HTTP_201_CREATED,
+    summary="Submit a review for a completed order",
+)
+async def submit_order_review(
+    order_id: int,
+    body: dict,  # Receive dict or schemas
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    from app.services.review_service import ReviewService, ReviewAlreadyExistsError
+    from fastapi import HTTPException
+    from app.schemas.review import ReviewOut, ReviewCreateRequest
+    
+    # Validate request body
+    try:
+        req = ReviewCreateRequest(**body)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(e)
+        )
+
+    service = ReviewService(db)
+    try:
+        review = await service.submit_review(
+            order_id=order_id,
+            requesting_user=current_user,
+            farmer_rating=req.farmer_rating,
+            farmer_review=req.farmer_review,
+            delivery_rating=req.delivery_rating,
+            delivery_review=req.delivery_review,
+        )
+        return ReviewOut.model_validate(review)
+    except ReviewAlreadyExistsError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )

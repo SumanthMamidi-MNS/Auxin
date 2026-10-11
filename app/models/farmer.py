@@ -34,10 +34,15 @@ class Farmer(Base):
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
     location: Mapped[str] = mapped_column(Text, nullable=False)
+    farm_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    farm_category: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     # Encrypted at-rest via app.core.encryption.encrypt_field / decrypt_field
     bank_account_number: Mapped[str] = mapped_column(String(512), nullable=False)
     ifsc_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    bank_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    account_holder_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    upi_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     is_approved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 

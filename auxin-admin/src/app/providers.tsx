@@ -19,7 +19,14 @@ export function Providers({ children }: { children: ReactNode }) {
         position="top-right"
         toastOptions={{
           duration: 3000,
-          style: { fontFamily: "Inter, sans-serif", fontSize: "14px", borderRadius: "12px" },
+          style: {
+            background: "var(--surface-2)",
+            color: "var(--text-primary)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-xl, 12px)",
+            fontSize: "14px",
+            fontFamily: "var(--font-body, sans-serif)",
+          },
         }}
       />
     </QueryClientProvider>

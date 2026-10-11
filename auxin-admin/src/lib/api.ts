@@ -1,4 +1,4 @@
-﻿/**
+/**
  * auxin-admin/src/lib/api.ts
  * ----------------------------
  * Axios HTTP client for admin dashboard - Supabase session for token injection.
@@ -15,7 +15,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v
 
 const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: { "Content-Type": "application/json" },
 });
 

@@ -1,16 +1,44 @@
 "use client";
+/**
+ * app/profile/page.tsx — Auxin v3.0
+ * GOAT-Level Customer Marketplace Profile & Identity Experience:
+ *  - Verified Marketplace Citizen Card with Avatar & Verification Badges
+ *  - Form Editing for Personal Details & Phone
+ *  - Saved Delivery Addresses Manager modal linkage
+ *  - Account Preferences, Support & Safe Sign-Out
+ */
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { User, Phone, MapPin, Mail, Loader2, ArrowLeft, Edit2, Save, X } from "lucide-react";
+import Image from "next/image";
+import {
+  User, Phone, MapPin, Mail, Loader2, Edit2, Save, X,
+  Headphones, Clock, HelpCircle, FileText, Info, LogOut, ChevronRight, ShieldCheck, ShoppingBag
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { profileApi } from "@/lib/profile";
 import { useAuthStore } from "@/store/authStore";
 import { TopBar } from "@/components/layout/TopBar";
+import { Button } from "@/components/ui/Button";
+import { signOut } from "@/lib/auth";
+import type { Address } from "@/types";
+import { AddressManagerSheet } from "@/components/features/AddressManagerSheet";
+import { ProfileSkeleton } from "@/components/ui/Skeletons";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { setAuth, user } = useAuthStore();
+  const { setAuth, user, clearAuth } = useAuthStore();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      clearAuth();
+      toast.success("Signed out successfully");
+      router.replace("/auth");
+    } catch (err) {
+      toast.error("Failed to sign out");
+    }
+  };
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -21,6 +49,32 @@ export default function ProfilePage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [defaultAddress, setDefaultAddress] = useState<Address | null>(null);
+  const [showAddressManage, setShowAddressManage] = useState(false);
+  const [sheetTab, setSheetTab] = useState<"list" | "add" | "edit">("list");
+
+  function formatAddress(addr: Address) {
+    return [
+      addr.house_flat, addr.building, addr.street,
+      addr.area, addr.landmark, addr.city, addr.state, addr.pin_code,
+    ].filter(Boolean).join(", ");
+  }
+
+  const refreshDefaultAddress = async () => {
+    try {
+      const res = await profileApi.listAddresses();
+      const list = res.data || [];
+      const def = list.find((a) => a.is_default) || list[0] || null;
+      setDefaultAddress(def);
+      if (def) {
+        setAddress(formatAddress(def));
+      } else {
+        setAddress("");
+      }
+    } catch (err) {
+      console.error("Failed to load default address:", err);
+    }
+  };
 
   // Fetch latest profile from backend on mount
   useEffect(() => {
@@ -31,16 +85,12 @@ export default function ProfilePage() {
         setEmail(profile.email ?? "");
         setName(profile.name);
         
-        // Strip prefix for input editing
         const cleanPhone = (profile.phone ?? "").replace("+91", "").trim();
         setPhone(cleanPhone);
-        setAddress(profile.address ?? "");
-        
-        // Keep Zustand synced
         setAuth(profile);
+        await refreshDefaultAddress();
       } catch (err: any) {
         console.error("Failed to load profile:", err);
-        // If profile not found, they must create one
         if (err.response?.status === 404) {
           toast.error("Please set up your profile first.");
           router.replace("/profile/create");
@@ -62,27 +112,9 @@ export default function ProfilePage() {
       return;
     }
 
-    // Phone validation
     const digits = phone.trim().replace(/\s+/g, "").replace("+91", "");
     if (!/^\d{10}$/.test(digits)) {
       toast.error("Phone number must be exactly 10 digits.");
-      return;
-    }
-
-    const blacklist = [
-      "9999999999",
-      "1111111111",
-      "1234567890",
-      "0123456789",
-      "9876543210"
-    ];
-    if (blacklist.includes(digits)) {
-      toast.error("Invalid phone number sequence.");
-      return;
-    }
-
-    if (!address.trim()) {
-      toast.error("Primary Address is required.");
       return;
     }
 
@@ -91,14 +123,12 @@ export default function ProfilePage() {
       const res = await profileApi.updateProfile({
         name: name.trim(),
         phone: digits,
-        address: address.trim(),
       });
 
       toast.success("Profile updated successfully!");
       setAuth(res.data);
       setIsEditing(false);
     } catch (err: any) {
-      console.error(err);
       const detail = err.response?.data?.error ?? "Failed to update profile.";
       toast.error(detail);
     } finally {
@@ -107,7 +137,6 @@ export default function ProfilePage() {
   }
 
   function handleCancel() {
-    // Reset inputs to Zustand state
     if (user) {
       setName(user.name);
       const cleanPhone = (user.phone ?? "").replace("+91", "").trim();
@@ -119,133 +148,217 @@ export default function ProfilePage() {
 
   if (fetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0B]">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+      <div className="min-h-screen pb-24" style={{ background: "var(--bg)" }}>
+        <TopBar title="My Profile" />
+        <div className="page-content py-6">
+          <ProfileSkeleton />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0B" }}>
-      <TopBar title="My Profile" showBack={true} />
+    <div className="min-h-screen pb-32" style={{ background: "var(--bg)" }}>
+      <TopBar title="My Profile" />
 
-      <div className="max-w-lg mx-auto p-4 pt-6 pb-24">
-        {/* Profile Card */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-          {/* Header section with edit toggle */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
-            <div>
-              <h2 className="text-xl font-bold text-white">Account Details</h2>
-              <p className="text-xs text-[#71717A] mt-0.5">Manage your personal information</p>
+      <div className="page-content py-4 sm:py-6 space-y-6 max-w-2xl">
+        {/* Profile Avatar Card */}
+        <div className="p-6 rounded-3xl border border-[var(--border)] bg-gradient-to-br from-[var(--surface)] via-[var(--surface)] to-[var(--surface-warm)] shadow-xs flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+          <div className="w-20 h-20 rounded-2xl bg-[var(--primary-subtle)] border-2 border-[var(--primary-glow)] flex items-center justify-center font-black text-2xl text-[var(--primary-deep)] shadow-xs">
+            {user?.name?.charAt(0).toUpperCase() || "A"}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+              <h2 className="text-xl sm:text-2xl font-black text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                {user?.name}
+              </h2>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[var(--primary-subtle)] text-[var(--primary-deep)] border border-[var(--primary-glow)] flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-[var(--primary)]" /> Verified Citizen
+              </span>
             </div>
+            <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium">
+              {email || user?.phone} • 25 KM Farm Fresh Consumer
+            </p>
+          </div>
+        </div>
+
+        {/* Account Details Editor */}
+        <div className="p-6 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--divider)]">
+            <div>
+              <h3 className="text-sm font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                Personal Information
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)]">Your contact details for order deliveries</p>
+            </div>
+
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20 active:scale-95 transition-all duration-150"
+                className="text-xs font-bold text-[var(--primary)] flex items-center gap-1 hover:underline cursor-pointer"
               >
-                <Edit2 size={16} />
+                <Edit2 size={13} /> Edit
               </button>
             )}
           </div>
 
-          <form onSubmit={handleSave} className="space-y-5">
-            {/* Email (Always Read-Only) */}
-            <div>
-              <label className="block text-xs text-white/50 mb-1.5 font-medium">Email Address (Locked)</label>
-              <div className="relative">
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input
-                  type="email"
-                  value={email}
-                  disabled
-                  className="w-full h-11 pl-10 pr-4 rounded-xl border border-white/5 bg-black/40 text-white/40 text-sm focus:outline-none cursor-not-allowed"
-                />
-              </div>
-            </div>
-
+          <form onSubmit={handleSave} className="space-y-4 text-xs">
             {/* Full Name */}
             <div>
-              <label className="block text-xs text-white/50 mb-1.5 font-medium">Full Name</label>
-              <div className="relative">
-                <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={!isEditing}
-                  className="w-full h-11 pl-10 pr-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm disabled:opacity-75 disabled:cursor-not-allowed placeholder:text-white/30 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 transition-all"
-                  required
-                />
-              </div>
+              <label className="text-overline block mb-1">Full Name *</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={!isEditing}
+                className="w-full h-11 px-4 rounded-xl text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] disabled:opacity-75"
+                required
+              />
             </div>
 
-            {/* Phone Number */}
+            {/* Phone */}
             <div>
-              <label className="block text-xs text-white/50 mb-1.5 font-medium">Phone Number</label>
+              <label className="text-overline block mb-1">Phone Number *</label>
               <div className="relative flex">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-white/30">
-                  <Phone size={16} />
-                  <span className="text-sm font-medium text-white/50 pr-2 border-r border-white/10">+91</span>
-                </div>
+                <span className="inline-flex items-center px-3.5 rounded-l-xl bg-[var(--surface-3)] border border-r-0 border-[var(--border)] text-xs font-bold text-[var(--text-secondary)]">
+                  +91
+                </span>
                 <input
                   type="tel"
-                  placeholder="98765 43210"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                  maxLength={10}
                   disabled={!isEditing}
-                  className="w-full h-11 pl-[4.5rem] pr-4 rounded-xl border border-white/10 bg-black/20 text-white text-sm disabled:opacity-75 disabled:cursor-not-allowed placeholder:text-white/30 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 transition-all"
+                  className="w-full h-11 px-4 rounded-r-xl text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] disabled:opacity-75"
                   required
                 />
               </div>
             </div>
 
-            {/* Primary Address */}
+            {/* Email (Read Only) */}
             <div>
-              <label className="block text-xs text-white/50 mb-1.5 font-medium">Primary Address</label>
-              <div className="relative">
-                <MapPin size={16} className="absolute left-3.5 top-3 text-white/30" />
-                <textarea
-                  placeholder="Enter delivery address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  disabled={!isEditing}
-                  className="w-full min-h-[90px] pl-10 pr-4 py-2.5 rounded-xl border border-white/10 bg-black/20 text-white text-sm disabled:opacity-75 disabled:cursor-not-allowed placeholder:text-white/30 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 transition-all resize-none"
-                  required
-                />
-              </div>
+              <label className="text-overline block mb-1">Email Address (Login ID)</label>
+              <input
+                type="email"
+                value={email}
+                disabled
+                className="w-full h-11 px-4 rounded-xl text-sm bg-[var(--surface-3)] border border-[var(--border)] text-[var(--text-tertiary)] cursor-not-allowed"
+              />
             </div>
 
-            {/* Action buttons (only in edit mode) */}
             {isEditing && (
-              <div className="flex gap-3 pt-2">
-                <button
+              <div className="flex gap-2.5 pt-2">
+                <Button
                   type="button"
+                  variant="outline"
+                  size="md"
                   onClick={handleCancel}
-                  disabled={loading}
-                  className="flex-1 h-11 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 active:scale-98"
+                  className="flex-1"
                 >
-                  <X size={15} />
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  disabled={loading}
-                  className="flex-1 h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 disabled:opacity-55 active:scale-98 shadow-md shadow-emerald-500/20"
+                  variant="primary"
+                  size="md"
+                  loading={loading}
+                  className="flex-1"
                 >
-                  {loading ? (
-                    <Loader2 size={15} className="animate-spin" />
-                  ) : (
-                    <>
-                      <Save size={15} />
-                      Save Changes
-                    </>
-                  )}
-                </button>
+                  Save Changes
+                </Button>
               </div>
             )}
           </form>
         </div>
+
+        {/* Delivery Addresses Management Card */}
+        <div className="p-6 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-3.5">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--divider)]">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[var(--primary)]" />
+              <h3 className="text-sm font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                Saved Delivery Addresses
+              </h3>
+            </div>
+
+            <button
+              onClick={() => {
+                setSheetTab("list");
+                setShowAddressManage(true);
+              }}
+              className="text-xs font-bold text-[var(--primary)] hover:underline cursor-pointer"
+            >
+              Manage
+            </button>
+          </div>
+
+          {defaultAddress ? (
+            <div className="p-4 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] text-xs space-y-1">
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-[var(--text-primary)]">{defaultAddress.address_type}</span>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-[var(--primary-subtle)] text-[var(--primary-deep)] uppercase">Default</span>
+              </div>
+              <p className="text-[var(--text-secondary)] leading-relaxed">{formatAddress(defaultAddress)}</p>
+            </div>
+          ) : (
+            <p className="text-xs text-[var(--text-secondary)]">No address saved. Add one to checkout faster.</p>
+          )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            fullWidth
+            onClick={() => {
+              setSheetTab("add");
+              setShowAddressManage(true);
+            }}
+          >
+            + Add New Address
+          </Button>
+        </div>
+
+        {/* Navigation & Logout */}
+        <div className="p-4 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-2">
+          <button
+            onClick={() => router.push("/customer/orders")}
+            className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--surface-2)] transition-colors text-xs font-bold text-[var(--text-primary)]"
+          >
+            <span className="flex items-center gap-2.5">
+              <ShoppingBag className="w-4 h-4 text-[var(--primary)]" /> My Past Orders
+            </span>
+            <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-rose-50/50 transition-colors text-xs font-bold text-[var(--danger)]"
+          >
+            <span className="flex items-center gap-2.5">
+              <LogOut className="w-4 h-4 text-[var(--danger)]" /> Sign Out of Auxin
+            </span>
+            <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
+          </button>
+        </div>
       </div>
+
+      {/* Address Manager Sheet */}
+      {showAddressManage && (
+        <AddressManagerSheet
+          isOpen={showAddressManage}
+          onClose={() => {
+            setShowAddressManage(false);
+            refreshDefaultAddress();
+          }}
+          selectedAddressId={defaultAddress?.id}
+          onSelect={(addr) => {
+            setDefaultAddress(addr);
+            setAddress(formatAddress(addr));
+            setShowAddressManage(false);
+          }}
+          initialTab={sheetTab}
+        />
+      )}
     </div>
   );
 }

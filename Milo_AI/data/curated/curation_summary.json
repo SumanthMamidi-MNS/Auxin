@@ -1,0 +1,100 @@
+{
+  "raw_dataset_path": "c:\\Users\\mamid\\OneDrive\\Documents\\Anti Gravity\\The Auxin\\Milo_AI\\data\\raw\\master_dataset_10500.jsonl",
+  "curated_dataset_path": "c:\\Users\\mamid\\OneDrive\\Documents\\Anti Gravity\\The Auxin\\Milo_AI\\data\\curated\\curated_knowledge_documents.jsonl",
+  "total_records_scanned": 10500,
+  "valid_records_extracted": 10500,
+  "malformed_records": 0,
+  "empty_records": 0,
+  "duplicate_records_merged": 7079,
+  "final_curated_records_count": 3421,
+  "role_breakdown": {
+    "customer": 1405,
+    "farmer": 761,
+    "delivery": 900,
+    "admin": 346,
+    "super_admin": 9
+  },
+  "phase_breakdown": {
+    "phase_1": 346,
+    "phase_2": 743,
+    "phase_3": 957,
+    "phase_04": 25,
+    "phase_4": 858,
+    "phase_05": 25,
+    "phase_5": 307,
+    "phase_06": 25,
+    "phase_6": 36,
+    "phase_07": 25,
+    "phase_7": 6,
+    "phase_08": 25,
+    "phase_8": 34,
+    "phase_10_gap_expansion": 9
+  },
+  "conversation_types": {
+    "single_turn": 2315,
+    "multi_turn": 1106
+  },
+  "total_categories_count": 150,
+  "top_categories": [
+    [
+      "order_governance",
+      273
+    ],
+    [
+      "order_placement",
+      212
+    ],
+    [
+      "invoices_receipts",
+      208
+    ],
+    [
+      "earnings_payouts",
+      185
+    ],
+    [
+      "edge_cases_weather_traffic",
+      154
+    ],
+    [
+      "otp_validation",
+      143
+    ],
+    [
+      "farm_pickup",
+      141
+    ],
+    [
+      "assignment_acceptance",
+      137
+    ],
+    [
+      "update_stock",
+      124
+    ],
+    [
+      "refund_processing",
+      112
+    ],
+    [
+      "edit_inventory",
+      110
+    ],
+    [
+      "shopping_cart",
+      106
+    ],
+    [
+      "delivery_otp_handoff",
+      106
+    ],
+    [
+      "create_inventory",
+      104
+    ],
+    [
+      "escrow_protection",
+      103
+    ]
+  ]
+}

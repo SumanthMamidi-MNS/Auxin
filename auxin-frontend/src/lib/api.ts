@@ -29,7 +29,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v
 
 const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 8000,
+  timeout: 30000,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -37,10 +37,16 @@ const api: AxiosInstance = axios.create({
 // Request interceptor — attach Supabase access token
 // ---------------------------------------------------------------------------
 
+import { useAuthStore } from "@/store/authStore";
+
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   const { data } = await supabase.auth.getSession();
-  if (data.session?.access_token) {
-    config.headers.Authorization = `Bearer ${data.session.access_token}`;
+  let token: string | undefined = data.session?.access_token || undefined;
+  if (!token) {
+    token = useAuthStore.getState().token || undefined;
+  }
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -86,8 +92,9 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       return api(originalRequest);
     }
-    // Clear cold-start once we get past the retry
-    if (originalRequest._retry) setColdStart(false);
+    
+    // Clear cold-start for any other error or completed retry
+    setColdStart(false);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -125,6 +132,7 @@ api.interceptors.response.use(
   }
 );
 
+export { api };
 export default api;
 
 

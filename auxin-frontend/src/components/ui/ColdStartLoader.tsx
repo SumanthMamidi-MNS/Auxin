@@ -30,7 +30,7 @@ function SkeletonBar({ width = "100%", height = 14, opacity = 1 }: {
       style={{
         width,
         height,
-        background: "#27272A",
+        background: "var(--surface-3)",
         opacity,
       }}
     />
@@ -65,30 +65,22 @@ export function ColdStartLoader() {
   return (
     <div
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-      style={{ background: "#0A0A0B" }}
+      style={{ background: "var(--bg)" }}
     >
       {/* Radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 40%, rgba(34,197,94,0.07) 0%, transparent 60%)",
+            "radial-gradient(ellipse at 50% 40%, var(--primary-glow) 0%, transparent 60%)",
         }}
       />
 
       <div className="relative w-full max-w-[340px] px-6">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
-            style={{
-              background: "rgba(34,197,94,0.1)",
-              border: "1px solid rgba(34,197,94,0.2)",
-            }}
-          >
-            <Leaf className="w-7 h-7 text-[#22C55E]" />
-          </div>
-          <p className="text-lg font-black text-[#F4F4F5] tracking-tight">Auxin</p>
+        <div className="flex flex-col items-center mb-6">
+          <img src="/logo-cropped.png" className="w-16 h-16 object-contain mb-3" alt="Auxin Logo" />
+          <p className="text-xl font-black tracking-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>Auxin</p>
         </div>
 
         {/* Skeleton cards */}
@@ -104,8 +96,8 @@ export function ColdStartLoader() {
           {[1, 2].map((row) => (
             <div
               key={row}
-              className="rounded-2xl p-4 space-y-2"
-              style={{ background: "#111113", border: "1px solid #1A1A1D" }}
+              className="rounded-2xl p-4 space-y-2 shadow-sm"
+              style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
             >
               <SkeletonBar height={120} />
               <SkeletonBar width="70%" height={12} />
@@ -120,11 +112,11 @@ export function ColdStartLoader() {
 
         {/* Message */}
         <div className="text-center">
-          <p className="text-sm font-medium text-[#A1A1AA]">
+          <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
             {MESSAGES[msgIdx]}
             <DotsAnimation />
           </p>
-          <p className="text-xs text-[#52525B] mt-1">
+          <p className="text-xs mt-1" style={{ color: "var(--text-tertiary)" }}>
             Our servers wake up in 30–60 seconds
           </p>
         </div>
@@ -132,12 +124,12 @@ export function ColdStartLoader() {
         {/* Progress bar */}
         <div
           className="mt-4 h-0.5 rounded-full overflow-hidden"
-          style={{ background: "#1A1A1D" }}
+          style={{ background: "var(--surface-3)" }}
         >
           <div
             className="h-full rounded-full"
             style={{
-              background: "#22C55E",
+              background: "var(--primary)",
               animation: "cold-start-progress 45s linear infinite",
             }}
           />

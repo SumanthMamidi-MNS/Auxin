@@ -13,10 +13,12 @@
  */
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { supabase } from "@/lib/supabase";
 import { getMe } from "@/lib/auth";
+import { profileApi } from "@/lib/profile";
 import { useAuthStore } from "@/store/authStore";
 import { useAppStore } from "@/store/appStore";
 import { ColdStartLoader } from "@/components/ui/ColdStartLoader";
@@ -34,14 +36,30 @@ const queryClient = new QueryClient({
 
 function AuthListener({ children }: { children: React.ReactNode }) {
   const { setAuth, clearAuth } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     // Bootstrap: check for an existing session on mount
     (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        const me = await getMe();
-        if (me) setAuth(me);
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          const me = await getMe();
+          if (me) {
+            setAuth(me);
+            // Verify backend profile existence
+            try {
+              await profileApi.getProfile();
+            } catch (err: any) {
+              const status = err?.status ?? err?.response?.status;
+              if (status === 404) {
+                router.replace("/profile/create");
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Auth listener bootstrap failed:", err);
       }
     })();
 
@@ -50,17 +68,26 @@ function AuthListener({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         if (event === "SIGNED_IN" && session) {
           const me = await getMe();
-          if (me) setAuth(me);
+          if (me) {
+            setAuth(me);
+            // Verify backend profile existence
+            try {
+              await profileApi.getProfile();
+            } catch (err: any) {
+              const status = err?.status ?? err?.response?.status;
+              if (status === 404) {
+                router.replace("/profile/create");
+              }
+            }
+          }
         } else if (event === "SIGNED_OUT") {
           clearAuth();
-        } else if (event === "TOKEN_REFRESHED" && session) {
-          // Token silently refreshed — no action needed; session is current
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [setAuth, clearAuth]);
+  }, [setAuth, clearAuth, router]);
 
   return <>{children}</>;
 }
@@ -78,11 +105,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           toastOptions={{
             duration: 3500,
             style: {
-              background: "#1a2e1a",
-              color: "#d1fae5",
-              border: "1px solid rgba(52, 211, 153, 0.2)",
-              borderRadius: "12px",
+              background: "var(--surface-2)",
+              color: "var(--text-primary)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-xl, 12px)",
               fontSize: "14px",
+              fontFamily: "var(--font-body, sans-serif)",
             },
           }}
         />

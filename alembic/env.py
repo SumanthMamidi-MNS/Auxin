@@ -39,6 +39,8 @@ _sync_url = settings.DATABASE_URL.replace(
     "postgresql+asyncpg://", "postgresql://"
 ).replace(
     "postgres+asyncpg://", "postgresql://"
+).replace(
+    "sqlite+aiosqlite://", "sqlite://"
 )
 config.set_main_option("sqlalchemy.url", _sync_url)
 

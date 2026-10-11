@@ -1,93 +1,231 @@
 "use client";
 /**
- * app/customer/orders/page.tsx — Auxin v2.0
- * Premium dark orders list with payment retry and status timeline.
+ * app/customer/orders/page.tsx — Auxin v3.0
+ * GOAT-Level Customer Live Order Tracking & Secure OTP Experience:
+ *  - Real-time Milestone Status Timeline via OrderTimeline
+ *  - Dynamic Centralized ETA calculations & expected arrival badges
+ *  - Prominent Doorstep OTP Card (visible strictly during out_for_delivery)
+ *  - Courier Profile & Direct Contact Call link
+ *  - Empty state with EmptyOrdersIllustration
+ *  - Polling query for real-time order state updates
  */
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Package, ClipboardList, XCircle, CreditCard,
-  RefreshCw, ChevronRight,
+  RefreshCw, Truck, CheckCircle2, Phone, Calendar,
+  ChevronRight, Star, Clock, KeyRound, MapPin, Sparkles, Copy, Check, ShieldCheck
 } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
-import { Badge, Card, EmptyState, Spinner } from "@/components/ui/Card";
+import { Badge, EmptyState } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { OrdersSkeleton } from "@/components/ui/Skeletons";
+import { OrderTimeline } from "@/components/features/OrderTimeline";
+import { ETABadge } from "@/components/ui/ETABadge";
+import { EmptyOrdersIllustration } from "@/components/illustrations/EmptyOrders";
 import { ordersApi } from "@/lib/orders";
 import { paymentsApi, openRazorpayCheckout } from "@/lib/payments";
 import { getErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 import type { Order } from "@/types";
 import toast from "react-hot-toast";
+import { clsx } from "clsx";
 
-const STATUS_STEPS = ["pending", "accepted", "completed"] as const;
+/* ── Delivery Status Config ─────────────────────────────────────────────── */
 
-function StatusTimeline({ status }: { status: string }) {
-  const isFailed   = ["rejected", "cancelled"].includes(status);
-  const isComplete = status === "completed";
-  const currentIdx = STATUS_STEPS.indexOf(status as typeof STATUS_STEPS[number]);
+const DELIVERY_STATUS: Record<string, { label: string; subtext: string; color: string; bg: string; icon: string }> = {
+  pending: {
+    label: "Finding Nearby Courier…",
+    subtext: "Matching with an active courier within 25 km of the farm.",
+    color: "#F59E0B",
+    bg: "rgba(245,158,11,0.06)",
+    icon: "⏳",
+  },
+  assigned: {
+    label: "Courier Assigned",
+    subtext: "Courier is heading to the farm to collect your harvest.",
+    color: "#3B82F6",
+    bg: "rgba(59,130,246,0.06)",
+    icon: "🛵",
+  },
+  accepted: {
+    label: "Courier En Route to Farm",
+    subtext: "On the way to pick up fresh produce.",
+    color: "#3B82F6",
+    bg: "rgba(59,130,246,0.06)",
+    icon: "🚗",
+  },
+  picked_up: {
+    label: "Order Picked Up & Packed",
+    subtext: "Your fresh harvest has been collected from the farm.",
+    color: "#8B5CF6",
+    bg: "rgba(139,92,246,0.06)",
+    icon: "📦",
+  },
+  out_for_delivery: {
+    label: "Out for Delivery",
+    subtext: "On the road to your doorstep! Keep your OTP ready.",
+    color: "#10B981",
+    bg: "rgba(16,185,129,0.06)",
+    icon: "🚚",
+  },
+  delivered: {
+    label: "Delivered Successfully",
+    subtext: "Enjoy your farm-fresh produce!",
+    color: "#22C55E",
+    bg: "rgba(34,197,94,0.06)",
+    icon: "🎉",
+  },
+  failed: {
+    label: "Delivery Failed",
+    subtext: "Courier could not complete delivery. Support is resolving.",
+    color: "#EF4444",
+    bg: "rgba(239,68,68,0.06)",
+    icon: "❌",
+  },
+};
+
+export default function CustomerOrdersPage() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const [tab, setTab] = useState<"all" | "active" | "completed">("all");
+
+  const { data, isLoading, isRefetching, refetch } = useQuery({
+    queryKey: ["customer-orders"],
+    queryFn: () => ordersApi.myOrders({ page: 1, page_size: 50 }).then((r) => r.data),
+    refetchInterval: 6000,
+  });
+
+  const allOrders: Order[] = data?.items ?? [];
+
+  const filteredOrders = allOrders.filter((order) => {
+    const isCompleted = order.status === "completed" || order.delivery?.status === "delivered";
+    const isCancelled = order.status === "cancelled" || order.status === "rejected";
+    if (tab === "active") return !isCompleted && !isCancelled;
+    if (tab === "completed") return isCompleted;
+    return true;
+  });
+
+  const activeCount = allOrders.filter(
+    (o) => o.status !== "completed" && o.status !== "cancelled" && o.status !== "rejected" && o.delivery?.status !== "delivered"
+  ).length;
 
   return (
-    <div className="flex items-center gap-0">
-      {STATUS_STEPS.map((step, i) => {
-        const isDone   = isComplete ? i <= 2 : i < currentIdx;
-        const isActive = status === step;
-        return (
-          <div key={step} className="flex items-center">
-            <div className="flex flex-col items-center gap-1">
-              <div
-                className="w-2 h-2 rounded-full transition-all"
-                style={{
-                  background: isFailed
-                    ? "#EF4444"
-                    : isActive
-                    ? "#F59E0B"
-                    : isDone
-                    ? "#22C55E"
-                    : "#27272A",
-                }}
-              />
-              <span
-                className="text-[10px] font-medium whitespace-nowrap"
-                style={{
-                  color: isFailed
-                    ? "#EF4444"
-                    : isActive
-                    ? "#F59E0B"
-                    : isDone
-                    ? "#22C55E"
-                    : "#52525B",
-                }}
-              >
-                {step.charAt(0).toUpperCase() + step.slice(1)}
-              </span>
-            </div>
-            {i < STATUS_STEPS.length - 1 && (
-              <div
-                className="h-px w-8 mx-1 mb-4"
-                style={{
-                  background: isDone ? "#22C55E" : "#27272A",
-                  transition: "background 0.3s",
-                }}
-              />
+    <div className="min-h-screen pb-32" style={{ background: "var(--bg)" }}>
+      <TopBar
+        title="My Orders"
+        showBack
+        action={
+          <button
+            onClick={() => refetch()}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--primary)] transition-all active:scale-90"
+            title="Refresh Orders"
+          >
+            <RefreshCw className={clsx("w-4 h-4", isRefetching && "animate-spin text-[var(--primary)]")} />
+          </button>
+        }
+      />
+
+      <div className="page-content py-4 sm:py-6 space-y-5">
+        {/* Navigation Filter Tabs */}
+        <div className="flex items-center gap-2 p-1 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] max-w-md">
+          <button
+            onClick={() => setTab("all")}
+            className={clsx(
+              "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all",
+              tab === "all"
+                ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-xs"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             )}
+          >
+            All Orders ({allOrders.length})
+          </button>
+
+          <button
+            onClick={() => setTab("active")}
+            className={clsx(
+              "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all relative",
+              tab === "active"
+                ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-xs"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            )}
+          >
+            <span>Active</span>
+            {activeCount > 0 && (
+              <span className="ml-1.5 px-1.5 py-0.2 text-[10px] rounded-full bg-[var(--primary)] text-white font-black">
+                {activeCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setTab("completed")}
+            className={clsx(
+              "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all",
+              tab === "completed"
+                ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-xs"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            )}
+          >
+            Completed
+          </button>
+        </div>
+
+        {/* Content */}
+        {isLoading ? (
+          <OrdersSkeleton />
+        ) : filteredOrders.length === 0 ? (
+          <div className="py-12">
+            <EmptyState
+              illustration={<EmptyOrdersIllustration className="w-24 h-24" />}
+              title={tab === "active" ? "No Active Orders" : "No Orders Found"}
+              description={
+                tab === "active"
+                  ? "You don't have any ongoing deliveries. Browse the catalog to order fresh farm produce."
+                  : "You haven't placed any orders yet. Fresh harvests from nearby farms are waiting for you."
+              }
+              action={
+                <Button onClick={() => router.push("/customer/home")}>
+                  Browse Fresh Produce
+                </Button>
+              }
+            />
           </div>
-        );
-      })}
+        ) : (
+          <div className="space-y-5 max-w-3xl">
+            {filteredOrders.map((order) => (
+              <OrderCard key={order.id} order={order} queryClient={queryClient} user={user} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-function OrderCard({ order }: { order: Order }) {
-  const qc = useQueryClient();
-  const { user } = useAuthStore();
+/* ── OrderCard Component ─────────────────────────────────────────────────── */
+
+function OrderCard({
+  order,
+  queryClient,
+  user,
+}: {
+  order: Order;
+  queryClient: any;
+  user: any;
+}) {
+  const router = useRouter();
+  const [copiedOtp, setCopiedOtp] = useState(false);
   const [paying, setPaying] = useState(false);
 
   const cancelMutation = useMutation({
     mutationFn: () => ordersApi.cancel(order.id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["my-orders"] });
-      toast.success("Order cancelled.");
+      toast.success("Order cancelled");
+      queryClient.invalidateQueries({ queryKey: ["customer-orders"] });
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   });
@@ -96,150 +234,231 @@ function OrderCard({ order }: { order: Order }) {
     setPaying(true);
     try {
       const paymentData = await paymentsApi.createPayment(order.id);
+      if (paymentData.status === "paid") {
+        toast.success("Payment completed! Order confirmed 🎉");
+        queryClient.invalidateQueries({ queryKey: ["customer-orders"] });
+        return;
+      }
       openRazorpayCheckout(
         paymentData,
         { name: user?.name, phone: user?.phone },
         {
           onSuccess: () => {
-            qc.invalidateQueries({ queryKey: ["my-orders"] });
             toast.success("Payment successful! 🎉");
-            setPaying(false);
+            queryClient.invalidateQueries({ queryKey: ["customer-orders"] });
           },
-          onFailure: (err) => {
-            toast.error(`Payment failed: ${err}`);
-            setPaying(false);
-          },
-          onDismiss: () => setPaying(false),
-        },
+          onFailure: (msg) => toast.error(`Payment failed: ${msg}`),
+          onDismiss: () => toast("Payment cancelled"),
+        }
       );
     } catch (err) {
       toast.error(getErrorMessage(err));
+    } finally {
       setPaying(false);
     }
   };
 
+  const copyOtpToClipboard = (otpText: string) => {
+    navigator.clipboard?.writeText(otpText);
+    setCopiedOtp(true);
+    toast.success("Delivery OTP copied!");
+    setTimeout(() => setCopiedOtp(false), 2000);
+  };
+
+  const delivery = order.delivery;
+  const deliveryInfo = delivery ? DELIVERY_STATUS[delivery.status] : null;
+  const isCancelled = order.status === "cancelled" || order.status === "rejected";
+
   return (
-    <div
-      className="rounded-2xl overflow-hidden animate-fade-in"
-      style={{ background: "#111113", border: "1px solid #27272A" }}
-    >
-      {/* Order header */}
-      <div
-        className="flex items-center justify-between px-4 py-3"
-        style={{ borderBottom: "1px solid #1A1A1D" }}
-      >
+    <div className="rounded-3xl overflow-hidden border border-[var(--border)] bg-[var(--surface)] shadow-xs transition-all hover:shadow-md hover:border-[var(--card-hover-border)] animate-fade-in">
+      {/* Order Header */}
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--divider)] bg-[var(--surface)]">
         <div>
-          <p className="text-xs text-[#52525B]">Order #{order.id}</p>
-          <p className="text-sm font-semibold text-[#FAFAFA] mt-0.5">
-            {new Date(order.created_at).toLocaleDateString("en-IN", {
-              day: "numeric", month: "short", year: "numeric",
-            })}
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="text-xs font-black uppercase tracking-wider text-[var(--primary-deep)]">
+              Order #{order.id}
+            </span>
+            {delivery?.formatted_eta && order.status !== "completed" && (
+              <ETABadge eta={delivery.formatted_eta} size="sm" />
+            )}
+          </div>
+          <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium">
+            Placed {new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })} at {new Date(order.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            {order.farmer_name && <span className="text-[var(--primary-dim)] font-bold ml-1.5">🌾 {order.farmer_name}</span>}
           </p>
         </div>
+
         <Badge label={order.status} dot />
       </div>
 
-      <div className="px-4 py-3 space-y-3">
-        {/* Items */}
-        <div className="space-y-1.5">
-          {order.items.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm">
-              <span className="text-[#A1A1AA]">
-                {item.product_name ?? `Product #${item.product_id}`} × {item.quantity}
-              </span>
-              <span className="font-medium text-[#FAFAFA]">₹{Number(item.subtotal).toFixed(2)}</span>
-            </div>
-          ))}
-        </div>
+      <div className="p-4 sm:p-6 space-y-4">
+        {/* Milestone Timeline (Visual 5-step progress) */}
+        {!isCancelled && (
+          <div className="py-1">
+            <OrderTimeline status={delivery?.status || order.status} />
+          </div>
+        )}
 
-        {/* Total + actions */}
-        <div
-          className="flex items-center justify-between pt-2"
-          style={{ borderTop: "1px dashed #27272A" }}
-        >
-          <div>
-            <p className="text-xs text-[#52525B]">Total</p>
-            <p className="text-base font-black text-[#FAFAFA]">
-              ₹{Number(order.total_amount).toFixed(2)}
-            </p>
+        {/* Itemized Harvest List */}
+        <div className="rounded-2xl p-3.5 sm:p-4 bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+          <div className="divide-y divide-[var(--divider)]">
+            {order.items.map((item) => (
+              <div key={item.id} className="py-1.5 first:pt-0 last:pb-0 flex items-center justify-between text-xs sm:text-sm">
+                <span className="text-[var(--text-primary)] font-medium">
+                  {item.product_name ?? `Produce #${item.product_id}`} <span className="text-[var(--text-tertiary)] font-bold">× {item.quantity}</span>
+                </span>
+                <span className="font-bold text-[var(--text-primary)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
+                  ₹{item.subtotal.toFixed(2)}
+                </span>
+              </div>
+            ))}
           </div>
 
-          <div className="flex gap-2">
-            {order.status === "pending" && (
-              <>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  loading={paying}
-                  onClick={handleRetryPayment}
-                  icon={<CreditCard className="w-3.5 h-3.5" />}
+          <div className="pt-2.5 border-t border-[var(--divider)] flex items-center justify-between text-xs sm:text-sm font-bold">
+            <span className="text-[var(--text-secondary)]">Total Amount</span>
+            <span className="text-[var(--primary-deep)] text-base font-black" style={{ fontFamily: "var(--font-heading)" }}>
+              ₹{order.total_amount.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        {/* Dynamic Delivery Status Card & Doorstep OTP */}
+        {delivery && deliveryInfo && !isCancelled && (
+          <div
+            className="rounded-2xl p-4 sm:p-5 border space-y-3.5 transition-all"
+            style={{ background: deliveryInfo.bg, borderColor: `${deliveryInfo.color}35` }}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 shadow-xs"
+                  style={{ background: "var(--surface)" }}
                 >
-                  Pay Now
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  loading={cancelMutation.isPending}
-                  onClick={() => cancelMutation.mutate()}
-                  icon={<XCircle className="w-3.5 h-3.5" />}
+                  {deliveryInfo.icon}
+                </div>
+                <div>
+                  <p className="text-sm font-bold" style={{ color: deliveryInfo.color, fontFamily: "var(--font-heading)" }}>
+                    {deliveryInfo.label}
+                  </p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">
+                    {deliveryInfo.subtext}
+                  </p>
+                </div>
+              </div>
+
+              {delivery.formatted_eta && delivery.status !== "delivered" && (
+                <div className="text-right flex-shrink-0">
+                  <p className="text-[10px] font-bold uppercase text-[var(--text-tertiary)] tracking-wider">Arrival Time</p>
+                  <p className="text-xs sm:text-sm font-black text-[var(--primary-deep)]" style={{ fontFamily: "var(--font-heading)" }}>
+                    ~{delivery.expected_time || delivery.formatted_eta}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* SECURE DOORSTEP OTP CARD (Visible only during out_for_delivery) */}
+            {delivery.status === "out_for_delivery" && delivery.otp && (
+              <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border-2 border-[var(--primary)] shadow-sm space-y-3 animate-scale-pop">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <KeyRound className="w-4 h-4 text-[var(--primary)]" />
+                    <p className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
+                      Doorstep Verification OTP
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => copyOtpToClipboard(delivery.otp!)}
+                    className="text-xs font-bold text-[var(--primary)] flex items-center gap-1 hover:underline cursor-pointer"
+                  >
+                    {copiedOtp ? <Check className="w-3.5 h-3.5 text-[var(--primary)]" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedOtp ? "Copied!" : "Copy Code"}</span>
+                  </button>
+                </div>
+
+                {/* Styled 6-digit segmented OTP display */}
+                <div className="flex items-center justify-center gap-2 sm:gap-3 py-3 px-2 bg-[var(--primary-subtle)] rounded-xl border border-[var(--primary-glow)]">
+                  {delivery.otp.split("").map((digit, i) => (
+                    <span
+                      key={i}
+                      className="w-10 h-12 sm:w-12 sm:h-14 rounded-xl bg-white border border-[var(--primary-ring)] text-2xl sm:text-3xl font-black text-[var(--primary-deep)] flex items-center justify-center shadow-xs tabular-nums"
+                      style={{ fontFamily: "var(--font-heading)" }}
+                    >
+                      {digit}
+                    </span>
+                  ))}
+                </div>
+
+                <p className="text-[11px] text-center text-[var(--text-secondary)] font-medium">
+                  🔒 Share this 6-digit code with your courier partner only after receiving your package.
+                </p>
+              </div>
+            )}
+
+            {/* Courier Profile & Phone Action */}
+            {delivery.delivery_partner && (
+              <div className="flex items-center justify-between pt-3 border-t border-[var(--divider)]">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+                    Assigned Partner
+                  </p>
+                  <p className="text-xs sm:text-sm font-bold text-[var(--text-primary)] mt-0.5">
+                    {delivery.delivery_partner.full_name}
+                  </p>
+                </div>
+
+                <a
+                  href={`tel:${delivery.delivery_partner.phone}`}
+                  className="px-4 h-9 rounded-xl flex items-center gap-1.5 text-xs font-bold bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all shadow-xs active:scale-95"
                 >
-                  Cancel
-                </Button>
-              </>
+                  <Phone className="w-3.5 h-3.5 text-[var(--primary)]" />
+                  <span>Call Courier</span>
+                </a>
+              </div>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Status timeline */}
-        <StatusTimeline status={order.status} />
-      </div>
-    </div>
-  );
-}
-
-export default function CustomerOrdersPage() {
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["my-orders"],
-    queryFn: () => ordersApi.myOrders({ page: 1, page_size: 30 }).then((r) => r.data),
-  });
-
-  return (
-    <div className="min-h-screen" style={{ background: "#0A0A0B" }}>
-      <TopBar
-        title="My Orders"
-        action={
-          <button
-            onClick={() => refetch()}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-[#52525B] hover:text-[#FAFAFA] hover:bg-white/5 transition-all"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        }
-      />
-
-      <div className="px-4 py-5 space-y-3 pb-24">
-        {/* Section header */}
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="text-xl font-black text-[#FAFAFA]">Orders</h2>
-          {!isLoading && data && (
-            <p className="text-xs text-[#52525B]">{data.items.length} total</p>
-          )}
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center py-16">
-            <Spinner size="lg" />
+        {/* Payment Retry Action */}
+        {(order.status === "reserved" || order.status === "payment_pending") && (
+          <div className="flex gap-2.5 pt-2">
+            <Button
+              className="flex-1 h-11 font-bold"
+              loading={paying}
+              onClick={handleRetryPayment}
+              icon={<CreditCard className="w-4 h-4" />}
+            >
+              Complete Payment · ₹{order.total_amount.toFixed(2)}
+            </Button>
+            <Button
+              variant="outline"
+              size="md"
+              loading={cancelMutation.isPending}
+              onClick={() => cancelMutation.mutate()}
+              icon={<XCircle className="w-4 h-4 text-[var(--danger)]" />}
+            >
+              Cancel
+            </Button>
           </div>
-        ) : !data?.items.length ? (
-          <EmptyState
-            icon={<ClipboardList className="w-8 h-8" />}
-            title="No orders yet"
-            description="Your orders will appear here once you place them"
-          />
-        ) : (
-          data.items.map((order) => (
-            <OrderCard key={order.id} order={order} />
-          ))
+        )}
+
+        {/* Post-Delivery Success Notice */}
+        {(order.status === "completed" || delivery?.status === "delivered") && (
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[var(--primary-subtle)] border border-[var(--primary-glow)]">
+            <div className="flex items-center gap-2.5">
+              <CheckCircle2 className="w-5 h-5 text-[var(--primary)] flex-shrink-0" />
+              <div>
+                <p className="text-xs font-bold text-[var(--primary-deep)]">Delivered Successfully</p>
+                <p className="text-[11px] text-[var(--text-secondary)]">Payment released to farmer from escrow.</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => toast.success("Review feature coming soon!")}
+              className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[var(--surface)] text-[var(--primary)] border border-[var(--primary-glow)] hover:bg-[var(--primary)] hover:text-white transition-all shadow-xs"
+            >
+              Write Review
+            </button>
+          </div>
         )}
       </div>
     </div>

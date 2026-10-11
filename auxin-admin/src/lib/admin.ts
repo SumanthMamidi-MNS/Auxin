@@ -8,12 +8,12 @@
  */
 
 import api from "./api";
-import type { Farmer, Order, Dispute, User, Payment, PaginatedResponse, AdminStats } from "../types";
+import type { Farmer, Order, Dispute, User, Payment, PaginatedResponse, AdminStats, DeliveryPartner, AdminActivityLog } from "../types";
 
 
 export const adminApi = {
-  async stats() {
-    return api.get<AdminStats>("/admin/stats");
+  async stats(isDemo?: boolean) {
+    return api.get<AdminStats>("/admin/stats", { params: isDemo !== undefined ? { is_demo: isDemo } : undefined });
   },
 
   async listUsers(params?: { role?: string; page?: number; page_size?: number }) {
@@ -32,15 +32,27 @@ export const adminApi = {
     return api.get<PaginatedResponse<Farmer>>("/admin/farmers/pending", { params });
   },
 
+  async pendingDelivery(params?: { page?: number }) {
+    return api.get<PaginatedResponse<DeliveryPartner>>("/admin/delivery/pending", { params });
+  },
+
   async approveFarmer(farmerId: number) {
-    return api.put(`/admin/farmers/${farmerId}/approve`);
+    return api.patch(`/admin/farmers/${farmerId}/approve`);
   },
 
-  async rejectFarmer(farmerId: number) {
-    return api.put(`/admin/farmers/${farmerId}/reject`);
+  async rejectFarmer(farmerId: number, rejectionReason?: string) {
+    return api.patch(`/admin/farmers/${farmerId}/reject`, { rejection_reason: rejectionReason || "Incomplete Profile" });
   },
 
-  async listOrders(params?: { status?: string; page?: number }) {
+  async approveDelivery(partnerId: number) {
+    return api.patch(`/admin/delivery/${partnerId}/approve`);
+  },
+
+  async rejectDelivery(partnerId: number, rejectionReason?: string) {
+    return api.patch(`/admin/delivery/${partnerId}/reject`, { rejection_reason: rejectionReason || "Incomplete Profile" });
+  },
+
+  async listOrders(params?: { status?: string; page?: number; page_size?: number }) {
     return api.get<PaginatedResponse<Order>>("/admin/orders", { params });
   },
 
@@ -50,6 +62,10 @@ export const adminApi = {
 
   async deactivateProduct(productId: number) {
     return api.put(`/admin/products/${productId}/deactivate`);
+  },
+
+  async activateProduct(productId: number) {
+    return api.put(`/admin/products/${productId}/activate`);
   },
 
   async listDeliveries(params?: { page?: number }) {
@@ -71,5 +87,59 @@ export const adminApi = {
   async listPayments(params?: { status?: string; page?: number; page_size?: number }) {
     return api.get<PaginatedResponse<Payment>>("/admin/payments", { params });
   },
+
+  async listAdmins(params?: { page?: number; page_size?: number }) {
+    return api.get<PaginatedResponse<User>>("/admin/admins", { params });
+  },
+
+  async createAdmin(data: { name: string; email: string; password?: string; phone?: string }) {
+    return api.post<User>("/admin/admins", data);
+  },
+
+  async disableAdmin(adminId: number) {
+    return api.put<User>(`/admin/admins/${adminId}/disable`);
+  },
+
+  async activateAdmin(adminId: number) {
+    return api.put<User>(`/admin/admins/${adminId}/activate`);
+  },
+
+  async removeAdmin(adminId: number) {
+    return api.delete<Record<string, string>>(`/admin/admins/${adminId}`);
+  },
+
+  async listActivityLogs(params?: {
+    admin_id?: number;
+    action_type?: string;
+    start_date?: string;
+    end_date?: string;
+    search?: string;
+    order?: string;
+    page?: number;
+    page_size?: number;
+  }) {
+    return api.get<PaginatedResponse<AdminActivityLog>>("/admin/activity-logs", { params });
+  },
+
+  async listMyActivityLogs(params?: {
+    page?: number;
+    page_size?: number;
+    order?: string;
+  }) {
+    return api.get<PaginatedResponse<AdminActivityLog>>("/admin/my-activity-logs", { params });
+  },
+
+  async reviewAnalytics() {
+    return api.get<any>("/admin/reviews/analytics");
+  },
+
+  async resetDemoEnvironment(passwordConfirm?: string) {
+    return api.post<any>("/admin/demo/reset", { password_confirm: passwordConfirm });
+  },
+
+  async getSystemHealth() {
+    return api.get<any>("/admin/system/health");
+  },
 };
+
 

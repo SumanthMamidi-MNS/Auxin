@@ -1,4 +1,4 @@
-﻿/**
+/**
  * app/layout.tsx â€“ Root layout with providers and production SEO
  */
 
@@ -73,14 +73,14 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width:         "device-width",
   initialScale:  1,
-  maximumScale:  1,
-  // Prevents zoom on iOS input focus
-  userScalable:  false,
+  // Zoom lock removed for WCAG 1.4.4 accessibility compliance
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#1B5E20" },
     { media: "(prefers-color-scheme: dark)",  color: "#1B5E20" },
   ],
 };
+
+import { MiloAssistant } from "@/components/ui/MiloAssistant";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -91,7 +91,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <MiloAssistant />
+        </Providers>
       </body>
     </html>
   );

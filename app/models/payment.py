@@ -27,6 +27,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     Enum,
     ForeignKey,
@@ -83,7 +84,6 @@ class Payment(Base):
         Integer,
         ForeignKey("orders.id", ondelete="RESTRICT"),
         nullable=False,
-        index=True,
     )
 
     # Razorpay-generated order identifier (e.g. "order_Xxxxx")
@@ -103,6 +103,7 @@ class Payment(Base):
     # Stored in smallest currency unit (paisa for INR) for exact arithmetic;
     # displayed as decimal (rupees) in API responses.
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
 
     currency: Mapped[str] = mapped_column(
         String(3),
@@ -114,7 +115,6 @@ class Payment(Base):
         Enum(PaymentStatus, name="paymentstatus", create_constraint=True),
         nullable=False,
         default=PaymentStatus.created,
-        index=True,
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -168,7 +168,6 @@ class Transaction(Base):
         Integer,
         ForeignKey("payments.id", ondelete="CASCADE"),
         nullable=False,
-        index=True,
     )
 
     type: Mapped[TransactionType] = mapped_column(
@@ -177,6 +176,7 @@ class Transaction(Base):
     )
 
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
 
     status: Mapped[TransactionStatus] = mapped_column(
         Enum(TransactionStatus, name="transactionstatus", create_constraint=True),

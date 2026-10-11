@@ -1,0 +1,39 @@
+{
+  "raw_dataset_path": "c:\\Users\\mamid\\OneDrive\\Documents\\Anti Gravity\\The Auxin\\Milo_AI\\data\\raw\\master_dataset_10500.jsonl",
+  "production_dataset_path": "c:\\Users\\mamid\\OneDrive\\Documents\\Anti Gravity\\The Auxin\\Milo_AI\\data\\curated\\production_dataset.jsonl",
+  "evaluation_dataset_path": "c:\\Users\\mamid\\OneDrive\\Documents\\Anti Gravity\\The Auxin\\Milo_AI\\data\\evaluation\\evaluation_dataset.jsonl",
+  "total_scanned": 10500,
+  "valid_curated_records": 10500,
+  "malformed_records": 0,
+  "empty_records": 0,
+  "is_above_10000_threshold": true,
+  "role_distribution": {
+    "customer": 4286,
+    "farmer": 2126,
+    "delivery": 2223,
+    "admin": 1597,
+    "super_admin": 268
+  },
+  "phase_distribution": {
+    "phase_1": 1072,
+    "phase_2": 1595,
+    "phase_3": 1724,
+    "phase_04": 25,
+    "phase_4": 1669,
+    "phase_05": 25,
+    "phase_5": 1297,
+    "phase_06": 25,
+    "phase_6": 656,
+    "phase_07": 25,
+    "phase_7": 16,
+    "phase_08": 25,
+    "phase_8": 74,
+    "phase_10_gap_expansion": 2272
+  },
+  "conversation_types": {
+    "single_turn": 4749,
+    "multi_turn": 5751
+  },
+  "unique_categories_count": 150,
+  "evaluation_records_count": 500
+}

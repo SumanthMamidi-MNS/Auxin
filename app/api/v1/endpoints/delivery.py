@@ -24,7 +24,7 @@ from typing import Annotated, Union
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import get_current_user, require_roles
+from app.core.dependencies import get_current_user, require_roles, require_roles_for_profile
 from app.db.session import get_db
 from app.models.user import User, UserRole
 from app.schemas.delivery import (
@@ -35,9 +35,11 @@ from app.schemas.delivery import (
     DeliveryPartnerOut,
     DeliveryStatusOut,
     PaginatedDeliveriesOut,
+    PaginatedAvailableDeliveriesOut,
     UpdateDeliveryStatusRequest,
     UpdateLocationRequest,
     VerifyDeliveryOTPRequest,
+    UpdateDeliveryPartnerProfileRequest,
 )
 from app.services.delivery_partner_service import DeliveryPartnerService
 from app.services.delivery_service import DeliveryService
@@ -61,7 +63,7 @@ router = APIRouter(prefix="/delivery", tags=["Delivery"])
 )
 async def create_delivery_profile(
     body: CreateDeliveryPartnerProfileRequest,
-    current_user: Annotated[User, Depends(require_roles(UserRole.delivery))],
+    current_user: Annotated[User, Depends(require_roles_for_profile(UserRole.delivery))],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> DeliveryPartnerOut:
     service = DeliveryPartnerService(db)
@@ -79,11 +81,40 @@ async def create_delivery_profile(
     summary="Get own delivery partner profile",
 )
 async def get_my_delivery_profile(
-    current_user: Annotated[User, Depends(require_roles(UserRole.delivery))],
+    current_user: Annotated[User, Depends(require_roles_for_profile(UserRole.delivery))],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> DeliveryPartnerOut:
     service = DeliveryPartnerService(db)
     return await service.get_my_profile(requesting_user=current_user)
+
+
+# ---------------------------------------------------------------------------
+# PUT /delivery/profile/me
+# ---------------------------------------------------------------------------
+
+@router.put(
+    "/profile/me",
+    response_model=DeliveryPartnerOut,
+    status_code=status.HTTP_200_OK,
+    summary="Update own delivery partner profile",
+)
+async def update_my_delivery_profile(
+    body: UpdateDeliveryPartnerProfileRequest,
+    current_user: Annotated[User, Depends(require_roles_for_profile(UserRole.delivery))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> DeliveryPartnerOut:
+    service = DeliveryPartnerService(db)
+    return await service.update_profile(
+        user_id=current_user.id,
+        bank_name=body.bank_name,
+        account_holder_name=body.account_holder_name,
+        bank_account_number=body.bank_account_number,
+        ifsc_code=body.ifsc_code,
+        upi_id=body.upi_id,
+        vehicle_type=body.vehicle_type,
+        vehicle_number=body.vehicle_number,
+        driving_license=body.driving_license,
+    )
 
 
 @router.put(
@@ -125,6 +156,57 @@ async def update_location(
         requesting_user=current_user,
         latitude=body.latitude,
         longitude=body.longitude,
+        accuracy=body.accuracy,
+    )
+
+
+# ===========================================================================
+# Delivery discovery & claiming (25 KM Smart Matching)
+# ===========================================================================
+
+@router.get(
+    "/available",
+    response_model=PaginatedAvailableDeliveriesOut,
+    status_code=status.HTTP_200_OK,
+    summary="List available nearby deliveries within 25 km",
+    description=(
+        "Returns unassigned pending deliveries eligible for the authenticated delivery partner "
+        "based on a 25 km geographic radius from their live GPS coordinates."
+    ),
+)
+async def list_available_deliveries(
+    current_user: Annotated[User, Depends(require_roles(UserRole.delivery))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+) -> PaginatedAvailableDeliveriesOut:
+    service = DeliveryService(db)
+    return await service.list_available_deliveries(
+        requesting_user=current_user,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.post(
+    "/{delivery_id}/claim",
+    response_model=DeliveryOut,
+    status_code=status.HTTP_200_OK,
+    summary="Claim an unassigned pending delivery",
+    description=(
+        "Atomically claims a pending delivery for the authenticated delivery partner. "
+        "Enforces single-active-run safety and concurrency locking."
+    ),
+)
+async def claim_delivery(
+    delivery_id: int,
+    current_user: Annotated[User, Depends(require_roles(UserRole.delivery))],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> DeliveryOut:
+    service = DeliveryService(db)
+    return await service.claim_delivery(
+        delivery_id=delivery_id,
+        requesting_user=current_user,
     )
 
 

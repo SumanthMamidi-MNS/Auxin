@@ -63,6 +63,9 @@ def build_asyncpg_url(database_url: str) -> tuple[str, dict]:
     Returns:
         A tuple of (clean_url_string, connect_args_dict).
     """
+    if database_url.startswith("sqlite"):
+        return database_url, {}
+
     parsed = urlparse(database_url)
     params = parse_qs(parsed.query, keep_blank_values=True)
 

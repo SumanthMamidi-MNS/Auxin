@@ -64,9 +64,13 @@ class DeliveryPartnerRepository:
         partner: DeliveryPartner,
         latitude: float,
         longitude: float,
+        accuracy: float | None = None,
     ) -> DeliveryPartner:
+        from datetime import datetime, timezone
         partner.current_latitude = latitude
         partner.current_longitude = longitude
+        partner.location_accuracy = accuracy
+        partner.location_updated_at = datetime.now(tz=timezone.utc)
         self._db.add(partner)
         await self._db.flush()
         return partner

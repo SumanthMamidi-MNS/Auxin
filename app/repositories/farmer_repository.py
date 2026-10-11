@@ -37,6 +37,8 @@ class FarmerRepository:
         location: str,
         bank_account_number: str,  # already encrypted by the caller
         ifsc_code: str,
+        farm_name: str | None = None,
+        farm_category: str | None = None,
     ) -> Farmer:
         farmer = Farmer(
             user_id=user_id,
@@ -46,6 +48,8 @@ class FarmerRepository:
             bank_account_number=bank_account_number,
             ifsc_code=ifsc_code,
             is_approved=False,
+            farm_name=farm_name,
+            farm_category=farm_category,
         )
         self._db.add(farmer)
         await self._db.flush()

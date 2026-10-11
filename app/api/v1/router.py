@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api.v1.endpoints import admin, auth, delivery, disputes, farmers, orders, payments, products, profile
+from app.api.v1.endpoints import admin, auth, catalogue, delivery, disputes, farmers, inventory, orders, payments, products, profile, milo
 from app.core.exceptions import AuxinException
 from app.core.logging import get_logger, security_logger
 
@@ -30,12 +30,15 @@ api_router = APIRouter()
 api_router.include_router(auth.router)
 api_router.include_router(profile.router)
 api_router.include_router(farmers.router)
-api_router.include_router(products.router)
+api_router.include_router(products.router)      # legacy — preserved for backward compat
+api_router.include_router(catalogue.router)     # V3.0 master catalogue
+api_router.include_router(inventory.router)     # V3.0 farmer inventory
 api_router.include_router(orders.router)
 api_router.include_router(delivery.router)
 api_router.include_router(payments.router)
 api_router.include_router(disputes.router)
 api_router.include_router(admin.router)
+api_router.include_router(milo.router)
 
 
 # ---------------------------------------------------------------------------

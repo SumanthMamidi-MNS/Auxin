@@ -68,8 +68,8 @@ export default function DeliveriesPage() {
   /* Client-side active filter */
   const deliveries =
     activeTab === "Active"
-      ? allDeliveries.filter((d) => ACTIVE_STATUSES.includes(d.status))
-      : allDeliveries;
+      ? (allDeliveries ?? []).filter((d) => d && d.status && ACTIVE_STATUSES.includes(d.status))
+      : (allDeliveries ?? []);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -115,7 +115,7 @@ export default function DeliveriesPage() {
                     : { background: "rgba(34,197,94,0.12)", color: "#22C55E" }
                 }
               >
-                {allDeliveries.filter((d) => ACTIVE_STATUSES.includes(d.status)).length}
+                {(allDeliveries ?? []).filter((d) => d && d.status && ACTIVE_STATUSES.includes(d.status)).length}
               </span>
             )}
           </button>
@@ -159,29 +159,29 @@ export default function DeliveriesPage() {
               </tr>
             </thead>
             <tbody>
-              {deliveries.map((d) => (
-                <tr key={d.id}>
+              {(deliveries ?? []).map((d) => (
+                <tr key={d?.id ?? 0}>
                   <td>
                     <span className="font-mono font-bold text-[#22C55E]">
-                      #{String(d.id).padStart(5, "0")}
+                      #{String(d?.id ?? 0).padStart(5, "0")}
                     </span>
                   </td>
                   <td>
                     <span className="font-mono text-xs text-[#A1A1AA]">
-                      #{String(d.order_id).padStart(5, "0")}
+                      #{String(d?.order_id ?? 0).padStart(5, "0")}
                     </span>
                   </td>
                   <td className="text-[#A1A1AA]">
-                    <span className="font-mono text-xs">#{d.partner_id}</span>
+                    <span className="font-mono text-xs">#{d?.partner_id ?? 0}</span>
                   </td>
                   <td>
-                    <Badge label={d.status} dot />
+                    <Badge label={d?.status} dot />
                   </td>
                   <td>
-                    <EtaCell eta={d.estimated_delivery} />
+                    <EtaCell eta={d?.estimated_delivery} />
                   </td>
                   <td className="text-[#71717A]">
-                    {d.actual_delivery ? (
+                    {d?.actual_delivery ? (
                       <span className="flex items-center gap-1 text-[#22C55E]">
                         <CheckCircle2 className="w-3 h-3" />
                         {fmtDate(d.actual_delivery)}
