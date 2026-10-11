@@ -20,6 +20,11 @@ import sqlite3
 import sys
 from pathlib import Path
 
+# Windows consoles default to cp1252; the seeder prints emoji.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))

@@ -13,6 +13,7 @@ rem  (venv, Milo_AI\.venv, node_modules). System software is never installed.
 rem  Safe to re-run. Press Ctrl+C in this window to stop everything.
 rem ============================================================================
 setlocal EnableExtensions
+set "PYTHONUTF8=1"
 cd /d "%~dp0"
 title Auxin launcher
 
