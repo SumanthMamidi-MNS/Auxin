@@ -269,7 +269,7 @@ export default function DemoWorkspacePage() {
               <li className="flex items-start gap-2">
                 <span className="flex-shrink-0 w-4 h-4 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] text-[10px] font-bold flex items-center justify-center border border-[#3B82F6]/30">4</span>
                 <div>
-                  <strong className="text-[#FAFAFA]">Courier OTP Handshake:</strong> Sign in as Courier, accept the delivery route, click <span className="text-[#A855F7] font-semibold">Picked Up</span>, and confirm drop-off with Customer OTP <span className="text-[#22C55E] font-semibold font-mono">4321</span>.
+                  <strong className="text-[#FAFAFA]">Courier OTP Handshake:</strong> Sign in as Courier, accept the delivery route, click <span className="text-[#A855F7] font-semibold">Picked Up</span>, and confirm drop-off with the 6-digit code shown to the customer under <span className="text-[#22C55E] font-semibold">Orders</span> (it is generated fresh for each delivery).
                 </div>
               </li>
             </ol>
@@ -308,6 +308,14 @@ export default function DemoWorkspacePage() {
                   <p className="text-[10px] text-[#71717A] font-mono">demo.delivery@auxin.app</p>
                 </div>
                 <span className="text-[9px] px-2 py-0.5 rounded bg-purple-950/40 text-purple-400 font-semibold border border-purple-900/40">Logistics</span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-[#111113] border border-[#1F1F23] flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] font-bold text-[#FAFAFA]">Admin</p>
+                  <p className="text-[10px] text-[#71717A] font-mono">demo.admin@auxin.app</p>
+                </div>
+                <span className="text-[9px] px-2 py-0.5 rounded bg-amber-950/40 text-amber-400 font-semibold border border-amber-900/40">Operations</span>
               </div>
             </div>
           </div>

@@ -236,15 +236,74 @@ def test_otp_guessing_is_bounded():
 
 
 # ---------------------------------------------------------------------------
-# Demo reset
+# Demo workspace reset
 # ---------------------------------------------------------------------------
 
+DEMO_EMAILS = {
+    "demo.customer@auxin.app",
+    "demo.farmer@auxin.app",
+    "demo.delivery@auxin.app",
+    "demo.admin@auxin.app",
+}
+
+
 @pytest.mark.asyncio
-async def test_demo_reset_requires_password_confirmation(client: AsyncClient, admin_tokens: dict):
+async def test_demo_reset_is_super_admin_only(client: AsyncClient, admin_tokens: dict):
     resp = await client.post("/api/v1/admin/demo/reset", json={}, headers=admin_tokens["headers"])
     assert resp.status_code == 403, resp.text
 
-    resp = await client.post(
-        "/api/v1/admin/demo/reset", json={"password_confirm": ""}, headers=admin_tokens["headers"]
+
+@pytest.mark.asyncio
+async def test_demo_reset_one_click_builds_baseline_and_spares_real_data(
+    client: AsyncClient, db: AsyncSession, super_admin_tokens: dict, customer_tokens: dict
+):
+    from sqlalchemy import func, select
+
+    from app.models.catalogue import FarmerInventory
+
+    # A REAL (non-demo) order that must survive any number of resets.
+    _, real_farmer, _ = await _make_farmer(db, 4)
+    real_order = Order(
+        customer_id=customer_tokens["user"]["id"],
+        farmer_id=real_farmer.id,
+        total_amount=Decimal("55.00"),
+        status=OrderStatus.accepted,
     )
-    assert resp.status_code == 403
+    db.add(real_order)
+    await db.commit()
+    await db.refresh(real_order)
+    real_order_id = real_order.id
+
+    # One click: no password, no body.
+    for _ in range(2):  # twice: the reset must be repeatable and idempotent
+        resp = await client.post("/api/v1/admin/demo/reset", json={}, headers=super_admin_tokens["headers"])
+        assert resp.status_code == 200, resp.text
+        assert resp.json()["success"] is True
+
+    db.expire_all()
+
+    # All four demo identities exist, flagged is_demo, approved.
+    rows = (
+        await db.execute(
+            select(User.email, User.is_demo, User.status).where(User.email.in_(DEMO_EMAILS))
+        )
+    ).all()
+    assert {r.email for r in rows} == DEMO_EMAILS
+    assert all(r.is_demo for r in rows)
+    assert all(r.status == UserStatus.approved for r in rows)
+
+    # Baseline produce was seeded exactly once for the demo farmer (not duplicated).
+    inv_count = (
+        await db.execute(select(func.count()).select_from(FarmerInventory).where(FarmerInventory.is_demo.is_(True)))
+    ).scalar_one()
+    assert inv_count == 6
+
+    # Real data is untouched.
+    survivors = (
+        await db.execute(select(func.count()).select_from(Order).where(Order.id == real_order_id))
+    ).scalar_one()
+    assert survivors == 1
+    real_customer_is_demo = (
+        await db.execute(select(User.is_demo).where(User.id == customer_tokens["user"]["id"]))
+    ).scalar_one()
+    assert real_customer_is_demo is False

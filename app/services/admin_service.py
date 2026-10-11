@@ -1268,16 +1268,15 @@ class AdminService:
         from app.models.address import Address
         from app.core.encryption import encrypt_field
 
-        # Safety gates: the reset deletes data, so it is refused against a real
-        # production database and always requires password confirmation.
-        if settings.APP_ENV.lower() == "production" and not settings.DEMO_MODE:
-            raise PermissionDeniedError(
-                "Demo reset is disabled on a production database. Enable DEMO_MODE with a sandbox database."
-            )
-        if not password_confirm:
-            raise PermissionDeniedError("Password confirmation is required to reset demo data.")
+        # Scope: ONLY rows flagged is_demo (and the demo accounts' own profiles) are
+        # touched; real users, orders and payments are never deleted. Access is
+        # restricted to the super admin at the endpoint. A password is verified only
+        # when the caller supplies one.
+        from app.services.demo_accounts import ensure_demo_accounts
+        await ensure_demo_accounts(self._db)
 
-        # Verify password via Supabase
+
+        # Optional password verification (via Supabase)
         password_ok = False
         if password_confirm:
             if settings.SUPABASE_URL and settings.SUPABASE_SERVICE_ROLE_KEY:

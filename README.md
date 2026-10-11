@@ -43,6 +43,19 @@ First run only: copy the Supabase **URL** and **anon key** into `auxin-frontend\
 `auxin-admin\.env.local`, and the three Supabase values into `.env.development` — see
 [docs/RECOVERY.md](docs/RECOVERY.md).
 
+## Demo workspace and demo accounts
+
+Four permanent demo identities exist alongside real accounts and are flagged `is_demo`:
+`demo.customer@`, `demo.farmer@`, `demo.delivery@`, `demo.admin@auxin.app`.
+
+- **First run:** `start.bat` creates them (plus a super-admin row, a demo farm, a demo courier and 6 listed
+  products) in the local database. Existing demo data is never overwritten.
+- **One-click sign-in:** the main app's login page shows Customer / Farmer / Courier buttons when
+  `NEXT_PUBLIC_DEMO_PASSWORD` is set in `auxin-frontend\.env.local` (the launcher turns demo mode on for that app).
+  Real sign-up, sign-in and farmer/courier approval requests work exactly as before.
+- **Reset:** admin portal → **Demo Workspace** → **Reset Sandbox** (super admin). It removes only demo orders,
+  payments, deliveries, reviews and demo listings, then restores the baseline. Real data is untouched.
+
 ## What works offline vs. what needs the internet
 
 | Capability | Offline | Needs |

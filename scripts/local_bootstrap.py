@@ -43,6 +43,39 @@ def _sqlite_path(url: str) -> Path | None:
     return (ROOT / tail).resolve() if not Path(tail).is_absolute() else Path(tail)
 
 
+async def _seed_demo_workspace() -> str:
+    """
+    First run only: create the demo accounts and the clean baseline (profiles,
+    addresses, inventory) exactly as the Demo Workspace 'Reset Sandbox' button does.
+    Existing demo data is never overwritten on later runs.
+    """
+    from app.db.session import AsyncSessionLocal, engine
+    from app.models.user import UserRole, UserStatus
+    from app.repositories.user_repository import UserRepository
+    from app.services.admin_service import AdminService
+
+    try:
+        async with AsyncSessionLocal() as db:
+            repo = UserRepository(db)
+            if await repo.get_by_email("demo.farmer@auxin.app") is not None:
+                return "already present"
+            operator = await repo.get_by_email(settings.SUPER_ADMIN_EMAIL)
+            if operator is None:
+                operator = await repo.create(
+                    name="Super Admin",
+                    phone=settings.SUPER_ADMIN_PHONE,
+                    role=UserRole.admin,
+                    email=settings.SUPER_ADMIN_EMAIL,
+                    status=UserStatus.approved,
+                )
+                operator.is_super_admin = True
+                db.add(operator)
+                await db.commit()
+            await AdminService(db).reset_demo_environment(requesting_user=operator)
+            return "seeded"
+    finally:
+        await engine.dispose()
+
 def main() -> int:
     db_path = _sqlite_path(settings.DATABASE_URL)
     if db_path is None:
@@ -75,6 +108,9 @@ def main() -> int:
             runpy.run_path(str(ROOT / "scripts" / "apply_009_migration.py"), run_name="__main__")
         else:
             print(f"[bootstrap] Catalogue already seeded ({have} master products).")
+        import asyncio
+
+        print("[bootstrap] Demo workspace: " + asyncio.run(_seed_demo_workspace()))
     return 0
 
 

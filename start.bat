@@ -100,6 +100,8 @@ if not errorlevel 1 echo  [!] auxin-frontend\.env.local still has placeholders -
 findstr /i /c:"YOUR_PROJECT" "auxin-admin\.env.local" >nul 2>&1
 if not errorlevel 1 echo  [!] auxin-admin\.env.local still has placeholders - sign-in needs real Supabase values.
 
+findstr /b /c:"NEXT_PUBLIC_DEMO_PASSWORD=" "auxin-frontend\.env.local" >nul 2>&1
+if errorlevel 1 echo  [!] One-click demo sign-in is off: add NEXT_PUBLIC_DEMO_PASSWORD=^<demo accounts password^> to auxin-frontend\.env.local.
 rem --- 5. Frontend dependencies ----------------------------------------------
 call :ensure_node_modules "auxin-frontend"
 if errorlevel 1 goto :fail

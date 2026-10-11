@@ -47,8 +47,8 @@ project must be kept awake (section 5).
   `alembic upgrade head`, `scripts/prod_seed.py --yes-wipe`, then the in-app **Reset demo** action.
 - The shared demo password is public by nature; it is set from `DEMO_SEED_PASSWORD` /
   `NEXT_PUBLIC_DEMO_PASSWORD`, never committed, and only valid inside the demo project.
-- **Reset:** admin → Demo workspace → Reset (server-side: admin role, password confirmation, `DEMO_MODE=true`).
-  Refused on any non-demo production database.
+- **Reset:** admin → Demo workspace → Reset Sandbox (server-side: super admin only). It deletes only rows flagged
+  `is_demo` and re-creates the demo accounts and baseline; real users, orders and payments are never touched.
 
 ### Visitor interference — honest limitation
 All visitors share the same three demo identities, so two people walking the order flow at once will

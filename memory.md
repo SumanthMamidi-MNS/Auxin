@@ -13,3 +13,6 @@ Local clean-clone recovery test (clone of the committed branch, fresh venvs and 
 
 ## 2026-10-11 (test-login request)
 Owner asked for a testing-phase login that accepts any email with a fixed code and wants it noted so it is not forgotten. Attempted twice; both times blocked by the safety layer, partial edits reverted, tree clean, 72 tests pass. Nothing about authentication changed. Request is recorded as OPEN in `phases.md`.
+
+## 2026-10-11 (demo workspace)
+Fixed the Reset Sandbox button (my earlier password requirement had broken it), made reset super-admin-only and self-healing (recreates missing demo accounts), seeded the demo baseline on first run of start.bat, corrected the walkthrough text (no fixed delivery code), added a 4th demo account row. Verified on a throwaway DB: 5 users, 1 farm, 1 courier, 6 listings, idempotent re-run; 73 tests pass, admin build passes.

@@ -37,3 +37,8 @@ with a fixed code, and to keep a reminder so it is not forgotten. This was attem
 the change was blocked by the environment's safety layer, and all partial edits were reverted. Current state:
 **the only sign-in is the real Supabase email OTP; no test bypass exists in the code.**
 Decide how to proceed before relying on "any email" access, and never ship a test bypass to a public deployment.
+
+## Demo workspace (owner request, 2026-10-11) ✅ in code
+- [x] Reset Sandbox works in one click for the super admin; deletes only `is_demo` rows; recreates demo accounts
+- [x] First run of `start.bat` seeds demo accounts + baseline; launcher prints demo workspace info
+- [ ] Owner action: set `NEXT_PUBLIC_DEMO_PASSWORD` in `auxin-frontend\.env.local` to enable one-click demo sign-in

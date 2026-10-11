@@ -170,7 +170,7 @@ SERVICES = [
         "url": "http://localhost:3000",
         "cwd": FRONTEND_DIR,
         "cmd": ["npm.cmd" if sys.platform == "win32" else "npm", "run", "dev", "--", "--port", "3000"],
-        "env": {}
+        "env": {"NEXT_PUBLIC_DEMO_MODE": "true"}
     },
     {
         "name": "Auxin Super Admin Portal",
@@ -368,6 +368,10 @@ def main():
         print(f"   * Admin App:   {BOLD}http://localhost:3001{RESET} (Super Admin Control Center)")
         print(f"   * Core API:    {BOLD}http://127.0.0.1:8000/docs{RESET}")
         print(f"   * Milo AI API: {BOLD}http://127.0.0.1:8001/docs{RESET}")
+        print(f"\n{BOLD}{GREEN}Demo workspace:{RESET}")
+        print(f"   * Admin portal -> Demo Workspace: {BOLD}http://localhost:3001/demo-workspace{RESET}  (Super Admin; Reset Sandbox button)")
+        print("   * Demo accounts: demo.customer@ / demo.farmer@ / demo.delivery@ / demo.admin@auxin.app")
+        print("   * One-click demo sign-in buttons are on the main app login page (needs NEXT_PUBLIC_DEMO_PASSWORD).")
         print(f"\n{YELLOW}Press Ctrl+C at any time in this window to stop all services.{RESET}\n")
 
         # Keep main thread alive permanently until Ctrl+C

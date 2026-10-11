@@ -700,11 +700,11 @@ async def update_settings(
     "/demo/reset",
     response_model=dict,
     status_code=status.HTTP_200_OK,
-    summary="Reset and restore all demo data to seeded state (Admin authorized)",
+    summary="Reset and restore all demo data to seeded state (Super Admin only; touches is_demo rows only)",
 )
 async def reset_demo_environment(
     body:         DemoResetRequest,
-    current_user: Annotated[User, Depends(require_roles(UserRole.admin))],
+    current_user: Annotated[User, Depends(require_super_admin)],
     db:           Annotated[AsyncSession, Depends(get_db)],
 ) -> dict:
     svc = AdminService(db)
