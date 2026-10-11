@@ -19,3 +19,5 @@ One line per non-obvious technical choice: what, and why.
 - 2026-10-11 — Milo is reached only through the authenticated backend proxy with a configurable `MILO_BACKEND_URL`: the browser must not call an unauthenticated internal service, and the upstream differs per environment.
 - 2026-10-11 — Frontend CSP `connect-src` is derived from `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_SUPABASE_URL`: a hard-coded host would have blocked sign-in on any deployment.
 - 2026-10-11 — Migrations 010 and 011 are idempotent `IF NOT EXISTS` / `to_regclass` guards and Postgres-only: safe on a database that was partly patched by hand, no-op on SQLite.
+- 2026-10-11 — Kept the recovery test local (clone of the committed branch) until the owner approves a push: it exercises exactly what GitHub would hold without publishing anything; the same test must be re-run from GitHub after the push.
+- 2026-10-11 — Applied only in-range `npm audit fix`; Next.js 16.4 upgrade deferred: the framework has breaking changes and the brief says not to introduce risk, so it needs its own tested step.

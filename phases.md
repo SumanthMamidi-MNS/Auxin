@@ -15,7 +15,7 @@ Living plan, updated 2026-10-11. No PRD.md exists in this repo; scope follows th
 
 ## Phase C — Recoverable from private GitHub  ⏳ verified locally, push pending approval
 - [x] Everything needed is committed (477 files, ~76 MB); env templates for all services
-- [x] Local clean-clone recovery test (see final report for result)
+- [x] Local clean-clone recovery test PASSED on commit a9a864a: from-scratch start.bat prep, 72 tests, API + Milo boot, both web builds (found and fixed 6 recovery bugs)
 - [ ] Push to private repository `auxin` — needs owner approval
 - [ ] Re-run the recovery test from GitHub itself, then free local storage
 
