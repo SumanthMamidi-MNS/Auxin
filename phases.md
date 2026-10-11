@@ -42,3 +42,9 @@ Decide how to proceed before relying on "any email" access, and never ship a tes
 - [x] Reset Sandbox works in one click for the super admin; deletes only `is_demo` rows; recreates demo accounts
 - [x] First run of `start.bat` seeds demo accounts + baseline; launcher prints demo workspace info
 - [ ] Owner action: set `NEXT_PUBLIC_DEMO_PASSWORD` in `auxin-frontend\.env.local` to enable one-click demo sign-in
+
+## Demo reset = fresh state (owner request, 2026-10-11) ✅ in code
+- [x] Exactly: 1 super admin, 1 normal admin (`demo.admin@`), 3 demo accounts (customer, farmer, courier)
+- [x] Reset Sandbox: customer fresh (no address), farmer and courier pending → requests under Approvals; real users untouched
+- [x] Unapproved farmers' produce hidden from customers
+- [ ] Owner action: restart the backend, then click Reset Sandbox once to apply the new state to the existing local database

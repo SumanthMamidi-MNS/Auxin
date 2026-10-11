@@ -19,6 +19,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.catalogue import FarmerInventory, MasterProduct, MasterCategory
+from app.models.farmer import Farmer
 
 
 # Products older than this many days are considered stale (mirrors existing config)
@@ -107,6 +108,8 @@ class InventoryRepository:
                 FarmerInventory.is_active.is_(True),
                 FarmerInventory.quantity > 0,
                 FarmerInventory.harvest_date >= cutoff,
+                # Produce from farmers who are not yet approved is never shown to customers.
+                FarmerInventory.farmer_id.in_(select(Farmer.id).where(Farmer.is_approved.is_(True))),
             )
             .order_by(FarmerInventory.price.asc())
         )
@@ -154,6 +157,8 @@ class InventoryRepository:
                 FarmerInventory.is_active.is_(True),
                 FarmerInventory.quantity > 0,
                 FarmerInventory.harvest_date >= cutoff,
+                # Produce from farmers who are not yet approved is never shown to customers.
+                FarmerInventory.farmer_id.in_(select(Farmer.id).where(Farmer.is_approved.is_(True))),
             )
             .group_by(FarmerInventory.master_product_id)
         )
@@ -213,6 +218,8 @@ class InventoryRepository:
                 FarmerInventory.is_active.is_(True),
                 FarmerInventory.quantity > 0,
                 FarmerInventory.harvest_date >= cutoff,
+                # Produce from farmers who are not yet approved is never shown to customers.
+                FarmerInventory.farmer_id.in_(select(Farmer.id).where(Farmer.is_approved.is_(True))),
             )
             .group_by(FarmerInventory.master_product_id)
         )

@@ -31,7 +31,8 @@ async def ensure_demo_accounts(db: AsyncSession) -> list[User]:
             user = await repo.create(
                 name=name, phone=phone, role=role, email=email, status=UserStatus.approved
             )
-        user.is_demo = True
+        # The admin is the one normal (non-demo) admin; the other three are demo accounts.
+        user.is_demo = role != UserRole.admin
         db.add(user)
         users.append(user)
     await db.flush()

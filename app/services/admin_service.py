@@ -1368,31 +1368,15 @@ class AdminService:
 
         # ── SEEDING REALISTIC DEMO DATASET ──
 
-        # 1. Reset & Seed Customer Address
+        # 1. Customer: approved but FRESH - no address, so the normal profile
+        #    onboarding appears at next sign-in (exactly like a new customer).
         if customer:
             await self._db.execute(text("DELETE FROM addresses WHERE user_id = :uid;"), {"uid": customer.id})
             customer.name = "Demo Customer"
             customer.phone = "+919999999991"
-            customer.address = "Flat 304, Green Meadows Apartment, Lotus Road, Koramangala, Bengaluru, Karnataka - 560034"
+            customer.address = None
             customer.status = UserStatus.approved
             self._db.add(customer)
-            
-            cust_addr = Address(
-                user_id=customer.id,
-                house_flat="Flat 304",
-                building="Green Meadows Apartment",
-                street="Lotus Road",
-                area="Koramangala",
-                city="Bengaluru",
-                state="Karnataka",
-                pin_code="560034",
-                latitude=12.9352,
-                longitude=77.6244,
-                address_type="Home",
-                is_default=True,
-                is_demo=True
-            )
-            self._db.add(cust_addr)
 
         # 2. Reset & Seed Farmer Profile & Farm Address
         if farmer_user:
@@ -1400,9 +1384,9 @@ class AdminService:
             farmer_user.name = "Demo Farmer"
             farmer_user.phone = "+919999999992"
             farmer_user.address = "Farm No. 42, Auxin Green Farm, Siddhagatta Road, Chikballapur, Bengaluru Rural, Karnataka - 562101"
-            farmer_user.status = UserStatus.approved  # Approved directly for demo convenience
-            farmer_user.approved_by = requesting_user.id
-            farmer_user.approved_at = datetime.now(tz=timezone.utc)
+            farmer_user.status = UserStatus.pending  # fresh: waits for an admin to approve (Approvals page)
+            farmer_user.approved_by = None
+            farmer_user.approved_at = None
             farmer_user.rejected_at = None
             farmer_user.rejection_reason = None
             self._db.add(farmer_user)
@@ -1414,7 +1398,7 @@ class AdminService:
                 location="Bengaluru Rural, Karnataka",
                 bank_account_number=encrypt_field("123456789012"),
                 ifsc_code="SBIN0001234",
-                is_approved=True,
+                is_approved=False,  # pending until an admin approves
                 bank_name="State Bank of India",
                 account_holder_name="Demo Farmer",
                 upi_id="demofarmer@okaxis"
@@ -1445,9 +1429,9 @@ class AdminService:
             delivery_user.name = "Demo Delivery Partner"
             delivery_user.phone = "+919999999993"
             delivery_user.address = "Plot 88, Delivery Logistics Hub, Indiranagar, Bengaluru, Karnataka - 560038"
-            delivery_user.status = UserStatus.approved  # Approved directly for demo convenience
-            delivery_user.approved_by = requesting_user.id
-            delivery_user.approved_at = datetime.now(tz=timezone.utc)
+            delivery_user.status = UserStatus.pending  # fresh: waits for an admin to approve (Approvals page)
+            delivery_user.approved_by = None
+            delivery_user.approved_at = None
             delivery_user.rejected_at = None
             delivery_user.rejection_reason = None
             self._db.add(delivery_user)

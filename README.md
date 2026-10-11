@@ -45,16 +45,26 @@ First run only: copy the Supabase **URL** and **anon key** into `auxin-frontend\
 
 ## Demo workspace and demo accounts
 
-Four permanent demo identities exist alongside real accounts and are flagged `is_demo`:
-`demo.customer@`, `demo.farmer@`, `demo.delivery@`, `demo.admin@auxin.app`.
+Exactly five special accounts exist next to the real users:
 
-- **First run:** `start.bat` creates them (plus a super-admin row, a demo farm, a demo courier and 6 listed
-  products) in the local database. Existing demo data is never overwritten.
+| Account | Kind | State after every reset |
+|---|---|---|
+| your super admin (`SUPER_ADMIN_EMAIL`) | the one super admin | never touched |
+| `demo.admin@auxin.app` | the one normal admin | never touched |
+| `demo.customer@auxin.app` | demo account | approved, **no address** (normal profile onboarding on login) |
+| `demo.farmer@auxin.app` | demo account | **pending** - an approval request appears under Approvals |
+| `demo.delivery@auxin.app` | demo account | **pending** - an approval request appears under Approvals |
+
+- **First run:** `start.bat` creates them (plus a demo farm, a demo courier and 6 baseline listings) in the local
+  database. Existing demo data is never overwritten on later runs.
+- **Reset:** admin portal → **Demo Workspace** → **Reset Sandbox** (super admin, one click). It deletes only demo
+  orders, payments, deliveries, reviews and listings (rows flagged `is_demo`) and returns the three demo accounts to
+  the fresh state above. The dashboard counters return to baseline; real users and real orders are untouched.
+- **Demo walkthrough:** Reset → Approvals → approve the demo Farmer and Courier → customer sees the produce →
+  order → farmer packs → courier delivers with the customer's 6-digit code.
 - **One-click sign-in:** the main app's login page shows Customer / Farmer / Courier buttons when
   `NEXT_PUBLIC_DEMO_PASSWORD` is set in `auxin-frontend\.env.local` (the launcher turns demo mode on for that app).
-  Real sign-up, sign-in and farmer/courier approval requests work exactly as before.
-- **Reset:** admin portal → **Demo Workspace** → **Reset Sandbox** (super admin). It removes only demo orders,
-  payments, deliveries, reviews and demo listings, then restores the baseline. Real data is untouched.
+  Real sign-up, sign-in and approval requests work exactly as before.
 
 ## What works offline vs. what needs the internet
 

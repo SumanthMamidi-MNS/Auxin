@@ -46,7 +46,8 @@ def _sqlite_path(url: str) -> Path | None:
 async def _seed_demo_workspace() -> str:
     """
     First run only: create the demo accounts and the clean baseline (profiles,
-    addresses, inventory) exactly as the Demo Workspace 'Reset Sandbox' button does.
+    inventory) exactly as the Demo Workspace 'Reset Sandbox' button does: customer fresh,
+    farmer and courier pending approval.
     Existing demo data is never overwritten on later runs.
     """
     from app.db.session import AsyncSessionLocal, engine
