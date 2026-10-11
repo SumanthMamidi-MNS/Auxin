@@ -15,6 +15,10 @@ from app.models.user import User
 
 router = APIRouter(prefix="/milo", tags=["Milo AI Assistant"])
 
+
+def _milo_headers() -> dict:
+    return {"X-Milo-Key": settings.MILO_SHARED_SECRET} if settings.MILO_SHARED_SECRET else {}
+
 class MiloProxyChatRequest(BaseModel):
     query: str = Field(..., example="What is the refund policy for cancelled orders?")
     conversation_id: Optional[str] = Field(default=None, example="conv-12345")
@@ -58,7 +62,7 @@ async def proxy_milo_chat(
 
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.post(milo_backend_url, json=payload)
+            resp = await client.post(milo_backend_url, json=payload, headers=_milo_headers())
     except httpx.RequestError:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -82,7 +86,7 @@ async def proxy_guided_options(
     url = f"{settings.MILO_BACKEND_URL.rstrip('/')}/api/chat/guided-options"
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(url, params={"role": role})
+            resp = await client.get(url, params={"role": role}, headers=_milo_headers())
     except httpx.RequestError:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

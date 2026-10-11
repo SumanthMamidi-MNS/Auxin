@@ -113,6 +113,8 @@ class Settings(BaseSettings):
     MILO_ENABLED: bool = False
     # Where the backend proxy reaches the Milo AI service (separate FastAPI app).
     MILO_BACKEND_URL: str = "http://127.0.0.1:8001"
+    # Shared secret sent to Milo as X-Milo-Key (set the same value on the Milo service).
+    MILO_SHARED_SECRET: str = ""
     MILO_PROVIDER: str | None = None
     MILO_MODEL: str | None = None
     MILO_API_KEY: str | None = None

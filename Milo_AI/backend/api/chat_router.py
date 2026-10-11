@@ -1,10 +1,12 @@
 # backend/api/chat_router.py
 # Auxin AI — Production Guided RAG, Live Action Router & Semantic Search API
 
+import hmac
+import os
 import time
 import uuid
 from typing import List, Dict, Any, Optional
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Request, status, Query
 from pydantic import BaseModel, Field
 
 from backend.rag.rag_engine import rag_engine
@@ -13,7 +15,22 @@ from backend.memory.session_memory import session_memory
 from backend.guided.guided_menu import get_guided_options_for_role
 from backend.actions.action_executor import action_executor
 
-chat_router = APIRouter(prefix="/api/chat", tags=["Milo AI Chat API"])
+def _require_internal_key(request: Request) -> None:
+    """
+    When MILO_SHARED_SECRET is set (any hosted deployment), every chat route except
+    /health must carry the same value in the X-Milo-Key header. The Auxin API adds it;
+    browsers and strangers cannot call Milo or choose their own `role`.
+    Unset (local development on 127.0.0.1) leaves the routes open, as before.
+    """
+    expected = os.getenv("MILO_SHARED_SECRET", "")
+    if not expected or request.url.path.rstrip("/").endswith("/health"):
+        return
+    supplied = request.headers.get("x-milo-key", "")
+    if not hmac.compare_digest(supplied, expected):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
+
+
+chat_router = APIRouter(prefix="/api/chat", tags=["Milo AI Chat API"], dependencies=[Depends(_require_internal_key)])
 
 # --- Request / Response Pydantic Schemas ---
 

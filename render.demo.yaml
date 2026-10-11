@@ -41,6 +41,8 @@ services:
         sync: false
       - key: MILO_BACKEND_URL    # URL of auxin-demo-milo, if deployed
         sync: false
+      - key: MILO_SHARED_SECRET  # same value as on auxin-demo-milo
+        sync: false
 
   # Optional: Milo AI (core requirements only; retrieval without the ML stack)
   - type: web
@@ -56,4 +58,6 @@ services:
       - key: APP_ENV
         value: production
       - key: GEMINI_API_KEY
+        sync: false
+      - key: MILO_SHARED_SECRET  # REQUIRED: Milo is publicly reachable on Render
         sync: false

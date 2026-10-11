@@ -22,12 +22,14 @@ anything else (e.g. `demo`) → `.env`.
 | `PRODUCT_EXPIRY_DAYS` | `30` | Listing age cutoff |
 | `RAZORPAY_KEY_ID` / `RAZORPAY_SECRET` | empty | Blank disables online payments (COD still works) |
 | `MILO_BACKEND_URL` | `http://127.0.0.1:8001` | Where the API proxies Milo chat |
+| `MILO_SHARED_SECRET` | empty | Sent to Milo as `X-Milo-Key`; must match the Milo service. **Required when Milo is hosted** |
 | `MILO_ENABLED` / `MILO_PROVIDER` / `MILO_MODEL` / `MILO_API_KEY` | off | Status endpoint only |
 
 ## Milo AI (`Milo_AI/.env.development`)
 
 | Variable | Purpose |
 |---|---|
+| `MILO_SHARED_SECRET` | If set, every chat route except `/health` requires header `X-Milo-Key` with this value |
 | `GEMINI_API_KEY`, `GEMINI_MODEL` | Generated answers (optional) |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Hosted knowledge store (optional; local curated index otherwise) |
 
