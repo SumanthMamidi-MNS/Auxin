@@ -230,6 +230,10 @@ export function MiloAssistant() {
     const roleKey = activeRole in FALLBACK_CATEGORIES ? activeRole : "customer";
     setCategories(FALLBACK_CATEGORIES[roleKey] || FALLBACK_CATEGORIES.customer);
 
+    // The guided-options endpoint requires a signed-in account; signed-out
+    // visitors keep the built-in fallback categories.
+    if (!user) return;
+
     const fetchCategories = async () => {
       try {
         const res = await api.get("/milo/guided-options");
@@ -242,7 +246,7 @@ export function MiloAssistant() {
       }
     };
     fetchCategories();
-  }, [activeRole]);
+  }, [activeRole, user]);
 
   // Session conversation ID initialization
   useEffect(() => {

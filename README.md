@@ -26,7 +26,7 @@ Data lives in SQLite locally and Supabase Postgres when hosted. Payments use Raz
 
 ## Quick start (Windows)
 
-Prerequisites: **Python 3.11+** and **Node.js 18+** (nothing else is installed system-wide).
+Prerequisites: **Python 3.11 or 3.12** (not 3.13+) and **Node.js 18+** (nothing else is installed system-wide).
 
 ```bat
 git clone <your-private-repo-url> auxin

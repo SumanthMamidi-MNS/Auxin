@@ -21,16 +21,17 @@ echo  AUXIN - local stack
 echo  ----------------------------------------
 
 rem --- 1. Prerequisites -------------------------------------------------------
+rem Pinned dependencies (pydantic 2.7, asyncpg 0.29) ship wheels for Python 3.11/3.12 only.
+rem `py -3` would pick the newest installed Python (e.g. 3.14) and fail to build them.
 set "PY="
-where py >nul 2>&1 && set "PY=py -3"
-if not defined PY ( where python >nul 2>&1 && set "PY=python" )
+py -3.12 -c "import sys" >nul 2>&1 && set "PY=py -3.12"
+if not defined PY ( py -3.11 -c "import sys" >nul 2>&1 && set "PY=py -3.11" )
 if not defined PY (
-  echo  [X] Python 3.11+ not found. Install it from python.org, then re-run.
-  goto :fail
+  python -c "import sys; sys.exit(0 if (3,11) <= sys.version_info[:2] <= (3,12) else 1)" >nul 2>&1 && set "PY=python"
 )
-%PY% -c "import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)" >nul 2>&1
-if errorlevel 1 (
-  echo  [X] Python 3.11 or newer is required.
+if not defined PY (
+  echo  [X] Python 3.11 or 3.12 is required ^(3.13+ is not supported by the pinned dependencies^).
+  echo      Install Python 3.12 from python.org alongside your current one, then re-run.
   goto :fail
 )
 where node >nul 2>&1
@@ -46,6 +47,13 @@ if errorlevel 1 (
 echo  [OK] Python and Node found
 
 rem --- 2. Core API environment -----------------------------------------------
+if exist "venv\Scripts\python.exe" (
+  "venv\Scripts\python.exe" -c "import sys; sys.exit(0 if (3,11) <= sys.version_info[:2] <= (3,12) else 1)" >nul 2>&1
+  if errorlevel 1 (
+    echo  [X] venv was created with an unsupported Python. Delete the venv folder and re-run.
+    goto :fail
+  )
+)
 if not exist "venv\Scripts\python.exe" (
   echo  [..] Creating Python virtual environment
   %PY% -m venv venv

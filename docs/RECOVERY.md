@@ -28,6 +28,9 @@ Goal: with only the private GitHub repository and your own accounts, get Auxin r
 
 ## 3. Restore steps
 
+Requires **Python 3.11 or 3.12** (the pinned dependencies have no wheels for 3.13+; `start.bat` selects 3.12
+or 3.11 automatically when several are installed) and **Node.js 18+**.
+
 ```bat
 git clone <private-repo-url> auxin
 cd auxin

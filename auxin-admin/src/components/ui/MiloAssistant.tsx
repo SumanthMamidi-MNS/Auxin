@@ -157,6 +157,10 @@ export function MiloAssistant() {
     const roleKey = activeRole === "super_admin" ? "super_admin" : "admin";
     setCategories(FALLBACK_ADMIN_CATEGORIES[roleKey] || FALLBACK_ADMIN_CATEGORIES.admin);
 
+    // The guided-options endpoint requires a signed-in account; signed-out
+    // visitors keep the built-in fallback categories.
+    if (!user) return;
+
     const fetchCategories = async () => {
       try {
         const res = await api.get("/milo/guided-options");
@@ -169,7 +173,7 @@ export function MiloAssistant() {
       }
     };
     fetchCategories();
-  }, [activeRole]);
+  }, [activeRole, user]);
 
   useEffect(() => {
     setConversationId(`milo-admin-session-${Date.now()}`);
