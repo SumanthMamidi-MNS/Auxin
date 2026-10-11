@@ -64,7 +64,7 @@ out/
 
 # Logs
 *.log
-logs/
+/logs/
 npm-debug.log*
 yarn-error.log
 
