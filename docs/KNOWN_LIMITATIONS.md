@@ -59,3 +59,12 @@ unattended production use with real money or real personal data. This list is th
 4. Close the "Still open" security items above, then run an external review.
 5. Add monitoring (uptime on `/health`, error tracking), backups, and a staging environment.
 6. Move off Vercel Hobby (non-commercial only) before any commercial use.
+
+## Dependency advisories (npm audit, production dependencies, 2026-10-11)
+
+In-range fixes were applied to both web apps (axios, nanoid, form-data, source-map-js, postcss chain):
+8 → 3 advisories each. **Remaining (both apps):** `next` 16.2.x (denial of service with Server Components,
+proxy bypass on segment-prefetch routes) and the `sharp` image library it bundles — fixed in `next@16.4.0`,
+which is outside the pinned range. Upgrade deliberately: read `node_modules/next/dist/docs` first (this Next.js
+line has breaking changes), then rebuild and re-test. Python dependencies were not audited (`pip-audit` not
+installed); the backend pins `fastapi 0.111`, `pydantic 2.7`, `python-jose 3.3` — review before production.
