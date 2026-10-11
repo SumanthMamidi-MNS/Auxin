@@ -1,31 +1,32 @@
 # Phases
 
-Living execution plan. No PRD.md exists in this repo yet, so phases are derived from the code and the
-owner's request to make Auxin deployable. Updated at the end of each work session.
+Living plan, updated 2026-10-11. No PRD.md exists in this repo; scope follows the owner's stabilisation brief
+(preserve work, fix critical issues, make recoverable, local-first, prepare a demo, freeze).
 
-## Phase A — Understand and document  ✅ done (2026-10-11)
-- [x] Map backend, frontends, DB, deployment config
-- [x] `architecture.md`, `backend.md`, `frontend.md`, `database.md`, `deployment.md`
-- [x] One-click local launcher: `start.bat`
+## Phase A — Understand and document  ✅ done
+- [x] architecture / backend / frontend / database / deployment docs
 
-## Phase B — Deploy-readiness fixes  ⏳ in progress, waiting on owner decisions
-- [x] Backend suite green: 62 / 62
-- [x] Both Next.js builds pass
-- [x] Alembic: single head `009_master_catalogue`
-- [ ] Block self-registration as `admin` on `/auth/sync-user` (needs admin-bootstrap decision)
-- [ ] Gate or remove the `demo.*` client login bypass (`auxin-frontend/src/lib/auth.ts`)
-- [ ] Remove or env-guard the `000000` OTP bypass (`app/core/security.py`)
-- [x] Supabase project `Auxin` exists (healthy) — still need its env values on Render
-- [ ] Apply migrations 009 + 010 to Supabase (010 drafted, awaiting approval)
-- [ ] Enable RLS on public tables (owner decision, SQL in deployment.md §6)
-- [ ] Replace placeholder domains in `.env.production`, `render.yaml` `ALLOWED_ORIGINS`
+## Phase B — Fix critical issues  ✅ done in code (live DB changes await approval)
+- [x] Admin self-registration, account takeover, order and bank-detail exposure
+- [x] Milo authentication, demo bypass, demo reset, OTP exposure and backdoor, CSP, wildcard CORS
+- [x] Migration 010 (enum + columns) and 011 (RLS) written and rendered offline
+- [x] 72 backend tests pass; both Next builds pass
+- [ ] **Apply 010 + 011 to the live Supabase project** — needs owner approval, backup and role check
 
-## Phase C — First live deploy  ⬜ not started
-- [ ] Render backend → `/health` shows `db: connected`
-- [ ] Vercel: `auxin-frontend`, `auxin-admin` (and optionally `auxin-landing`)
-- [ ] Live smoke test of the farmer → customer → delivery-OTP flow (steps in `deployment.md` §5)
+## Phase C — Recoverable from private GitHub  ⏳ verified locally, push pending approval
+- [x] Everything needed is committed (477 files, ~76 MB); env templates for all services
+- [x] Local clean-clone recovery test (see final report for result)
+- [ ] Push to private repository `auxin` — needs owner approval
+- [ ] Re-run the recovery test from GitHub itself, then free local storage
 
-## Phase D — After launch  ⬜ backlog
-- [ ] Custom SMTP for Supabase email OTP
-- [ ] Stop `create_all` on boot in production; Alembic only
-- [ ] Refresh the stale README (still describes phone+password and Alembic head 006)
+## Phase D — Local mode  ✅
+- [x] `start.bat` → venvs, deps, SQLite + catalogue bootstrap → `run_auxin.py` (health checks, logs, Ctrl+C)
+
+## Phase E — Public demo  ⏳ prepared, not deployed
+- [x] Design, verified free-tier limits, `render.demo.yaml`, showcase README template
+- [ ] Create demo Supabase project, Render service, two Vercel projects — each needs approval
+- [ ] Capture screenshots / walkthrough video (needs a signed-in session)
+
+## Freeze
+After approval-gated items above, no further feature work: see `docs/KNOWN_LIMITATIONS.md` for the
+honest remainder and the production checklist.
