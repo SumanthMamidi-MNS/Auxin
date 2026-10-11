@@ -83,3 +83,6 @@ auxin.db
 
 # Scratch temporary files
 scratch/
+
+# Local database backups
+auxin.db.bak-*
