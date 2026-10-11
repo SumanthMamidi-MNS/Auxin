@@ -77,6 +77,10 @@ from app.schemas.delivery import (
     DeliveryOTPOut,
     DeliveryStatusOut,
     PaginatedDeliveriesOut,
+    PaginatedAvailableDeliveriesOut,
+    DeliveryCustomerOut,
+    DeliveryFarmerOut,
+    DeliveryPartnerMinimalOut,
 )
 from app.services.payment_service import PaymentService
 
@@ -86,10 +90,99 @@ from app.services.payment_service import PaymentService
 # ---------------------------------------------------------------------------
 
 def _utc_now() -> datetime:
-    return datetime.now(tz=timezone.utc)
+    return datetime.now(tz=timezone.utc).replace(tzinfo=None)
+
+
+# ---------------------------------------------------------------------------
+# OTP brute-force guard
+# ---------------------------------------------------------------------------
+# In-memory, per-process counter of failed verify-otp attempts per delivery.
+# It bounds guessing of the 6-digit code to a handful of tries per worker within
+# the OTP lifetime.  Known limitation: counters are not shared across workers or
+# restarts; a DB-backed counter is the production upgrade (see docs/KNOWN_LIMITATIONS.md).
+_OTP_MAX_FAILURES = 5
+_otp_failures: dict[int, list[float]] = {}
+
+
+def _otp_window_seconds() -> float:
+    return float(settings.DELIVERY_OTP_EXPIRY_MINUTES) * 60.0
+
+
+def _otp_prune(delivery_id: int) -> list[float]:
+    import time
+
+    cutoff = time.monotonic() - _otp_window_seconds()
+    recent = [t for t in _otp_failures.get(delivery_id, []) if t >= cutoff]
+    if recent:
+        _otp_failures[delivery_id] = recent
+    else:
+        _otp_failures.pop(delivery_id, None)
+    return recent
+
+
+def _otp_attempts_exceeded(delivery_id: int) -> bool:
+    return len(_otp_prune(delivery_id)) >= _OTP_MAX_FAILURES
+
+
+def _otp_record_failure(delivery_id: int) -> None:
+    import time
+
+    _otp_prune(delivery_id)
+    _otp_failures.setdefault(delivery_id, []).append(time.monotonic())
+
+
+def _otp_reset(delivery_id: int) -> None:
+    _otp_failures.pop(delivery_id, None)
 
 
 def _delivery_to_out(delivery: Delivery) -> DeliveryOut:
+    order = delivery.order
+    customer = order.customer if order else None
+    farmer = order.farmer if order else None
+
+    # Resolve customer address string (e.g. flat, building, street, city, state, pincode)
+    cust_addr_str = None
+    if customer and customer.addresses:
+        # Find default or first address
+        addr = next((a for a in customer.addresses if a.is_default), customer.addresses[0])
+        parts = [addr.house_flat, addr.building, addr.street, addr.area, addr.landmark, addr.city, addr.state, addr.pin_code]
+        cust_addr_str = ", ".join([p for p in parts if p])
+
+    cust_out = None
+    if customer:
+        cust_out = DeliveryCustomerOut(
+            id=customer.id,
+            name=customer.name,
+            phone=customer.phone,
+            address=cust_addr_str,
+        )
+
+    farm_out = None
+    if farmer:
+        farm_lat = None
+        farm_lon = None
+        if farmer.user and farmer.user.addresses:
+            addr = next((a for a in farmer.user.addresses if a.is_default), farmer.user.addresses[0])
+            farm_lat = addr.latitude
+            farm_lon = addr.longitude
+
+        farm_out = DeliveryFarmerOut(
+            id=farmer.id,
+            full_name=farmer.full_name,
+            phone=farmer.phone,
+            location=farmer.location,
+            latitude=farm_lat,
+            longitude=farm_lon,
+        )
+
+    partner_out = None
+    if delivery.delivery_partner:
+        partner_out = DeliveryPartnerMinimalOut(
+            id=delivery.delivery_partner.id,
+            full_name=delivery.delivery_partner.full_name,
+            phone=delivery.delivery_partner.phone,
+        )
+
     return DeliveryOut(
         id=delivery.id,
         order_id=delivery.order_id,
@@ -101,6 +194,9 @@ def _delivery_to_out(delivery: Delivery) -> DeliveryOut:
         picked_up_at=delivery.picked_up_at.isoformat() if delivery.picked_up_at else None,
         delivered_at=delivery.delivered_at.isoformat() if delivery.delivered_at else None,
         created_at=delivery.created_at.isoformat(),
+        customer=cust_out,
+        farmer=farm_out,
+        delivery_partner=partner_out,
     )
 
 
@@ -281,18 +377,37 @@ class DeliveryService:
             plain_otp = generate_delivery_otp()
             otp_expires_at = now + timedelta(minutes=settings.DELIVERY_OTP_EXPIRY_MINUTES)
             kwargs["otp_code"] = hash_delivery_otp(plain_otp)
+            kwargs["plain_otp"] = plain_otp
             kwargs["otp_expires_at"] = otp_expires_at
 
             delivery = await self._delivery_repo.set_status(
                 delivery, new_status, **kwargs
             )
-            return DeliveryOTPOut(
-                delivery_id=delivery.id,
-                otp=plain_otp,
-                otp_expires_at=otp_expires_at.isoformat(),
+            # Sync order status to out_for_delivery
+            from app.models.order import OrderStatus
+            order = await self._order_repo.get_by_id(delivery.order_id)
+            if order:
+                await self._order_repo.set_status(order, OrderStatus.out_for_delivery)
+
+            # The OTP is a customer-held secret: it is shown to the customer on
+            # their order (OrderOut.delivery.otp) and typed in by the partner at
+            # the doorstep.  It is never returned to the partner here.
+            return DeliveryStatusOut(
+                id=delivery.id,
+                status=delivery.status,
+                message="Out for delivery. Ask the customer for the 6-digit code shown in their app.",
             )
 
         delivery = await self._delivery_repo.set_status(delivery, new_status, **kwargs)
+        # Sync order status to picked_up or cancelled (if failed)
+        from app.models.order import OrderStatus
+        order = await self._order_repo.get_by_id(delivery.order_id)
+        if order:
+            if new_status == DeliveryStatus.picked_up:
+                await self._order_repo.set_status(order, OrderStatus.picked_up)
+            elif new_status == DeliveryStatus.failed:
+                await self._order_repo.set_status(order, OrderStatus.cancelled)
+
         return DeliveryStatusOut(
             id=delivery.id,
             status=delivery.status,
@@ -367,9 +482,17 @@ class DeliveryService:
             if not within:
                 raise DeliveryOutsideGeofenceError()
 
+        # Brute-force guard: a 6-digit code must not be guessable in the window.
+        if _otp_attempts_exceeded(delivery.id):
+            raise DeliveryOTPInvalidError(
+                "Too many incorrect attempts. Ask the customer to confirm the code, then wait a few minutes."
+            )
+
         # Cryptographic OTP verification (constant-time bcrypt)
         if not verify_delivery_otp(otp, delivery.otp_code):
+            _otp_record_failure(delivery.id)
             raise DeliveryOTPInvalidError()
+        _otp_reset(delivery.id)
 
         # Transition to delivered
         delivery = await self._delivery_repo.set_status(
@@ -380,11 +503,19 @@ class DeliveryService:
         await self._delivery_repo.clear_otp(delivery)
 
         # ----------------------------------------------------------------
-        # Escrow release — automatically triggered on successful delivery.
+        # Escrow release and order completion — automatically triggered on successful delivery.
         # If no payment exists (e.g. dev/test without payment flow) this
         # is a silent no-op; any payment gateway error is logged but does
         # NOT block the delivery confirmation response.
         # ----------------------------------------------------------------
+        try:
+            from app.models.order import OrderStatus
+            order = await self._order_repo.get_by_id(delivery.order_id)
+            if order:
+                await self._order_repo.set_status(order, OrderStatus.completed)
+        except Exception as e:
+            print(f"Warning: Failed to update order status to completed: {e}")
+
         try:
             payment_svc = PaymentService(self._db)
             await payment_svc.release_escrow(order_id=delivery.order_id)
@@ -418,6 +549,8 @@ class DeliveryService:
         delivery = await self._delivery_repo.get_by_id(delivery_id)
         if delivery is None:
             raise DeliveryNotFoundError()
+
+        self._assert_can_view_delivery(delivery, requesting_user)
         return _delivery_to_out(delivery)
 
     async def get_delivery_by_order(
@@ -432,7 +565,24 @@ class DeliveryService:
             raise DeliveryNotFoundError(
                 f"No delivery record found for order {order_id}."
             )
+
+        self._assert_can_view_delivery(delivery, requesting_user)
         return _delivery_to_out(delivery)
+
+    def _assert_can_view_delivery(self, delivery: Delivery, user: User) -> None:
+        """Assert user has permission to view this delivery."""
+        if user.role == UserRole.admin:
+            return
+        if user.role == UserRole.delivery:
+            if delivery.delivery_partner and delivery.delivery_partner.user_id == user.id:
+                return
+        elif user.role == UserRole.customer:
+            if delivery.order and delivery.order.customer_id == user.id:
+                return
+        elif user.role == UserRole.farmer:
+            if delivery.order and delivery.order.farmer and delivery.order.farmer.user_id == user.id:
+                return
+        raise DeliveryForbiddenError("You are not authorized to view this delivery.")
 
     # ------------------------------------------------------------------
     # 6. List partner's assigned deliveries
@@ -472,6 +622,239 @@ class DeliveryService:
             page_size=page_size,
             total_pages=total_pages,
         )
+
+    # ------------------------------------------------------------------
+    # 7. List available nearby unassigned deliveries (25 KM Smart Discovery)
+    # ------------------------------------------------------------------
+
+    async def list_available_deliveries(
+        self,
+        *,
+        requesting_user: User,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> PaginatedAvailableDeliveriesOut:
+        """
+        Return a list of unassigned pending deliveries eligible for this partner
+        within a 25 km geographic radius.
+
+        Eligibility Rules:
+          - Caller must be an active & approved delivery partner on duty (is_available=True).
+          - Caller must NOT have an active delivery run in progress.
+          - Farm pickup or customer destination must be within 25.0 km of the partner's GPS location.
+        """
+        from app.core.geolocation import haversine_distance_km
+        from app.schemas.delivery import (
+            AvailableDeliveryOut,
+            PaginatedAvailableDeliveriesOut,
+            DeliveryCustomerOut,
+            DeliveryFarmerOut,
+        )
+
+        partner = await self._get_partner_for_user(requesting_user)
+
+        # If offline, return empty list
+        if not partner.is_available or not partner.is_active:
+            return PaginatedAvailableDeliveriesOut(
+                items=[],
+                total=0,
+                page=page,
+                page_size=page_size,
+                total_pages=0,
+                partner_latitude=partner.current_latitude,
+                partner_longitude=partner.current_longitude,
+                matching_radius_km=25.0,
+            )
+
+        # Check if already busy with an active run
+        active_delivery = await self._delivery_repo.get_active_delivery_for_partner(partner.id)
+        if active_delivery is not None:
+            # Busy partners cannot browse or claim additional runs
+            return PaginatedAvailableDeliveriesOut(
+                items=[],
+                total=0,
+                page=page,
+                page_size=page_size,
+                total_pages=0,
+                partner_latitude=partner.current_latitude,
+                partner_longitude=partner.current_longitude,
+                matching_radius_km=25.0,
+            )
+
+        unassigned = await self._delivery_repo.list_unassigned_pending_deliveries(limit=100)
+
+        partner_lat = partner.current_latitude
+        partner_lon = partner.current_longitude
+
+        eligible_items = []
+        for delivery in unassigned:
+            order = delivery.order
+            if not order or order.status not in ["accepted", "packing", "ready_for_pickup", "pending"]:
+                continue
+
+            customer = order.customer
+            farmer = order.farmer
+
+            # Farm coordinates
+            farm_lat = None
+            farm_lon = None
+            if farmer and farmer.user and farmer.user.addresses:
+                addr = next((a for a in farmer.user.addresses if a.is_default), farmer.user.addresses[0])
+                farm_lat = addr.latitude
+                farm_lon = addr.longitude
+
+            # Customer coordinates
+            cust_lat = delivery.destination_latitude
+            cust_lon = delivery.destination_longitude
+            if cust_lat is None and customer and customer.addresses:
+                addr = next((a for a in customer.addresses if a.is_default), customer.addresses[0])
+                cust_lat = addr.latitude
+                cust_lon = addr.longitude
+
+            # Calculate distances
+            distance_to_farm = None
+            if partner_lat is not None and partner_lon is not None and farm_lat is not None and farm_lon is not None:
+                try:
+                    distance_to_farm = haversine_distance_km(partner_lat, partner_lon, farm_lat, farm_lon)
+                except Exception:
+                    distance_to_farm = None
+
+            distance_to_cust = None
+            if farm_lat is not None and farm_lon is not None and cust_lat is not None and cust_lon is not None:
+                try:
+                    distance_to_cust = haversine_distance_km(farm_lat, farm_lon, cust_lat, cust_lon)
+                except Exception:
+                    distance_to_cust = None
+            elif partner_lat is not None and partner_lon is not None and cust_lat is not None and cust_lon is not None:
+                try:
+                    distance_to_cust = haversine_distance_km(partner_lat, partner_lon, cust_lat, cust_lon)
+                except Exception:
+                    distance_to_cust = None
+
+            # 25 KM Radius Filtering Decision:
+            # 1. If partner & farm coordinates exist: distance_to_farm <= 25.0 km
+            # 2. If farm has no coords but customer has coords: distance(partner, customer) <= 25.0 km
+            # 3. If partner has no coords: include as fallback
+            is_eligible = True
+            if partner_lat is not None and partner_lon is not None:
+                if distance_to_farm is not None:
+                    is_eligible = (distance_to_farm <= 25.0)
+                elif distance_to_cust is not None:
+                    is_eligible = (distance_to_cust <= 25.0)
+
+            if is_eligible:
+                # Format customer & farmer outs
+                cust_addr_str = None
+                if customer and customer.addresses:
+                    addr = next((a for a in customer.addresses if a.is_default), customer.addresses[0])
+                    parts = [addr.house_flat, addr.building, addr.street, addr.area, addr.landmark, addr.city, addr.state, addr.pin_code]
+                    cust_addr_str = ", ".join([p for p in parts if p])
+
+                cust_out = DeliveryCustomerOut(
+                    id=customer.id,
+                    name=customer.name,
+                    phone=customer.phone,
+                    address=cust_addr_str,
+                ) if customer else None
+
+                farm_out = DeliveryFarmerOut(
+                    id=farmer.id,
+                    full_name=farmer.full_name,
+                    phone=farmer.phone,
+                    location=farmer.location,
+                    latitude=farm_lat,
+                    longitude=farm_lon,
+                ) if farmer else None
+
+                item_count = sum(item.quantity for item in order.items) if order.items else 1
+
+                eligible_items.append(
+                    AvailableDeliveryOut(
+                        id=delivery.id,
+                        order_id=delivery.order_id,
+                        status=delivery.status,
+                        total_amount=float(order.total_amount),
+                        item_count=item_count,
+                        distance_to_farm_km=distance_to_farm,
+                        distance_to_customer_km=distance_to_cust,
+                        estimated_earnings=40.0,
+                        created_at=delivery.created_at.isoformat(),
+                        customer=cust_out,
+                        farmer=farm_out,
+                    )
+                )
+
+        # Sort closest pickup first
+        eligible_items.sort(key=lambda x: (x.distance_to_farm_km if x.distance_to_farm_km is not None else float("inf")))
+
+        # Pagination
+        total = len(eligible_items)
+        page = max(1, page)
+        page_size = min(max(1, page_size), 100)
+        total_pages = math.ceil(total / page_size) if total else 0
+        start = (page - 1) * page_size
+        end = start + page_size
+        paged_items = eligible_items[start:end]
+
+        return PaginatedAvailableDeliveriesOut(
+            items=paged_items,
+            total=total,
+            page=page,
+            page_size=page_size,
+            total_pages=total_pages,
+            partner_latitude=partner_lat,
+            partner_longitude=partner_lon,
+            matching_radius_km=25.0,
+        )
+
+    # ------------------------------------------------------------------
+    # 8. Claim an eligible delivery (Atomic concurrency locking)
+    # ------------------------------------------------------------------
+
+    async def claim_delivery(
+        self,
+        *,
+        delivery_id: int,
+        requesting_user: User,
+    ) -> DeliveryOut:
+        """
+        Atomically claim a pending delivery for the authenticated partner.
+
+        Safety Checks:
+          - Caller has delivery role & active/approved profile.
+          - Partner is on duty (is_available=True).
+          - Partner does not already have an active run.
+          - Target delivery is in pending state and unassigned.
+        """
+        from app.core.exceptions import (
+            DeliveryBusyError,
+            DeliveryNotAvailableError,
+            DeliveryPartnerInactiveError,
+        )
+
+        partner = await self._get_partner_for_user(requesting_user)
+        if not partner.is_active:
+            raise DeliveryPartnerInactiveError()
+        if not partner.is_available:
+            raise PermissionDeniedError("You must go on duty (online) before claiming deliveries.")
+
+        # Guard single active run
+        active = await self._delivery_repo.get_active_delivery_for_partner(partner.id)
+        if active is not None:
+            raise DeliveryBusyError()
+
+        # Atomic claim attempt
+        claimed = await self._delivery_repo.atomic_claim_delivery(
+            delivery_id=delivery_id,
+            partner_id=partner.id,
+            assigned_at=_utc_now(),
+        )
+        if claimed is None:
+            raise DeliveryNotAvailableError()
+
+        # Re-fetch with eager loaded relationships
+        delivery = await self._delivery_repo.get_by_id(delivery_id)
+        return _delivery_to_out(delivery)
 
     # ------------------------------------------------------------------
     # Internal helpers

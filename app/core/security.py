@@ -67,6 +67,8 @@ def verify_delivery_otp(plain_otp: str, hashed_otp: str) -> bool:
     Constant-time comparison of plain delivery OTP vs stored bcrypt hash.
     Returns True only when the OTP matches.
     """
+    if not hashed_otp:
+        return False
     return _pwd_context.verify(plain_otp, hashed_otp)
 
 
@@ -144,3 +146,41 @@ def decode_supabase_jwt(token: str) -> dict:
         raise JWTError(f"Signature verification failed: {exc}") from exc
 
     return payload
+
+
+def is_fake_phone_number(digits: str) -> bool:
+    """
+    Goat-level validation to reject test/fake phone numbers:
+      - Less than 10 digits or not digits
+      - Identical repeating digits (e.g. 1111111111)
+      - Less than 3 unique digits total (e.g. 9999998888, 1212121212)
+      - Sequential runs ascending (e.g. 1234567890, 0123456789)
+      - Sequential runs descending (e.g. 9876543210, 0987654321)
+      - Alternating repeating pairs (e.g. 1212121212)
+      - Alternating repeating triplets (e.g. 1231231231)
+    """
+    if not digits.isdigit() or len(digits) != 10:
+        return True
+    
+    # 1. Reject if less than 3 unique digits
+    if len(set(digits)) < 3:
+        return True
+        
+    # 2. Reject ascending sequential sequences
+    if digits in "01234567890123456789":
+        return True
+        
+    # 3. Reject descending sequential sequences
+    if digits in "98765432109876543210":
+        return True
+        
+    # 4. Reject repeating pairs
+    if digits == digits[:2] * 5:
+        return True
+        
+    # 5. Reject repeating triplets
+    if digits == (digits[:3] * 4)[:10]:
+        return True
+        
+    return False
+

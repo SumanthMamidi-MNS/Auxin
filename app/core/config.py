@@ -79,6 +79,13 @@ class Settings(BaseSettings):
     SUPABASE_JWT_SECRET: str = ""      # Required – must be set before first request
     SUPABASE_SERVICE_ROLE_KEY: str = ""  # Required for backend admin operations
 
+    # ------------------------------------------------------------------
+    # Super Admin Configuration
+    # ------------------------------------------------------------------
+    SUPER_ADMIN_EMAIL: str = "sumanthmamidi74@gmail.com"
+    SUPER_ADMIN_PHONE: str = "+917661920205"
+    SUPER_ADMIN_PASSWORD: str = ""
+
 
     # ------------------------------------------------------------------
     # Encryption (bank account numbers)
@@ -99,6 +106,17 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------
     RAZORPAY_KEY_ID: str = ""      # Required in production; blank = payment disabled
     RAZORPAY_SECRET: str = ""      # Required in production; blank = payment disabled
+
+    # ------------------------------------------------------------------
+    # Milo AI Assistant
+    # ------------------------------------------------------------------
+    MILO_ENABLED: bool = False
+    # Where the backend proxy reaches the Milo AI service (separate FastAPI app).
+    MILO_BACKEND_URL: str = "http://127.0.0.1:8001"
+    MILO_PROVIDER: str | None = None
+    MILO_MODEL: str | None = None
+    MILO_API_KEY: str | None = None
+    MILO_TEMPERATURE: float = 0.7
 
 
 @lru_cache(maxsize=1)

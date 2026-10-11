@@ -25,7 +25,15 @@ from app.schemas.farmer import FarmerApprovalOut, FarmerProfileOut
 
 
 def _to_out(farmer: Farmer) -> FarmerProfileOut:
-    """Convert ORM Farmer → FarmerProfileOut (bank account is NOT included)."""
+    """Convert ORM Farmer → FarmerProfileOut (including decrypted bank details)."""
+    from app.core.encryption import decrypt_field
+    decrypted_acc = None
+    if farmer.bank_account_number:
+        try:
+            decrypted_acc = decrypt_field(farmer.bank_account_number)
+        except Exception:
+            decrypted_acc = farmer.bank_account_number
+            
     return FarmerProfileOut(
         id=farmer.id,
         user_id=farmer.user_id,
@@ -35,6 +43,28 @@ def _to_out(farmer: Farmer) -> FarmerProfileOut:
         ifsc_code=farmer.ifsc_code,
         is_approved=farmer.is_approved,
         created_at=farmer.created_at.isoformat(),
+        bank_name=farmer.bank_name,
+        account_holder_name=farmer.account_holder_name,
+        bank_account_number=decrypted_acc,
+        upi_id=farmer.upi_id,
+        farm_name=farmer.farm_name,
+        farm_category=farmer.farm_category,
+    )
+
+
+def _to_public_out(farmer: Farmer) -> FarmerProfileOut:
+    """Public view of a farmer: no phone, bank, IFSC or UPI details."""
+    return FarmerProfileOut(
+        id=farmer.id,
+        user_id=farmer.user_id,
+        full_name=farmer.full_name,
+        phone="",
+        location=farmer.location,
+        ifsc_code="",
+        is_approved=farmer.is_approved,
+        created_at=farmer.created_at.isoformat(),
+        farm_name=farmer.farm_name,
+        farm_category=farmer.farm_category,
     )
 
 
@@ -105,9 +135,56 @@ class FarmerService:
             raise FarmerNotFoundError()
         return _to_out(farmer)
 
-    async def get_profile_by_farmer_id(self, *, farmer_id: int) -> FarmerProfileOut:
+    async def update_profile(
+        self,
+        *,
+        user_id: int,
+        location: str | None = None,
+        bank_name: str | None = None,
+        account_holder_name: str | None = None,
+        bank_account_number: str | None = None,
+        ifsc_code: str | None = None,
+        upi_id: str | None = None,
+        farm_name: str | None = None,
+        farm_category: str | None = None,
+    ) -> FarmerProfileOut:
+        farmer = await self._farmer_repo.get_by_user_id(user_id)
+        if farmer is None:
+            raise FarmerNotFoundError()
+
+        if location is not None:
+            farmer.location = location
+        if bank_name is not None:
+            farmer.bank_name = bank_name
+        if account_holder_name is not None:
+            farmer.account_holder_name = account_holder_name
+        if bank_account_number is not None:
+            farmer.bank_account_number = encrypt_field(bank_account_number)
+        if ifsc_code is not None:
+            farmer.ifsc_code = ifsc_code
+        if upi_id is not None:
+            farmer.upi_id = upi_id
+        if farm_name is not None:
+            farmer.farm_name = farm_name
+        if farm_category is not None:
+            farmer.farm_category = farm_category
+
+        self._db.add(farmer)
+        await self._db.commit()
+        await self._db.refresh(farmer)
+        return _to_out(farmer)
+
+    async def get_profile_by_farmer_id(
+        self,
+        *,
+        farmer_id: int,
+        requesting_user: User | None = None,
+    ) -> FarmerProfileOut:
         """
         Fetch farmer profile by its own PK (farmer.id).
+
+        The owner and admins receive the full profile.  Everyone else gets a
+        public view with contact and banking details withheld.
 
         Raises:
             FarmerNotFoundError – not found
@@ -115,7 +192,12 @@ class FarmerService:
         farmer = await self._farmer_repo.get_by_id(farmer_id)
         if farmer is None:
             raise FarmerNotFoundError()
-        return _to_out(farmer)
+
+        is_owner = requesting_user is not None and farmer.user_id == requesting_user.id
+        is_admin = requesting_user is not None and requesting_user.role == UserRole.admin
+        if is_owner or is_admin:
+            return _to_out(farmer)
+        return _to_public_out(farmer)
 
     # ------------------------------------------------------------------
     # 3. Admin: approve farmer

@@ -22,11 +22,17 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import get_current_user
-from app.core.exceptions import TokenExpiredError, TokenInvalidError, TokenMissingError
+from app.core.config import settings
+from app.core.dependencies import get_current_user, get_current_user_for_profile
+from app.core.exceptions import (
+    PermissionDeniedError,
+    TokenExpiredError,
+    TokenInvalidError,
+    TokenMissingError,
+)
 from app.core.security import decode_supabase_jwt
 from app.db.session import get_db
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import SyncUserRequest, UserOut
 
@@ -82,36 +88,60 @@ async def sync_user(
         raise TokenInvalidError("Token subject (sub) is missing.")
 
     # 2. Upsert user row
+    #
+    # Trust model: the request body is client-controlled.  Only the claims inside
+    # the verified Supabase JWT are trusted for identity (sub, email).  The body
+    # supplies profile data only and never selects which existing account the
+    # caller becomes.
     repo = UserRepository(db)
     user = await repo.get_by_supabase_uid(supabase_uid)
+    verified_email = (payload.get("email") or "").strip().lower() or None
 
     if user is None:
-        # First sync: try to match an existing row by phone or email
-        # (handles the case where a user was created before Supabase migration)
-        if body.phone:
-            user = await repo.get_by_phone(body.phone)
-        if user is None and body.email:
-            user = await repo.get_by_email(str(body.email))
+        # First sync.  Link a pre-existing row only when it matches the VERIFIED
+        # email claim and has never been claimed by another Supabase account.
+        existing = await repo.get_by_email(verified_email) if verified_email else None
 
-        if user is not None:
-            # Link existing row to Supabase UID
-            user = await repo.update_supabase_uid(user, supabase_uid)
+        if existing is not None:
+            if existing.supabase_uid and existing.supabase_uid != supabase_uid:
+                raise PermissionDeniedError(
+                    "This account is already linked to a different login."
+                )
+            user = await repo.update_supabase_uid(existing, supabase_uid)
         else:
-            # Brand new user: create row — status is derived from role
+            # Brand-new user.  Admins are never self-registered; the only
+            # exception is the configured super-admin email (bootstrap), and
+            # only when the JWT email claim itself matches it.
+            if body.role == UserRole.admin:
+                bootstrap_email = (settings.SUPER_ADMIN_EMAIL or "").strip().lower()
+                if not (verified_email and bootstrap_email and verified_email == bootstrap_email):
+                    raise PermissionDeniedError(
+                        "Administrator accounts cannot be self-registered."
+                    )
+
+            # A phone number already owned by another account must not be reused.
+            if await repo.get_by_phone(body.phone) is not None:
+                raise PermissionDeniedError(
+                    "This phone number is already registered to another account."
+                )
+
             user = await repo.create(
                 name=body.name,
                 phone=body.phone,
                 role=body.role,
-                email=str(body.email) if body.email else None,
+                email=verified_email or (str(body.email) if body.email else None),
                 supabase_uid=supabase_uid,
                 # status intentionally omitted → default_status_for_role() applies
             )
     else:
-        # Subsequent sync: update mutable profile fields only
-        # Status is NOT updated here — admin controls status changes
+        # Subsequent sync: update mutable profile fields only.
+        # Role and status are NOT updated here — admin controls those.
         user.name = body.name
-        user.phone = body.phone
-        if body.email:
+        if body.phone and body.phone != user.phone:
+            other = await repo.get_by_phone(body.phone)
+            if other is None or other.id == user.id:
+                user.phone = body.phone
+        if body.email and not user.email:
             user.email = str(body.email)
         db.add(user)
         await db.flush()
@@ -126,6 +156,9 @@ async def sync_user(
         email=user.email,
         role=user.role,
         status=user.status,
+        address=user.address,
+        is_super_admin=user.is_super_admin,
+        is_demo=user.is_demo,
         created_at=user.created_at.isoformat(),
     )
 
@@ -146,7 +179,7 @@ async def sync_user(
     ),
 )
 async def get_me(
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(get_current_user_for_profile)],
 ) -> UserOut:
     return UserOut(
         id=current_user.id,
@@ -155,5 +188,8 @@ async def get_me(
         email=current_user.email,
         role=current_user.role,
         status=current_user.status,
+        address=current_user.address,
+        is_super_admin=current_user.is_super_admin,
+        is_demo=current_user.is_demo,
         created_at=current_user.created_at.isoformat(),
     )

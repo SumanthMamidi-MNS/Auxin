@@ -46,9 +46,12 @@ async def lifespan(app: FastAPI):  # noqa: ARG001
     _logger.info("startup", extra={"env": settings.APP_ENV})
     try:
         async with engine.begin() as conn:
-            # Dev/test convenience: auto-create tables.
-            # In production, always run: alembic upgrade head
-            await conn.run_sync(Base.metadata.create_all)
+            if settings.APP_ENV.lower() == "production":
+                # Production schema is owned by Alembic (alembic upgrade head).
+                await conn.execute(text("SELECT 1"))
+            else:
+                # Dev/test convenience: auto-create tables.
+                await conn.run_sync(Base.metadata.create_all)
         _logger.info("db_connected")
     except Exception as exc:
         # Non-fatal: log and continue. /health will surface db=unreachable.
@@ -83,11 +86,13 @@ def _get_cors_origins() -> list[str]:
     """
     raw = settings.ALLOWED_ORIGINS
     if raw.strip() == "*":
-        if not settings.DEBUG:
+        if settings.APP_ENV.lower() == "production":
+            # Never combine a wildcard with credentials in production.
             _logger.warning(
-                "cors_wildcard_in_production",
-                extra={"advice": "Set ALLOWED_ORIGINS to specific domains in production."},
+                "cors_wildcard_rejected",
+                extra={"advice": "Set ALLOWED_ORIGINS to specific domains; no origins are allowed until you do."},
             )
+            return []
         return ["*"]
     return [o.strip() for o in raw.split(",") if o.strip()]
 

@@ -5,7 +5,7 @@ All DB queries related to the `users` table are encapsulated here.
 Business logic must NOT be placed in this layer.
 """
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User, UserRole, UserStatus, default_status_for_role
@@ -24,7 +24,9 @@ class UserRepository:
         return result.scalar_one_or_none()
 
     async def get_by_email(self, email: str) -> User | None:
-        result = await self._db.execute(select(User).where(User.email == email))
+        result = await self._db.execute(
+            select(User).where(func.lower(User.email) == email.strip().lower())
+        )
         return result.scalar_one_or_none()
 
     async def get_by_supabase_uid(self, supabase_uid: str) -> User | None:
