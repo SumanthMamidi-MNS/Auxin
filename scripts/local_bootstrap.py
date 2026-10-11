@@ -64,6 +64,11 @@ def main() -> int:
 
     if db_path.name == "auxin.db":
         with sqlite3.connect(db_path) as conn:
+            # The legacy seeder stamps alembic_version; a create_all database has none.
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS alembic_version "
+                "(version_num VARCHAR(32) NOT NULL PRIMARY KEY)"
+            )
             have = conn.execute("SELECT COUNT(*) FROM master_products").fetchone()[0]
         if have == 0:
             print("[bootstrap] Seeding master catalogue ...")
