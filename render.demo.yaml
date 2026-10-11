@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# render.demo.yaml — PUBLIC PORTFOLIO DEMO (prepared, NOT deployed)
+#
+# Isolated stack: its own Supabase project ("auxin-demo"), its own API, its own
+# frontends. Never point DATABASE_URL at the real "Auxin" project.
+# See docs/DEMO_DEPLOYMENT.md. Create via Render → New → Blueprint → this file.
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  - type: web
+    name: auxin-demo-api
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    # One worker: free tier has 512 MB and the demo has little traffic.
+    startCommand: >-
+      alembic upgrade head &&
+      gunicorn main:app --worker-class uvicorn.workers.UvicornWorker
+      --workers 1 --bind 0.0.0.0:$PORT --timeout 120 --keep-alive 5
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production        # Alembic owns the schema; no wildcard CORS
+      - key: DEMO_MODE
+        value: "true"            # permits Reset-demo; marks the sandbox
+      - key: DEBUG
+        value: "false"
+      - key: ALLOWED_ORIGINS     # set to the two demo Vercel URLs
+        sync: false
+      - key: DATABASE_URL        # demo project's SESSION pooler string (port 5432)
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPER_ADMIN_EMAIL   # bootstrap admin for the demo project
+        sync: false
+      - key: BANK_ACCOUNT_ENCRYPTION_KEY
+        sync: false
+      - key: MILO_BACKEND_URL    # URL of auxin-demo-milo, if deployed
+        sync: false
+
+  # Optional: Milo AI (core requirements only; retrieval without the ML stack)
+  - type: web
+    name: auxin-demo-milo
+    runtime: python
+    plan: free
+    region: singapore
+    rootDir: Milo_AI
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/chat/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false

@@ -19,7 +19,7 @@ Render + Vercel is the fastest path. Railway (`nixpacks.toml`) and Docker also w
 
 | Check | Result |
 |---|---|
-| Backend tests (`pytest tests`, default `.env`) | 62 / 62 pass (after fixing a stale hard-coded date in one test) |
+| Backend tests (`pytest tests`, default `.env`) | 72 / 72 pass (62 original + 10 security regression tests) |
 | `next build` — `auxin-frontend` | passes (Next 16.2.4, TypeScript clean, 23 routes) |
 | `next build` — `auxin-admin` | passes (Next 16.2.6, TypeScript clean, 21 routes) |
 | Alembic | single linear head `009_master_catalogue` (`alembic upgrade head` is safe) |
@@ -30,37 +30,25 @@ Render + Vercel is the fastest path. Railway (`nixpacks.toml`) and Docker also w
 the Postgres connection from Render, Razorpay, and the live farmer → customer → delivery flow.
 The flow *is* covered end-to-end by `tests/test_delivery_otp_eta_and_mission.py` against SQLite.
 
-## 3. Blockers before a public deploy
+## 3. Blockers before a public deploy (status as of 2026-10-11, later pass)
 
-These need an owner decision or credentials. Ordered by severity.
+| # | Blocker | Status |
+|---|---|---|
+| 1 | Anyone could register as `admin`; accounts could be taken over through `sync-user` | **Fixed in code**, 10 regression tests |
+| 2 | Client-side demo login with a password in the bundle | **Fixed in code**: off unless `NEXT_PUBLIC_DEMO_MODE=true` |
+| 3 | `000000` doorstep-OTP backdoor; partner received the OTP | **Fixed in code** |
+| 4 | Production CSP blocked Supabase and any API host except `api.auxin.in` | **Fixed**, header verified |
+| 5 | Live Supabase schema behind the code (order enum, 4 columns, catalogue tables) | Migration 010 written, **not applied** (needs approval + backup) |
+| 6 | RLS disabled on all public tables; permissive policies on Milo tables | Migration 011 written, **not applied** (needs approval + backup) |
+| 7 | Placeholder domains in `.env.production`, `render.yaml` `ALLOWED_ORIGINS` | Open: needs the real URLs after first deploy |
+| 8 | Email OTP uses Supabase's rate-limited mailer | Open: configure custom SMTP before real users |
+| 9 | Demo accounts use the old shared password | Open: re-seed or reset passwords (`docs/RECOVERY.md` section 6) |
+| 10 | Service-role key was hard-coded in two Milo scripts | Literal removed (never committed); **rotate the key** |
 
-1. **Anyone can register as `admin` (critical).** `POST /auth/sync-user` accepts `role: "admin"`
-   from the request body and auto-approves admins (`app/api/v1/endpoints/auth.py`,
-   `app/models/user.py::default_status_for_role`). Reproduced: a fresh JWT → `201 role=admin
-   status=approved` → `200` on `/admin/users` and `/admin/disputes`. Needs a rule for how real admins
-   are created (e.g. only the configured super-admin email, or pre-created rows only).
-2. **Client-side demo login bypass ships in production.** `auxin-frontend/src/lib/auth.ts` lets
-   `demo.customer|farmer|delivery|admin@auxin.app` sign in with OTP `111111`, using a hard-coded
-   password that is visible in the JS bundle. The `demo.*` branch is not gated by `NODE_ENV`.
-   Gate it on `NEXT_PUBLIC_DEMO_MODE` or remove it, and do not seed demo accounts in the live project.
-3. **`000000` doorstep-OTP backdoor when `DEBUG=true`.** `app/core/security.py::verify_delivery_otp`
-   accepts `000000` whenever `DEBUG` is true. `.env.development` sets `DEBUG=true`; `render.yaml`
-   and `.env.production` set it false. Keep `DEBUG=false` on Render, or delete the bypass.
-4. **Supabase project `Auxin` now exists and is healthy** (connected 2026-10-11, region ap-northeast-2).
-   The local `DATABASE_URL` values in the repo are still placeholders or SQLite, so Render still needs
-   the real values from section 4. See section 6 for what the live database looks like.
-5. **Placeholder URLs.** `.env.production` files point at `api.auxin.in` / `admin.auxin.in` /
-   `app.auxin.in`; `ALLOWED_ORIGINS` in `render.yaml` is `YOUR_MAIN_APP_DOMAIN,...`. Replace with
-   the real Render/Vercel URLs after the first deploy (CORS will block the browser otherwise).
-6. **Login is email-OTP, not phone+password.** The frontend calls `supabase.auth.signInWithOtp({email})`.
-   Supabase's built-in mailer is heavily rate-limited; configure a custom SMTP provider before real
-   users arrive. (The README still says phone+password — it is stale.)
-7. **DB connection mode.** Use the Supabase **session pooler** connection string (IPv4, port 5432)
-   from Render. If you switch to the transaction pooler (port 6543), asyncpg needs
-   `statement_cache_size=0`, which `app/db/session.py` does not set today.
-8. **Table auto-create on boot.** `main.py` runs `Base.metadata.create_all` on every start, in every
-   environment, next to `alembic upgrade head`. Harmless on a migrated DB, but it can create tables
-   outside Alembic's control. Prefer Alembic only in production.
+DB connection mode: use the Supabase **session pooler** (IPv4, port 5432) from Render; the transaction
+pooler (6543) needs `statement_cache_size=0`, which `app/db/session.py` does not set.
+
+The remaining medium/low items are tracked in `docs/KNOWN_LIMITATIONS.md`.
 
 ## 4. Environment variables (names only — never commit values)
 

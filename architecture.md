@@ -238,7 +238,7 @@ Env files are git-ignored (`.gitignore`): `.env`, `.env.development`, `.env.prod
 
 ## 10. Known issues / risks
 
-Severity tags: C = critical, H = high, M = medium, L = low. Each line gives the file and the issue. Nothing here has been fixed.
+Severity tags: C = critical, H = high, M = medium, L = low. Each line gives the file and the issue. **Status (2026-10-11): the critical items and several high/medium items below were fixed afterwards; see `docs/KNOWN_LIMITATIONS.md` for the fixed list and what remains open.** The text below is the original audit.
 
 **Critical**
 - C `app/api/v1/endpoints/auth.py` and `app/schemas/auth.py` (`SyncUserRequest.role: UserRole`): `POST /auth/sync-user` accepts `role=admin` and creates the row as `approved`. Combined with email OTP sign-up (`shouldCreateUser: true`, `auxin-frontend/src/lib/auth.ts`), any person with an email can self-provision an admin. No test covers this path (`tests/test_auth.py`). Fix: restrict self-service roles to customer, farmer, delivery.
