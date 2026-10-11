@@ -215,28 +215,23 @@ export default function FarmerDashboardPage() {
     <div className="min-h-screen pb-28" style={{ background: "var(--bg)" }}>
       <TopBar title="Farmer Business Center" />
 
-      <div className="page-content py-4 sm:py-6 space-y-6 sm:space-y-8">
+      <div className="page-content py-4 sm:py-6 space-y-5 sm:space-y-6">
         {/* Personalized Greeting Card */}
-        <div className="p-5 sm:p-6 rounded-3xl border border-[var(--border)] bg-gradient-to-br from-[var(--surface)] via-[var(--surface)] to-[var(--surface-warm)] shadow-xs">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-overline mb-1 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
-                {getGreeting()}
-              </p>
-              <h1 className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] tracking-tight leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                Namaste, {firstName}!
-              </h1>
-              <p className="text-xs sm:text-sm text-[var(--primary-deep)] font-semibold mt-1">
-                🏡 {profileData?.farm_name || "Partner Farm"} • {profileData?.farm_category || "Direct Cultivator"}
-              </p>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] text-xs font-bold text-[var(--text-secondary)]">
-              <ShieldCheck className="w-4 h-4 text-[var(--primary)]" />
-              <span>Verified Grower</span>
-            </div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-[var(--text-secondary)]">{getGreeting()}</p>
+            <h1 className="text-[22px] sm:text-[26px] font-bold text-[var(--text-primary)] tracking-tight leading-tight truncate" style={{ fontFamily: "var(--font-heading)" }}>
+              Namaste, {firstName}
+            </h1>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-0.5 truncate">
+              {profileData?.farm_name || "Partner Farm"} · {profileData?.farm_category || "Direct Cultivator"}
+            </p>
           </div>
+
+          <span className="inline-flex items-center gap-1.5 h-8 px-2.5 sm:px-3 rounded-full bg-[var(--primary-muted)] text-[11px] sm:text-xs font-semibold text-[var(--primary-deep)] flex-shrink-0">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Verified grower
+          </span>
         </div>
 
         {isLoading ? (
@@ -244,38 +239,40 @@ export default function FarmerDashboardPage() {
         ) : (
           <>
             {/* Operations Alerts Bar */}
-            <div className="space-y-2">
-              <h2 className="text-overline px-1 flex items-center gap-1.5">
-                <Bell className="w-3.5 h-3.5 text-[var(--primary)]" /> Operations Radar
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {notifications.map((n) => (
+            <section aria-label="Alerts" className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {notifications.map((n) => {
+                const Icon = n.type === "danger" ? AlertTriangle : n.type === "warning" ? Clock : n.type === "info" ? Bell : CheckCircle2;
+                return (
                   <div
                     key={n.id}
+                    role="status"
                     className={clsx(
-                      "flex items-center gap-3 px-4 py-3 rounded-2xl border text-xs font-semibold shadow-xs",
+                      "flex items-center gap-3 px-3.5 py-3 rounded-xl border text-[13px] font-medium",
                       n.type === "danger"
-                        ? "bg-[var(--danger-bg)] border-[var(--danger-border)] text-[var(--danger)]"
+                        ? "bg-[var(--danger-bg)] border-[var(--danger-border)] text-[#B91C1C]"
                         : n.type === "warning"
-                        ? "bg-[var(--warning-bg)] border-[var(--warning-border)] text-[var(--warning)]"
-                        : "bg-[var(--primary-subtle)] border-[var(--primary-glow)] text-[var(--primary-deep)]"
+                        ? "bg-[var(--warning-bg)] border-[var(--warning-border)] text-[#92400E]"
+                        : n.type === "info"
+                        ? "bg-[var(--info-bg)] border-[var(--info-border)] text-[#075985]"
+                        : "bg-[var(--primary-muted)]/60 border-[var(--success-border)] text-[var(--primary-deep)]"
                     )}
                   >
-                    <Clock className="w-4 h-4 flex-shrink-0" />
-                    <span>{n.text}</span>
+                    <span className="w-7 h-7 rounded-lg bg-white/70 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-4 h-4" />
+                    </span>
+                    <span className="leading-snug">{n.text}</span>
                   </div>
-                ))}
-              </div>
-            </div>
+                );
+              })}
+            </section>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard
                 label="Today's Sales"
                 value={`₹${todaySales.toFixed(0)}`}
                 icon={<IndianRupee className="w-5 h-5" />}
                 color="green"
-                variant="hero"
               />
               <StatCard
                 label="Pending Packing"
@@ -298,24 +295,24 @@ export default function FarmerDashboardPage() {
             </div>
 
             {/* Analytics & Quick Actions Section: 2 Columns on Desktop */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-start">
               {/* Left Column: Weekly Revenue Chart (7 cols) */}
-              <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-3">
+              <section className="lg:col-span-7 p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-overline">Weekly Revenue</h3>
-                    <p className="text-xl sm:text-2xl font-black text-[var(--text-primary)] mt-0.5" style={{ fontFamily: "var(--font-heading)" }}>
+                    <p className="text-xs font-medium text-[var(--text-secondary)]">Weekly revenue</p>
+                    <p className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] mt-0.5 tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
                       ₹{weeklyRevenue.toLocaleString("en-IN")}
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-[var(--primary)] bg-[var(--primary-subtle)] px-2.5 py-1 rounded-full border border-[var(--primary-glow)]">
-                    Last 7 Days
+                  <span className="text-[11px] font-semibold text-[var(--text-secondary)] bg-[var(--surface-2)] px-2.5 py-1 rounded-full">
+                    Last 7 days
                   </span>
                 </div>
 
                 {/* SVG Chart with Gradient Area */}
                 <div className="pt-2">
-                  <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-28">
+                  <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto" role="img" aria-label="Revenue for the last 7 days">
                     <defs>
                       <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.25" />
@@ -366,23 +363,24 @@ export default function FarmerDashboardPage() {
                     ))}
                   </svg>
                 </div>
-              </div>
+              </section>
 
               {/* Right Column: Quick Actions (5 cols) */}
-              <div className="lg:col-span-5 space-y-3.5">
-                <h3 className="text-overline px-1">Quick Actions</h3>
+              <div className="lg:col-span-5 space-y-2">
+                <h2 className="sr-only">Quick actions</h2>
+                <p aria-hidden="true" className="text-xs font-medium text-[var(--text-secondary)] px-1">Quick actions</p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
                   <Link
                     href="/farmer/inventory"
-                    className="p-4 rounded-3xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--card-hover-border)] hover:bg-[var(--surface-2)] transition-all flex items-center justify-between shadow-xs group cursor-pointer"
+                    className="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--card-hover-border)] hover:shadow-md transition-[box-shadow,border-color] flex items-center justify-between shadow-xs group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-[var(--primary-subtle)] text-[var(--primary)] flex items-center justify-center font-bold shadow-xs">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--primary-muted)] text-[var(--primary-deep)] flex items-center justify-center">
                         <Package className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                        <p className="text-sm font-semibold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
                           My Inventory
                         </p>
                         <p className="text-xs text-[var(--text-secondary)]">Manage & add produce listings</p>
@@ -393,14 +391,14 @@ export default function FarmerDashboardPage() {
 
                   <Link
                     href="/farmer/orders"
-                    className="p-4 rounded-3xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--card-hover-border)] hover:bg-[var(--surface-2)] transition-all flex items-center justify-between shadow-xs group cursor-pointer"
+                    className="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--card-hover-border)] hover:shadow-md transition-[box-shadow,border-color] flex items-center justify-between shadow-xs group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-[rgba(212,175,55,0.12)] text-[var(--gold)] flex items-center justify-center font-bold shadow-xs">
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,175,55,0.14)] text-[var(--gold-deep)] flex items-center justify-center">
                         <ClipboardList className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                        <p className="text-sm font-semibold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
                           Incoming Orders
                         </p>
                         <p className="text-xs text-[var(--text-secondary)]">Prepare, pack & fulfill</p>
@@ -418,12 +416,12 @@ export default function FarmerDashboardPage() {
       {/* Bank Details Modal */}
       {isBankMissing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-md bg-[var(--surface)] rounded-3xl p-6 shadow-2xl border border-[var(--primary)] max-h-[90vh] overflow-y-auto space-y-5">
+          <div role="dialog" aria-modal="true" aria-labelledby="bank-modal-title" className="w-full max-w-md bg-[var(--surface)] rounded-2xl p-5 sm:p-6 shadow-2xl border border-[var(--border)] max-h-[90vh] overflow-y-auto space-y-5">
             <div className="text-center space-y-2">
               <div className="w-12 h-12 rounded-2xl bg-[var(--primary-subtle)] text-[var(--primary)] flex items-center justify-center mx-auto shadow-xs">
                 <Landmark className="w-6 h-6" />
               </div>
-              <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+              <h2 id="bank-modal-title" className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
                 Complete Bank Details
               </h2>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed">

@@ -5,44 +5,44 @@ import { SkeletonBlock } from "./Card";
 /* ── Home Page Loader ─────────────────────────────────────────────────────── */
 export function HomeSkeleton() {
   return (
-    <div className="space-y-6 pt-4 animate-pulse">
+    <div className="space-y-6 pt-2 animate-pulse">
       {/* Greeting Skeleton */}
       <div className="space-y-2">
-        <SkeletonBlock height="h-4" className="w-24 rounded-md" />
-        <SkeletonBlock height="h-10" className="w-48 rounded-lg" />
-        <SkeletonBlock height="h-5" className="w-64 rounded-md" />
+        <SkeletonBlock height="h-3.5" className="w-24 rounded-md" />
+        <SkeletonBlock height="h-7" className="w-48 rounded-lg" />
       </div>
 
       {/* Search Bar Skeleton */}
-      <SkeletonBlock height="h-14" className="rounded-full" />
-
-      {/* Banners Slider Skeleton */}
-      <div className="flex gap-4 overflow-hidden">
-        <SkeletonBlock height="h-40" className="w-full rounded-3xl flex-shrink-0" />
-      </div>
+      <SkeletonBlock height="h-12" className="rounded-2xl" />
 
       {/* Category Chips Skeleton */}
-      <div className="flex gap-3 overflow-hidden py-1">
+      <div className="flex gap-2 overflow-hidden">
         {Array.from({ length: 5 }).map((_, i) => (
-          <SkeletonBlock key={i} height="h-10" className="w-24 rounded-full flex-shrink-0" />
+          <SkeletonBlock key={i} height="h-9" className="w-24 rounded-2xl flex-shrink-0" />
+        ))}
+      </div>
+
+      {/* Promo Strip Skeleton */}
+      <div className="flex gap-3 overflow-hidden md:grid md:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <SkeletonBlock key={i} height="h-[104px]" className="w-[84%] md:w-full rounded-2xl flex-shrink-0" />
         ))}
       </div>
 
       {/* Products Grid Skeleton */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-baseline">
-          <SkeletonBlock height="h-7" className="w-36 rounded-md" />
-          <SkeletonBlock height="h-10" className="w-10 rounded-full" />
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="border border-[var(--border)] bg-[var(--surface)] rounded-[24px] overflow-hidden p-4 space-y-4">
-              <SkeletonBlock height="h-44" className="rounded-2xl" />
-              <SkeletonBlock height="h-5" className="w-3/4 rounded-md" />
-              <SkeletonBlock height="h-4" className="w-1/2 rounded-md" />
-              <div className="flex justify-between items-center pt-2">
-                <SkeletonBlock height="h-6" className="w-16 rounded-md" />
-                <SkeletonBlock height="h-9" className="w-9 rounded-full" />
+      <div className="space-y-3">
+        <SkeletonBlock height="h-6" className="w-40 rounded-md" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="border border-[var(--border)] bg-[var(--surface)] rounded-2xl p-2 space-y-2.5">
+              <SkeletonBlock height="h-auto" className="aspect-square rounded-xl" />
+              <div className="px-1 space-y-2">
+                <SkeletonBlock height="h-3" className="w-1/2 rounded" />
+                <SkeletonBlock height="h-4" className="w-3/4 rounded" />
+                <div className="flex justify-between items-center pt-1">
+                  <SkeletonBlock height="h-5" className="w-12 rounded" />
+                  <SkeletonBlock height="h-8" className="w-14 rounded-full" />
+                </div>
               </div>
             </div>
           ))}

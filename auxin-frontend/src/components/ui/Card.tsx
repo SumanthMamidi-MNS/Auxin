@@ -79,41 +79,41 @@ export function Card({
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
-  pending:          { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
-  reserved:         { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
-  payment_pending:  { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
-  payment_confirmed:{ bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  accepted:         { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  packing:          { bg: "rgba(168,85,247,0.12)",  text: "#A855F7", dot: "#A855F7" },
-  ready_for_pickup: { bg: "rgba(56,189,248,0.12)",  text: "#38BDF8", dot: "#38BDF8" },
-  completed:        { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  delivered:        { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  approved:         { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  active:           { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  in_stock:         { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  available:        { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  sold_out:         { bg: "rgba(239,68,68,0.12)",   text: "#EF4444", dot: "#EF4444" },
-  out_of_stock:     { bg: "rgba(239,68,68,0.12)",   text: "#EF4444", dot: "#EF4444" },
-  paid:             { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  resolved:         { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  rejected:         { bg: "rgba(239,68,68,0.12)",   text: "#EF4444", dot: "#EF4444" },
-  cancelled:        { bg: "rgba(239,68,68,0.12)",   text: "#EF4444", dot: "#EF4444" },
-  failed:           { bg: "rgba(239,68,68,0.12)",   text: "#EF4444", dot: "#EF4444" },
-  suspended:        { bg: "rgba(239,68,68,0.12)",   text: "#EF4444", dot: "#EF4444" },
-  open:             { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
-  in_review:        { bg: "rgba(56,189,248,0.12)",  text: "#38BDF8", dot: "#38BDF8" },
-  assigned:         { bg: "rgba(168,85,247,0.12)",  text: "#A855F7", dot: "#A855F7" },
-  picked_up:        { bg: "rgba(99,102,241,0.12)",  text: "#818CF8", dot: "#818CF8" },
-  out_for_delivery: { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
-  created:          { bg: "rgba(161,161,170,0.12)", text: "#A1A1AA", dot: "#A1A1AA" },
-  refund_pending:   { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
-  refund_completed: { bg: "rgba(161,161,170,0.12)", text: "#71717A", dot: "#71717A" },
-  refunded:         { bg: "rgba(168,85,247,0.12)",  text: "#A855F7", dot: "#A855F7" },
-  inactive:         { bg: "rgba(161,161,170,0.12)", text: "#71717A", dot: "#71717A" },
-  customer:         { bg: "rgba(56,189,248,0.12)",  text: "#38BDF8", dot: "#38BDF8" },
-  farmer:           { bg: "rgba(34,197,94,0.12)",   text: "#22C55E", dot: "#22C55E" },
-  delivery:         { bg: "rgba(168,85,247,0.12)",  text: "#A855F7", dot: "#A855F7" },
-  admin:            { bg: "rgba(245,158,11,0.12)",  text: "#F59E0B", dot: "#F59E0B" },
+  pending:          { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
+  reserved:         { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
+  payment_pending:  { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
+  payment_confirmed:{ bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  accepted:         { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  packing:          { bg: "rgba(168,85,247,0.12)",  text: "#7E22CE", dot: "#A855F7" },
+  ready_for_pickup: { bg: "rgba(56,189,248,0.12)",  text: "#0369A1", dot: "#38BDF8" },
+  completed:        { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  delivered:        { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  approved:         { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  active:           { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  in_stock:         { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  available:        { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  sold_out:         { bg: "rgba(239,68,68,0.12)",   text: "#B91C1C", dot: "#EF4444" },
+  out_of_stock:     { bg: "rgba(239,68,68,0.12)",   text: "#B91C1C", dot: "#EF4444" },
+  paid:             { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  resolved:         { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  rejected:         { bg: "rgba(239,68,68,0.12)",   text: "#B91C1C", dot: "#EF4444" },
+  cancelled:        { bg: "rgba(239,68,68,0.12)",   text: "#B91C1C", dot: "#EF4444" },
+  failed:           { bg: "rgba(239,68,68,0.12)",   text: "#B91C1C", dot: "#EF4444" },
+  suspended:        { bg: "rgba(239,68,68,0.12)",   text: "#B91C1C", dot: "#EF4444" },
+  open:             { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
+  in_review:        { bg: "rgba(56,189,248,0.12)",  text: "#0369A1", dot: "#38BDF8" },
+  assigned:         { bg: "rgba(168,85,247,0.12)",  text: "#7E22CE", dot: "#A855F7" },
+  picked_up:        { bg: "rgba(99,102,241,0.12)",  text: "#4338CA", dot: "#818CF8" },
+  out_for_delivery: { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
+  created:          { bg: "rgba(161,161,170,0.12)", text: "#52525B", dot: "#A1A1AA" },
+  refund_pending:   { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
+  refund_completed: { bg: "rgba(161,161,170,0.12)", text: "#52525B", dot: "#71717A" },
+  refunded:         { bg: "rgba(168,85,247,0.12)",  text: "#7E22CE", dot: "#A855F7" },
+  inactive:         { bg: "rgba(161,161,170,0.12)", text: "#52525B", dot: "#71717A" },
+  customer:         { bg: "rgba(56,189,248,0.12)",  text: "#0369A1", dot: "#38BDF8" },
+  farmer:           { bg: "rgba(34,197,94,0.12)",   text: "#15803D", dot: "#22C55E" },
+  delivery:         { bg: "rgba(168,85,247,0.12)",  text: "#7E22CE", dot: "#A855F7" },
+  admin:            { bg: "rgba(245,158,11,0.12)",  text: "#B45309", dot: "#F59E0B" },
 };
 
 export function Badge({
@@ -130,7 +130,7 @@ export function Badge({
   const key = label.toLowerCase().replace(/\s+/g, "_");
   const config = STATUS_CONFIG[key] ?? {
     bg: "rgba(161,161,170,0.12)",
-    text: "#A1A1AA",
+    text: "#52525B",
     dot: "#A1A1AA",
   };
   const displayLabel = label.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -421,7 +421,7 @@ export function StatCard({
     <div
       onClick={onClick}
       className={clsx(
-        "flex flex-col gap-3 p-4 sm:p-5 rounded-2xl border bg-[var(--surface)] border-[var(--border)] transition-all shadow-xs relative overflow-hidden",
+        "flex flex-col gap-3 p-4 rounded-2xl border bg-[var(--surface)] border-[var(--border)] transition-all shadow-xs relative overflow-hidden min-w-0",
         onClick && "cursor-pointer hover:border-[var(--card-hover-border)] hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.99]",
         className
       )}
@@ -448,12 +448,12 @@ export function StatCard({
 
       <div>
         <p
-          className="text-2xl font-black text-[var(--text-primary)] leading-none tracking-tight"
+          className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] leading-none tracking-tight truncate tabular-nums"
           style={{ fontFamily: "var(--font-heading)" }}
         >
           {value}
         </p>
-        <p className="text-xs text-[var(--text-secondary)] mt-1.5 font-medium">{label}</p>
+        <p className="text-xs text-[var(--text-secondary)] mt-1.5 font-medium truncate">{label}</p>
       </div>
     </div>
   );

@@ -1,27 +1,24 @@
 "use client";
 /**
- * app/customer/home/page.tsx — Auxin v3.0
- * GOAT-Level Customer Marketplace Experience:
- * - Editorial Hero & Promotional Carousel
- * - Horizontal Category Rail
- * - Art-directed Seasonal Feature
- * - Personalized Discovery Rails (Buy It Again, Trending, Recently Viewed)
- * - 4/5-Column Responsive Product Grid with Staggered Entrance
- * - Floating Cart Bar & Trust Assurance Signals
+ * app/customer/home/page.tsx — Auxin v3.1
+ * Customer marketplace home:
+ * - Compact greeting, search and category chips
+ * - Slim promo strip (swipeable on phones)
+ * - "In season" rail + personalised rails (Buy It Again, Trending, Recently Viewed)
+ * - Uniform product grid: 2 / 3 / 4 / 5 columns
+ * - Floating cart bar & trust signals
  */
 
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  SlidersHorizontal, Leaf, Star, LayoutGrid, List,
-  ShoppingBag, RotateCcw, Flame, Eye, Sparkles, Check, ArrowRight
+  SlidersHorizontal, Leaf, Star, LayoutGrid, List, ArrowRight, MapPin
 } from "lucide-react";
 import { BrandHeader } from "@/components/layout/TopBar";
 import { CartAwareProductCard } from "@/components/features/ProductCard";
-import { ProductGrid } from "@/components/features/ProductGrid";
-import { HeroCarousel, type HeroSlide } from "@/components/features/HeroCarousel";
+import { ProductGrid, ProductRail } from "@/components/features/ProductGrid";
+import { HeroCarousel } from "@/components/features/HeroCarousel";
 import { CategoryRail, type CategoryItem } from "@/components/features/CategoryRail";
-import { SeasonalCard } from "@/components/features/SeasonalCard";
 import { SearchBar } from "@/components/features/SearchBar";
 import { SectionBlock } from "@/components/ui/SectionBlock";
 import { TrustBadge } from "@/components/ui/TrustBadge";
@@ -157,9 +154,9 @@ export default function CustomerHomePage() {
     [allProducts, recentlyViewedIds]
   );
 
-  // Recommendations: Seasonal Highlight (First featured seasonal item)
-  const seasonalHeroProduct = useMemo(
-    () => allProducts.find((p) => p.is_seasonal) || allProducts[0],
+  // In-season rail (only genuinely seasonal items; no fallback to an arbitrary product)
+  const seasonalProducts = useMemo(
+    () => allProducts.filter((p) => p.is_seasonal).slice(0, 12),
     [allProducts]
   );
 
@@ -192,6 +189,29 @@ export default function CustomerHomePage() {
 
   const firstName = user?.name?.split(" ")[0] ?? "Friend";
 
+  const resetFilters = () => {
+    setSearch("");
+    setSelectedCategory("all");
+    setOrganicOnly(false);
+    setSeasonalOnly(false);
+    setPriceRange("all");
+  };
+
+  const chipClass = (active: boolean, tone: "green" | "gold" = "green") =>
+    clsx(
+      "inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-semibold border transition-colors",
+      active
+        ? tone === "gold"
+          ? "bg-[var(--gold-subtle)] text-[var(--gold-deep)] border-[var(--gold)]"
+          : "bg-[var(--primary-muted)] text-[var(--primary-deep)] border-[var(--primary)]"
+        : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]"
+    );
+
+  const selectClass =
+    "w-full h-10 px-3 rounded-xl text-sm font-medium bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]";
+
+  const showDiscovery = !debouncedSearch && selectedCategory === "all";
+
   return (
     <div className="min-h-screen pb-32" style={{ background: "var(--bg)" }}>
       {/* Mobile Top Brand Header */}
@@ -202,326 +222,233 @@ export default function CustomerHomePage() {
           <HomeSkeleton />
         </div>
       ) : (
-        <div className="page-content py-3 sm:py-5 space-y-6 sm:space-y-8">
-          {/* ═══════════════════════════════════════════════════════════════════
-             1. HERO & SEARCH ZONE
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-stretch">
-            {/* Left: Personalized Greeting Card */}
-            <div className="lg:col-span-4 flex flex-col justify-between p-5 sm:p-6 rounded-3xl border border-[var(--border)] bg-gradient-to-br from-[var(--surface)] via-[var(--surface)] to-[var(--surface-warm)] shadow-xs">
-              <div>
-                <p className="text-overline mb-1.5 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
-                  {getGreeting()}
-                </p>
+        <div className="page-content pt-4 pb-6 sm:pt-6 space-y-7 sm:space-y-9">
+          {/* ── 1. Greeting, search & categories ───────────────────────────── */}
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-[var(--text-secondary)]">{getGreeting()}</p>
                 <h1
-                  className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] tracking-tight leading-tight"
+                  className="text-[22px] sm:text-[26px] font-bold text-[var(--text-primary)] tracking-tight leading-tight truncate"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
-                  Namaste, {firstName}!
+                  Namaste, {firstName}
                 </h1>
-                <p className="text-xs sm:text-sm text-[var(--primary-deep)] font-medium mt-1">
-                  100% Farm Direct • 25 KM Hyper-Local
-                </p>
               </div>
-
-              {/* Cart reminder or Trust Note */}
-              {cartCount > 0 ? (
-                <Link
-                  href="/customer/cart"
-                  className="mt-4 flex items-center justify-between p-3 rounded-2xl bg-[var(--primary-subtle)] border border-[var(--primary-ring)] hover:bg-[rgba(34,197,94,0.12)] transition-all group"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                      {cartCount}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-[var(--text-primary)]">Ready for checkout</p>
-                      <p className="text-[11px] text-[var(--text-secondary)]">Total: ₹{cartTotal.toFixed(2)}</p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-bold text-[var(--primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                    Cart <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </Link>
-              ) : (
-                <div className="mt-4 pt-3 border-t border-[var(--divider)] flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                  <Sparkles className="w-4 h-4 text-[var(--gold)] flex-shrink-0" />
-                  <span>Harvested fresh this morning within 25 km</span>
-                </div>
-              )}
+              <span className="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-semibold text-[var(--primary-deep)] bg-[var(--primary-muted)] flex-shrink-0">
+                <MapPin className="w-3.5 h-3.5" />
+                Farms within 25 km
+              </span>
             </div>
 
-            {/* Right: Search + Quick Stats */}
-            <div className="lg:col-span-8 flex flex-col justify-center gap-3.5">
-              <SearchBar
-                value={search}
-                onChange={setSearch}
-                onSelectSuggestion={(term) => setSearch(term)}
-                placeholder="Search fresh mangoes, organic spinach, wheat, potatoes..."
-              />
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              onSelectSuggestion={(term) => setSearch(term)}
+              placeholder="Search tomatoes, spinach, rice…"
+            />
 
-              {/* Category Rail (Single-row scrollable chips) */}
-              <CategoryRail
-                categories={railCategories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-              />
-            </div>
+            <CategoryRail
+              categories={railCategories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
           </div>
 
-          {/* ═══════════════════════════════════════════════════════════════════
-             2. PROMOTIONAL HERO CAROUSEL
-             ═══════════════════════════════════════════════════════════════════ */}
-          {!debouncedSearch && (
-            <HeroCarousel className="shadow-sm" />
-          )}
+          {/* ── 2. Slim promo strip ───────────────────────────────────────── */}
+          {!debouncedSearch && <HeroCarousel />}
 
-          {/* ═══════════════════════════════════════════════════════════════════
-             3. EDITORIAL SEASONAL HARVEST FEATURE
-             ═══════════════════════════════════════════════════════════════════ */}
-          {!debouncedSearch && seasonalHeroProduct && (
+          {/* ── 3. In season rail ─────────────────────────────────────────── */}
+          {!debouncedSearch && seasonalProducts.length > 0 && (
             <SectionBlock
-              overline="Editor's Pick"
-              title="Seasonal Spotlight"
-              subtitle="Special crop harvests at peak sweetness and farm freshness"
-            >
-              <SeasonalCard product={seasonalHeroProduct} />
-            </SectionBlock>
-          )}
-
-          {/* ═══════════════════════════════════════════════════════════════════
-             4. PERSONALIZED DISCOVERY RAILS
-             ═══════════════════════════════════════════════════════════════════ */}
-          {!debouncedSearch && selectedCategory === "all" && (
-            <>
-              {/* Buy It Again */}
-              {repeatProducts.length > 0 && (
-                <SectionBlock
-                  overline="Your Favorites"
-                  title="Buy It Again"
-                  subtitle="Quickly reorder produce from your previous orders"
-                  action={
-                    <span className="text-xs font-bold text-[var(--primary)] hover:underline cursor-pointer">
-                      View all ({repeatProducts.length})
-                    </span>
-                  }
-                >
-                  <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                    {repeatProducts.map((p) => (
-                      <div key={p.id} className="w-40 sm:w-48 flex-shrink-0">
-                        <CartAwareProductCard product={p} viewMode="grid" />
-                      </div>
-                    ))}
-                  </div>
-                </SectionBlock>
-              )}
-
-              {/* Trending Now */}
-              {trendingProducts.length > 0 && (
-                <SectionBlock
-                  overline="Popular This Week"
-                  title="Trending Harvests"
-                  subtitle="Most ordered farm produce by families in your 25 km circle"
-                >
-                  <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                    {trendingProducts.map((p) => (
-                      <div key={p.id} className="w-40 sm:w-48 flex-shrink-0">
-                        <CartAwareProductCard product={p} viewMode="grid" />
-                      </div>
-                    ))}
-                  </div>
-                </SectionBlock>
-              )}
-
-              {/* Recently Viewed */}
-              {recentlyViewedProducts.length > 0 && (
-                <SectionBlock
-                  overline="Browsing History"
-                  title="Recently Viewed"
-                  subtitle="Crops and fresh items you inspected earlier"
-                >
-                  <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                    {recentlyViewedProducts.map((p) => (
-                      <div key={p.id} className="w-40 sm:w-48 flex-shrink-0">
-                        <CartAwareProductCard product={p} viewMode="grid" />
-                      </div>
-                    ))}
-                  </div>
-                </SectionBlock>
-              )}
-            </>
-          )}
-
-          {/* ═══════════════════════════════════════════════════════════════════
-             5. MAIN CATALOGUE & PRODUCE GRID
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div id="catalog" className="pt-2">
-            <SectionBlock
-              overline="Marketplace"
-              title={
-                debouncedSearch
-                  ? `Results for "${debouncedSearch}"`
-                  : selectedCategory !== "all"
-                  ? categories.find((c) => c.slug === selectedCategory)?.name ?? "Products"
-                  : "All Fresh Produce"
-              }
-              subtitle={`${processedProducts.length} farm fresh items available`}
+              id="seasonal"
+              noMargin
+              overline="Editor's pick"
+              title="In season now"
+              subtitle="Picked at peak freshness this week"
               action={
-                <div className="flex items-center gap-2">
-                  {/* Filter Slider Trigger */}
-                  <button
-                    onClick={() => setShowFilters((v) => !v)}
-                    className={clsx(
-                      "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all duration-150 active:scale-95 shadow-xs",
-                      showFilters
-                        ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                        : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]"
-                    )}
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Filter</span>
-                  </button>
-
-                  {/* Grid / List Mode Toggle */}
-                  <div className="flex items-center p-0.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-xs">
-                    <button
-                      onClick={() => setViewMode("grid")}
-                      aria-label="Grid view"
-                      className={clsx(
-                        "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                        viewMode === "grid"
-                          ? "bg-[var(--primary-subtle)] text-[var(--primary)] font-bold"
-                          : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
-                      )}
-                    >
-                      <LayoutGrid className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode("list")}
-                      aria-label="List view"
-                      className={clsx(
-                        "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                        viewMode === "list"
-                          ? "bg-[var(--primary-subtle)] text-[var(--primary)] font-bold"
-                          : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
-                      )}
-                    >
-                      <List className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSeasonalOnly(true);
+                    setShowFilters(true);
+                    document.querySelector("#catalog")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="text-xs font-semibold text-[var(--text-link)] hover:underline"
+                >
+                  See all
+                </button>
               }
             >
-              {/* Filter Panel Drawer */}
-              {showFilters && (
-                <div className="mb-6 p-4 sm:p-5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-md animate-slide-down space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {/* Attributes */}
-                    <div className="space-y-2">
-                      <label className="text-overline">Produce Type</label>
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          onClick={() => setOrganicOnly((v) => !v)}
-                          className={clsx(
-                            "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all",
-                            organicOnly
-                              ? "bg-[var(--primary-subtle)] text-[var(--primary-deep)] border-[var(--primary)]"
-                              : "bg-[var(--surface-2)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]"
-                          )}
-                        >
-                          <Leaf className="w-3.5 h-3.5 text-[var(--primary)]" />
-                          <span>Organic Only</span>
-                        </button>
+              <ProductRail label="In season now">
+                {seasonalProducts.map((p) => (
+                  <CartAwareProductCard key={p.id} product={p} viewMode="grid" />
+                ))}
+              </ProductRail>
+            </SectionBlock>
+          )}
 
-                        <button
-                          onClick={() => setSeasonalOnly((v) => !v)}
-                          className={clsx(
-                            "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all",
-                            seasonalOnly
-                              ? "bg-[var(--gold-subtle)] text-[var(--gold-deep)] border-[var(--gold)]"
-                              : "bg-[var(--surface-2)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]"
-                          )}
-                        >
-                          <Star className="w-3.5 h-3.5 text-[var(--gold)]" fill={seasonalOnly ? "currentColor" : "none"} />
-                          <span>Seasonal Only</span>
-                        </button>
-                      </div>
-                    </div>
+          {/* ── 4. Personalised rails ─────────────────────────────────────── */}
+          {showDiscovery && repeatProducts.length > 0 && (
+            <SectionBlock noMargin overline="Your favourites" title="Buy it again">
+              <ProductRail label="Buy it again">
+                {repeatProducts.map((p) => (
+                  <CartAwareProductCard key={p.id} product={p} viewMode="grid" />
+                ))}
+              </ProductRail>
+            </SectionBlock>
+          )}
 
-                    {/* Price Range */}
-                    <div className="space-y-2">
-                      <label className="text-overline">Price Bracket</label>
-                      <select
-                        value={priceRange}
-                        onChange={(e: any) => setPriceRange(e.target.value)}
-                        className="w-full h-10 px-3 rounded-xl text-xs font-semibold bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-                      >
-                        <option value="all">All Prices</option>
-                        <option value="under50">Under ₹50</option>
-                        <option value="50to150">₹50 - ₹150</option>
-                        <option value="over150">Over ₹150</option>
-                      </select>
-                    </div>
+          {showDiscovery && trendingProducts.length > 0 && (
+            <SectionBlock
+              noMargin
+              overline="Popular this week"
+              title="Trending harvests"
+              subtitle="Most ordered by families near you"
+            >
+              <ProductRail label="Trending harvests">
+                {trendingProducts.map((p) => (
+                  <CartAwareProductCard key={p.id} product={p} viewMode="grid" />
+                ))}
+              </ProductRail>
+            </SectionBlock>
+          )}
 
-                    {/* Sorting */}
-                    <div className="space-y-2">
-                      <label className="text-overline">Sort Order</label>
-                      <select
-                        value={sortBy}
-                        onChange={(e: any) => setSortBy(e.target.value)}
-                        className="w-full h-10 px-3 rounded-xl text-xs font-semibold bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-                      >
-                        <option value="relevance">Relevance & Best Match</option>
-                        <option value="price_asc">Price: Low to High</option>
-                        <option value="price_desc">Price: High to Low</option>
-                        <option value="popularity">Most Sellers & Popular</option>
-                        <option value="newest">New Harvest Arrivals</option>
-                      </select>
-                    </div>
+          {showDiscovery && recentlyViewedProducts.length > 0 && (
+            <SectionBlock noMargin overline="Browsing history" title="Recently viewed">
+              <ProductRail label="Recently viewed">
+                {recentlyViewedProducts.map((p) => (
+                  <CartAwareProductCard key={p.id} product={p} viewMode="grid" />
+                ))}
+              </ProductRail>
+            </SectionBlock>
+          )}
+
+          {/* ── 5. Catalogue grid ─────────────────────────────────────────── */}
+          <SectionBlock
+            id="catalog"
+            noMargin
+            overline="Marketplace"
+            title={
+              debouncedSearch
+                ? `Results for "${debouncedSearch}"`
+                : selectedCategory !== "all"
+                ? categories.find((c) => c.slug === selectedCategory)?.name ?? "Products"
+                : "All fresh produce"
+            }
+            subtitle={`${processedProducts.length} ${processedProducts.length === 1 ? "item" : "items"} available`}
+            action={
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowFilters((v) => !v)}
+                  aria-expanded={showFilters}
+                  aria-controls="catalog-filters"
+                  className={clsx(
+                    "inline-flex items-center gap-1.5 h-9 px-3 rounded-xl text-xs font-semibold border transition-colors",
+                    showFilters
+                      ? "bg-[var(--primary)] text-white border-[var(--primary)]"
+                      : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]"
+                  )}
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Filter</span>
+                </button>
+
+                <div className="flex items-center p-0.5 h-9 rounded-xl border border-[var(--border)] bg-[var(--surface)]" role="group" aria-label="Layout">
+                  {([
+                    ["grid", LayoutGrid, "Grid view"],
+                    ["list", List, "List view"],
+                  ] as const).map(([mode, Icon, label]) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setViewMode(mode)}
+                      aria-label={label}
+                      aria-pressed={viewMode === mode}
+                      className={clsx(
+                        "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
+                        viewMode === mode
+                          ? "bg-[var(--primary-muted)] text-[var(--primary-deep)]"
+                          : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            }
+          >
+            {/* Filters */}
+            {showFilters && (
+              <div
+                id="catalog-filters"
+                className="mb-4 p-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-warm)] animate-slide-down grid grid-cols-1 sm:grid-cols-3 gap-4"
+              >
+                <div className="space-y-2">
+                  <p className="text-overline">Produce type</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={() => setOrganicOnly((v) => !v)} aria-pressed={organicOnly} className={chipClass(organicOnly)}>
+                      <Leaf className="w-3.5 h-3.5 text-[var(--primary-dim)]" />
+                      Organic only
+                    </button>
+                    <button type="button" onClick={() => setSeasonalOnly((v) => !v)} aria-pressed={seasonalOnly} className={chipClass(seasonalOnly, "gold")}>
+                      <Star className="w-3.5 h-3.5 text-[var(--gold)]" fill={seasonalOnly ? "currentColor" : "none"} />
+                      Seasonal only
+                    </button>
                   </div>
                 </div>
-              )}
 
-              {/* Product Grid / Empty State */}
-              {processedProducts.length === 0 ? (
-                <EmptyState
-                  illustration={<EmptySearchIllustration className="w-24 h-24" />}
-                  title="No Produce Found"
-                  description="We couldn't find items matching your filter criteria. Try resetting filters or searching for another crop."
-                  action={
-                    <button
-                      onClick={() => {
-                        setSearch("");
-                        setSelectedCategory("all");
-                        setOrganicOnly(false);
-                        setSeasonalOnly(false);
-                        setPriceRange("all");
-                      }}
-                      className="px-5 py-2 rounded-full text-xs font-bold bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] transition-all"
-                    >
-                      Reset All Filters
-                    </button>
-                  }
-                />
-              ) : (
-                <ProductGrid viewMode={viewMode} columns={4}>
-                  {processedProducts.map((product) => (
-                    <CartAwareProductCard
-                      key={product.id}
-                      product={product}
-                      viewMode={viewMode}
-                    />
-                  ))}
-                </ProductGrid>
-              )}
-            </SectionBlock>
-          </div>
+                <label className="space-y-2 block">
+                  <span className="text-overline block">Price</span>
+                  <select value={priceRange} onChange={(e) => setPriceRange(e.target.value as typeof priceRange)} className={selectClass}>
+                    <option value="all">All prices</option>
+                    <option value="under50">Under ₹50</option>
+                    <option value="50to150">₹50 – ₹150</option>
+                    <option value="over150">Over ₹150</option>
+                  </select>
+                </label>
 
-          {/* ═══════════════════════════════════════════════════════════════════
-             6. TRUST & QUALITY ASSURANCE FOOTER
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div className="pt-6 border-t border-[var(--divider)] grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <label className="space-y-2 block">
+                  <span className="text-overline block">Sort by</span>
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} className={selectClass}>
+                    <option value="relevance">Best match</option>
+                    <option value="price_asc">Price: low to high</option>
+                    <option value="price_desc">Price: high to low</option>
+                    <option value="popularity">Most sellers</option>
+                    <option value="newest">Newest arrivals</option>
+                  </select>
+                </label>
+              </div>
+            )}
+
+            {processedProducts.length === 0 ? (
+              <EmptyState
+                illustration={<EmptySearchIllustration className="w-24 h-24" />}
+                title="No produce found"
+                description="Nothing matches these filters. Try resetting them or searching for another crop."
+                action={
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                    className="h-10 px-5 rounded-full text-sm font-semibold bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] transition-colors"
+                  >
+                    Reset filters
+                  </button>
+                }
+              />
+            ) : (
+              <ProductGrid viewMode={viewMode}>
+                {processedProducts.map((product) => (
+                  <CartAwareProductCard key={product.id} product={product} viewMode={viewMode} />
+                ))}
+              </ProductGrid>
+            )}
+          </SectionBlock>
+
+          {/* ── 6. Trust signals ──────────────────────────────────────────── */}
+          <div className="pt-6 border-t border-[var(--divider)] grid grid-cols-1 md:grid-cols-3 gap-3">
             <TrustBadge type="escrow" variant="card" />
             <TrustBadge type="farm_direct" variant="card" />
             <TrustBadge type="fresh_local" variant="card" />
@@ -529,27 +456,27 @@ export default function CustomerHomePage() {
         </div>
       )}
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-         7. FLOATING CHECKOUT BAR (Mobile & Desktop)
-         ═══════════════════════════════════════════════════════════════════════ */}
+      {/* ── 7. Floating cart bar ──────────────────────────────────────────── */}
       {cartCount > 0 && (
-        <div className="fixed bottom-[80px] lg:bottom-6 left-0 right-0 px-4 max-w-md lg:max-w-lg mx-auto z-40 animate-slide-up">
+        <div className="fixed bottom-[80px] lg:bottom-6 left-0 right-0 lg:left-[240px] px-4 z-40 animate-slide-up pointer-events-none">
           <Link
             href="/customer/cart"
-            className="flex items-center justify-between px-6 h-13 rounded-full w-full bg-[var(--primary)] text-white shadow-xl shadow-[var(--primary-glow)] hover:bg-[var(--primary-hover)] transition-all active:scale-[0.98] font-bold"
+            className="pointer-events-auto mx-auto flex items-center justify-between gap-3 max-w-md h-14 pl-2 pr-5 rounded-2xl bg-[var(--primary-deep)] text-white shadow-xl hover:bg-[#0F3D22] transition-colors active:scale-[0.99]"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-black">
+            <span className="flex items-center gap-3 min-w-0">
+              <span className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold tabular-nums">
                 {cartCount}
-              </div>
-              <span className="text-sm tracking-wide">View Cart</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-base font-extrabold" style={{ fontFamily: "var(--font-heading)" }}>
-                ₹{cartTotal.toFixed(2)}
               </span>
-              <ArrowRight className="w-4 h-4" />
-            </div>
+              <span className="min-w-0 leading-tight">
+                <span className="block text-[11px] text-white/70">{cartCount === 1 ? "1 item" : `${cartCount} items`}</span>
+                <span className="block text-sm font-bold tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
+                  ₹{cartTotal.toFixed(2)}
+                </span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 text-sm font-semibold">
+              View cart <ArrowRight className="w-4 h-4" />
+            </span>
           </Link>
         </div>
       )}

@@ -13,7 +13,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
 import {
   ChevronLeft, ShoppingBag, Leaf, Calendar, Package, Plus, Minus,
   AlertTriangle, Star, ShieldCheck, Truck, Store, Heart, ChevronDown, Sparkles, ArrowRight
@@ -29,7 +28,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { ProductDetailSkeleton } from "@/components/ui/Skeletons";
 import toast from "react-hot-toast";
-import { getProductImage } from "@/components/features/ProductCard";
+import { ProductImage } from "@/components/features/ProductImage";
 import { clsx } from "clsx";
 
 export default function ProductDetailPage() {
@@ -178,12 +177,14 @@ export default function ProductDetailPage() {
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20">
             {/* Main Product Image Card */}
             <div className="relative rounded-3xl overflow-hidden border border-[var(--border)] bg-[var(--surface)] shadow-xs aspect-[4/5] w-full">
-              <Image
-                src={getProductImage(product.name, product.image_url)}
-                alt={product.name}
-                fill
-                className="object-cover"
-                priority
+              <ProductImage
+                name={product.name}
+                imageUrl={product.image_url}
+                categorySlug={product.category_slug}
+                sizes="(max-width: 1024px) 100vw, 480px"
+                width={900}
+                emojiClassName="text-[clamp(4rem,30cqw,9rem)]"
+                preload
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 

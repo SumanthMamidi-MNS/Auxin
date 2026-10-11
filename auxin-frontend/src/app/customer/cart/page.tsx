@@ -12,7 +12,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import {
   Trash2, ShoppingBag, ArrowRight,
   CreditCard, Shield, ChevronLeft, MapPin, Loader2, X, Leaf, Sparkles
@@ -31,7 +30,7 @@ import { profileApi } from "@/lib/profile";
 import { getErrorMessage } from "@/lib/api";
 import type { Address } from "@/types";
 import toast from "react-hot-toast";
-import { getProductImage } from "@/components/features/ProductCard";
+import { ProductImage } from "@/components/features/ProductImage";
 import { AddressManagerSheet } from "@/components/features/AddressManagerSheet";
 import { CartSkeleton } from "@/components/ui/Skeletons";
 import { clsx } from "clsx";
@@ -158,7 +157,7 @@ export default function CartPage() {
   const isLoading = step !== "idle";
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: "var(--bg)" }}>
+    <div className="min-h-screen pb-44 sm:pb-32" style={{ background: "var(--bg)" }}>
       <TopBar title="My Cart" showBack />
 
       <div className="page-content py-4 sm:py-6">
@@ -180,26 +179,27 @@ export default function CartPage() {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
             {/* ── Left Column: Cart Items (7 cols on desktop) ───────────── */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-[var(--divider)]">
+            <div className="lg:col-span-7 space-y-3">
+              <div className="flex items-end justify-between gap-3">
                 <div>
-                  <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
-                    Cart Items ({itemCount})
+                  <h2 className="text-lg font-bold text-[var(--text-primary)] leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                    {itemCount} {itemCount === 1 ? "item" : "items"} in cart
                   </h2>
-                  <p className="text-xs text-[var(--text-secondary)]">Direct from regional farmers</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">Direct from regional farmers</p>
                 </div>
                 <button
+                  type="button"
                   onClick={clearCart}
-                  className="text-xs font-semibold text-[var(--danger)] hover:underline cursor-pointer"
+                  className="h-8 px-2 -mr-2 rounded-lg text-xs font-semibold text-[var(--danger)] hover:bg-[var(--danger-bg)] transition-colors"
                 >
-                  Clear All
+                  Clear all
                 </button>
               </div>
 
               {/* Items List */}
-              <div className="space-y-3.5">
+              <ul className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xs divide-y divide-[var(--divider)]">
                 {items.map((item) => {
                   const { product, quantity, inventory_id } = item;
                   const itemId = inventory_id || product.id;
@@ -207,42 +207,35 @@ export default function CartPage() {
                   const itemKey = inventory_id ? `inv-${inventory_id}` : `prod-${product.id}`;
 
                   return (
-                    <div
-                      key={itemKey}
-                      className="flex gap-4 p-4 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs animate-fade-in items-center"
-                    >
+                    <li key={itemKey} className="flex gap-3 p-3 sm:p-4 animate-fade-in">
                       {/* Product Thumbnail */}
-                      <div className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden flex-shrink-0 bg-[var(--surface-2)]">
-                        <Image
-                          src={getProductImage(product.name, product.image_url)}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
+                      <div className="relative w-[72px] h-[72px] sm:w-20 sm:h-20 rounded-xl overflow-hidden flex-shrink-0">
+                        <ProductImage name={product.name} imageUrl={product.image_url} sizes="80px" width={200} />
                       </div>
 
                       {/* Info & Quantity Controls */}
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <h3 className="font-bold text-sm sm:text-base text-[var(--text-primary)] truncate" style={{ fontFamily: "var(--font-heading)" }}>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-sm sm:text-[15px] text-[var(--text-primary)] truncate leading-5" style={{ fontFamily: "var(--font-heading)" }}>
                               {product.name}
                             </h3>
-                            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                              ₹{product.price}/{product.unit} {inventory_id ? "· Fresh Harvest" : ""}
+                            <p className="text-xs text-[var(--text-secondary)] mt-0.5 truncate">
+                              ₹{product.price} / {product.unit}{inventory_id ? " · Fresh harvest" : ""}
                             </p>
                           </div>
 
                           <button
+                            type="button"
                             onClick={() => removeItem(itemId, isInv)}
-                            aria-label="Remove item"
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--danger)] hover:bg-[var(--danger-bg)] transition-all"
+                            aria-label={`Remove ${product.name}`}
+                            className="w-8 h-8 -mt-1 -mr-1 rounded-lg flex items-center justify-center flex-shrink-0 text-[var(--text-tertiary)] hover:text-[var(--danger)] hover:bg-[var(--danger-bg)] transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
 
-                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-[var(--divider)]">
+                        <div className="flex items-center justify-between gap-2 mt-2">
                           <QuantityStepper
                             quantity={quantity}
                             onIncrement={() => updateQty(itemId, quantity + 1, isInv)}
@@ -250,33 +243,31 @@ export default function CartPage() {
                             size="sm"
                           />
 
-                          <span className="font-black text-sm sm:text-base text-[var(--text-primary)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
+                          <span className="font-bold text-sm sm:text-base text-[var(--text-primary)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
                             ₹{(product.price * quantity).toFixed(2)}
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </li>
                   );
                 })}
-              </div>
+              </ul>
 
               {/* Trust Badge Card */}
-              <div className="pt-2">
-                <TrustBadge type="escrow" variant="card" />
-              </div>
+              <TrustBadge type="escrow" variant="card" />
             </div>
 
             {/* ── Right Column: Summary & Checkout (5 cols on desktop) ─── */}
-            <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+            <div className="lg:col-span-5 space-y-3 lg:sticky lg:top-20">
               {/* Delivery Address Card */}
-              <div className="p-5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-3.5">
-                <div className="flex items-center justify-between pb-3 border-b border-[var(--divider)]">
+              <section className="p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xs">
+                <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[var(--primary-subtle)] text-[var(--primary)] flex items-center justify-center">
+                    <span className="w-8 h-8 rounded-lg bg-[var(--primary-muted)] text-[var(--primary-deep)] flex items-center justify-center">
                       <MapPin className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
-                      Delivery Address
+                    </span>
+                    <h3 className="font-semibold text-sm text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
+                      Delivery address
                     </h3>
                   </div>
 
@@ -286,17 +277,17 @@ export default function CartPage() {
                       setSheetTab("list");
                       setShowAddressSelect(true);
                     }}
-                    className="text-xs font-bold text-[var(--primary)] hover:underline cursor-pointer"
+                    className="h-8 px-3 rounded-lg text-xs font-semibold text-[var(--primary-deep)] border border-[var(--border)] hover:border-[var(--primary)] transition-colors"
                   >
                     Change
                   </button>
                 </div>
 
                 {address ? (
-                  <div className="space-y-1.5 text-xs">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-sm text-[var(--text-primary)]">{user?.name}</span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--primary-subtle)] text-[var(--primary-deep)] uppercase tracking-wider">
+                  <div className="space-y-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm text-[var(--text-primary)] truncate">{user?.name}</span>
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[var(--surface-2)] text-[var(--text-secondary)] uppercase tracking-wider">
                         {address.address_type}
                       </span>
                     </div>
@@ -308,56 +299,80 @@ export default function CartPage() {
                 ) : (
                   <p className="text-xs text-[var(--text-tertiary)]">No address selected</p>
                 )}
-              </div>
+              </section>
 
               {/* Bill Details Summary Card */}
-              <div className="p-5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-xs space-y-3.5">
-                <h3 className="font-bold text-sm text-[var(--text-primary)] pb-3 border-b border-[var(--divider)]" style={{ fontFamily: "var(--font-heading)" }}>
-                  Bill Details
+              <section className="p-4 sm:p-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xs">
+                <h3 className="font-semibold text-sm text-[var(--text-primary)] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
+                  Bill details
                 </h3>
 
-                <div className="space-y-2 text-xs sm:text-sm">
+                <dl className="space-y-2 text-sm">
                   <div className="flex justify-between text-[var(--text-secondary)]">
-                    <span>Item Total ({itemCount} {itemCount === 1 ? "item" : "items"})</span>
-                    <span className="font-semibold text-[var(--text-primary)] tabular-nums">₹{cartTotal.toFixed(2)}</span>
+                    <dt>Item total</dt>
+                    <dd className="font-medium text-[var(--text-primary)] tabular-nums">₹{cartTotal.toFixed(2)}</dd>
                   </div>
 
                   <div className="flex justify-between text-[var(--text-secondary)]">
-                    <span>Delivery Fee (25 KM Direct)</span>
-                    <span className="font-bold text-[var(--primary)] uppercase tracking-wider text-xs">FREE</span>
+                    <dt>Delivery (within 25 km)</dt>
+                    <dd className="font-semibold text-[var(--primary-dim)]">Free</dd>
                   </div>
 
                   <div className="flex justify-between text-[var(--text-secondary)]">
-                    <span>Escrow Protection Fee</span>
-                    <span className="font-bold text-[var(--primary)] uppercase tracking-wider text-xs">FREE</span>
+                    <dt>Escrow protection</dt>
+                    <dd className="font-semibold text-[var(--primary-dim)]">Free</dd>
                   </div>
 
-                  <div className="pt-3 border-t border-[var(--divider)] flex justify-between items-baseline font-black">
-                    <span className="text-sm text-[var(--text-primary)]">To Pay</span>
-                    <span className="text-xl sm:text-2xl text-[var(--primary-deep)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
+                  <div className="pt-3 mt-1 border-t border-dashed border-[var(--border-2)] flex justify-between items-baseline">
+                    <dt className="font-semibold text-[var(--text-primary)]">To pay</dt>
+                    <dd className="text-xl font-bold text-[var(--text-primary)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
                       ₹{cartTotal.toFixed(2)}
-                    </span>
+                    </dd>
                   </div>
-                </div>
+                </dl>
 
-                {/* Primary Checkout Button */}
-                <div className="pt-2">
+                {/* Primary Checkout Button (desktop / tablet; phones use the sticky bar) */}
+                <div className="pt-4 hidden sm:block">
                   <Button
                     variant="primary"
-                    size="xl"
+                    size="lg"
                     fullWidth
                     loading={isLoading}
                     onClick={handleCheckout}
                     iconRight={<ArrowRight className="w-4 h-4" />}
                   >
-                    {isLoading ? "Processing Payment…" : `Proceed to Payment · ₹${cartTotal.toFixed(2)}`}
+                    {isLoading ? "Processing payment…" : `Proceed to pay ₹${cartTotal.toFixed(2)}`}
                   </Button>
                 </div>
-              </div>
+              </section>
             </div>
           </div>
         )}
       </div>
+
+      {/* Sticky checkout bar for phones (sits above the bottom navigation) */}
+      {!loadingAddress && items.length > 0 && (
+        <div className="sm:hidden fixed left-0 right-0 bottom-[64px] z-40 px-4 pt-3 pb-3 bg-[var(--surface-overlay)] backdrop-blur-xl border-t border-[var(--border)]">
+          <div className="flex items-center gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] text-[var(--text-secondary)] leading-none">To pay</p>
+              <p className="text-lg font-bold text-[var(--text-primary)] tabular-nums leading-tight mt-1" style={{ fontFamily: "var(--font-heading)" }}>
+                ₹{cartTotal.toFixed(2)}
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              className="flex-1"
+              loading={isLoading}
+              onClick={handleCheckout}
+              iconRight={<ArrowRight className="w-4 h-4" />}
+            >
+              {isLoading ? "Processing…" : "Proceed to pay"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Address Selection Modal Sheet */}
       {showAddressSelect && (

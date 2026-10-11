@@ -1,8 +1,8 @@
 "use client";
 /**
- * components/ui/SectionBlock.tsx — Auxin v3.0
- * Section container with consistent typographic hierarchy, overline tag,
- * title (Poppins), subtitle, trailing action, and responsive spacing.
+ * components/ui/SectionBlock.tsx — Auxin v3.1
+ * Section container with a compact, consistent header:
+ * optional overline, title (Poppins), one-line subtitle and trailing action.
  */
 
 import { clsx } from "clsx";
@@ -17,6 +17,7 @@ interface SectionBlockProps {
   className?: string;
   headerClassName?: string;
   noMargin?: boolean;
+  id?: string;
 }
 
 export function SectionBlock({
@@ -28,23 +29,24 @@ export function SectionBlock({
   className,
   headerClassName,
   noMargin = false,
+  id,
 }: SectionBlockProps) {
   return (
-    <section className={clsx(!noMargin && "mb-8 lg:mb-12", className)}>
+    <section id={id} className={clsx(!noMargin && "mb-8 lg:mb-10", "scroll-mt-20", className)}>
       {/* Header Row */}
-      <div className={clsx("flex items-end justify-between mb-3.5 lg:mb-5 gap-3", headerClassName)}>
-        <div>
+      <div className={clsx("flex items-end justify-between mb-3 lg:mb-4 gap-3", headerClassName)}>
+        <div className="min-w-0">
           {overline && (
-            <p className="text-overline mb-1 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
-              {overline}
-            </p>
+            <p className="text-overline mb-0.5 text-[10px] sm:text-[11px]">{overline}</p>
           )}
-          <h2 className="text-h2 text-[var(--text-primary)] font-bold tracking-tight">
+          <h2
+            className="text-lg sm:text-xl font-bold tracking-tight text-[var(--text-primary)] leading-tight truncate"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
             {title}
           </h2>
           {subtitle && (
-            <p className="text-sm text-[var(--text-secondary)] mt-0.5 max-w-xl">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-0.5 truncate">
               {subtitle}
             </p>
           )}

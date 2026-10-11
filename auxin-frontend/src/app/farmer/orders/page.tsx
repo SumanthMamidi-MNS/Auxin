@@ -26,6 +26,15 @@ import { clsx } from "clsx";
 const TABS = ["incoming", "packing", "ready_for_pickup", "in_transit", "completed", "cancelled"] as const;
 type Tab = typeof TABS[number];
 
+const TAB_LABELS: Record<Tab, string> = {
+  incoming: "Incoming",
+  packing: "Packing",
+  ready_for_pickup: "Ready for pickup",
+  in_transit: "In transit",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+
 function getDeliveryStatusLabel(status: string | undefined | null): string {
   switch (status) {
     case "pending": return "Searching for nearby courier within 25 km...";
@@ -103,31 +112,33 @@ export default function FarmerOrdersPage() {
     <div className="min-h-screen pb-28" style={{ background: "var(--bg)" }}>
       <TopBar title="Farm Fulfillment Pipeline" />
 
-      <div className="page-content py-4 sm:py-6 space-y-6">
+      <div className="page-content py-4 sm:py-6 space-y-4 sm:space-y-5">
         {/* Pipeline Tab Bar */}
-        <div className="flex items-center gap-2 p-1.5 rounded-3xl border border-[var(--border)] bg-[var(--surface)] overflow-x-auto scrollbar-hide shadow-xs">
+        <div role="tablist" aria-label="Order stages" className="flex items-center gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 pb-0.5">
           {TABS.map((tab) => {
             const active = activeTab === tab;
             const count = counts[tab] || 0;
-            const label = tab.replace(/_/g, " ").replace(/ \w/g, (c) => c.toUpperCase());
+            const label = TAB_LABELS[tab];
 
             return (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
+                role="tab"
+                aria-selected={active}
                 className={clsx(
-                  "flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
+                  "flex items-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-colors flex-shrink-0",
                   active
-                    ? "bg-[var(--primary)] text-white shadow-xs"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
+                    ? "bg-[var(--primary-deep)] text-white border-[var(--primary-deep)]"
+                    : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)]"
                 )}
               >
                 <span>{label}</span>
                 {count > 0 && (
                   <span
                     className={clsx(
-                      "px-1.5 py-0.2 rounded-full text-[10px] font-black",
-                      active ? "bg-white/25 text-white" : "bg-[var(--primary-subtle)] text-[var(--primary-deep)]"
+                      "min-w-[18px] h-[18px] px-1 inline-flex items-center justify-center rounded-full text-[10px] font-bold tabular-nums",
+                      active ? "bg-white/20 text-white" : "bg-[var(--primary-muted)] text-[var(--primary-deep)]"
                     )}
                   >
                     {count}
@@ -145,12 +156,12 @@ export default function FarmerOrdersPage() {
           <div className="py-12">
             <EmptyState
               icon={<ClipboardList className="w-10 h-10 opacity-30 text-[var(--primary)]" />}
-              title={`No ${activeTab.replace(/_/g, " ")} orders`}
+              title={`No ${TAB_LABELS[activeTab].toLowerCase()} orders`}
               description="New orders placed by regional customers will appear here automatically."
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-start">
             {filteredOrders.map((order) => {
               const delivery = order.delivery;
               const hasPartner = !!delivery?.delivery_partner;
@@ -160,23 +171,22 @@ export default function FarmerOrdersPage() {
               const isLate = new Date() > deadlineTime;
 
               return (
-                <div
+                <article
                   key={order.id}
                   className={clsx(
-                    "p-5 rounded-3xl border bg-[var(--surface)] shadow-xs transition-all hover:shadow-md space-y-3.5",
-                    isLate && order.status !== "completed" ? "border-amber-400 ring-1 ring-amber-200" : "border-[var(--border)]"
+                    "p-4 sm:p-5 rounded-2xl border bg-[var(--surface)] shadow-xs space-y-3",
+                    isLate && order.status !== "completed" ? "border-[var(--warning-border)] ring-1 ring-[var(--warning-bg)]" : "border-[var(--border)]"
                   )}
                 >
                   {/* Order Top Summary */}
-                  <div className="flex items-start justify-between pb-3 border-b border-[var(--divider)]">
-                    <div>
-                      <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">
-                        Placed {orderTime.toLocaleDateString("en-IN", { day: "numeric", month: "short" })} at {orderTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                      <h3 className="text-base font-black text-[var(--text-primary)] mt-0.5" style={{ fontFamily: "var(--font-heading)" }}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-[15px] font-semibold text-[var(--text-primary)] leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
                         Order #{order.id}
                       </h3>
-                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">Customer #{order.customer_id}</p>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1 truncate">
+                        {orderTime.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}, {orderTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · Customer #{order.customer_id}
+                      </p>
                     </div>
 
                     <Badge label={order.status} dot />
@@ -186,29 +196,29 @@ export default function FarmerOrdersPage() {
                   {order.status !== "completed" && order.status !== "cancelled" && (
                     <div
                       className={clsx(
-                        "flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold shadow-xs",
+                        "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border",
                         isLate
-                          ? "bg-[var(--danger-bg)] text-[var(--danger)] border border-[var(--danger-border)]"
-                          : "bg-[var(--primary-subtle)] text-[var(--primary-deep)] border border-[var(--primary-glow)]"
+                          ? "bg-[var(--danger-bg)] text-[#B91C1C] border-[var(--danger-border)]"
+                          : "bg-[var(--surface-2)] text-[var(--text-primary)] border-[var(--divider)]"
                       )}
                     >
                       <Clock className="w-4 h-4 flex-shrink-0" />
                       <span>
                         {isLate
-                          ? "⚠️ Overdue preparation — Pack items immediately"
+                          ? "Overdue: pack items immediately"
                           : `Pack Before: ${deadlineTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} (2h SLA)`}
                       </span>
                     </div>
                   )}
 
                   {/* Line Items */}
-                  <div className="p-3.5 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
-                    <p className="text-overline">Harvest Items to Prepare</p>
-                    <div className="space-y-1.5 divide-y divide-[var(--divider)]">
+                  <div className="px-3 py-2.5 rounded-xl bg-[var(--surface-warm)] border border-[var(--divider)]">
+                    <p className="text-[11px] font-medium text-[var(--text-secondary)] mb-1.5">Items to prepare</p>
+                    <div className="divide-y divide-[var(--divider)]">
                       {order.items.map((item) => (
-                        <div key={item.id} className="pt-1.5 first:pt-0 flex justify-between text-xs font-medium">
-                          <span className="text-[var(--text-primary)]">
-                            📦 {item.product_name || `Crop #${item.product_id}`} <span className="text-[var(--text-tertiary)] font-bold">× {item.quantity}</span>
+                        <div key={item.id} className="py-1.5 first:pt-0 last:pb-0 flex justify-between gap-3 text-[13px]">
+                          <span className="text-[var(--text-primary)] min-w-0 truncate">
+                            {item.product_name || `Crop #${item.product_id}`} <span className="text-[var(--text-tertiary)] font-semibold">× {item.quantity}</span>
                           </span>
                           <span className="font-bold text-[var(--text-primary)] tabular-nums">
                             ₹{Number(item.subtotal).toFixed(2)}
@@ -220,9 +230,11 @@ export default function FarmerOrdersPage() {
 
                   {/* Delivery & Partner Info */}
                   {delivery && (
-                    <div className="p-3.5 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] space-y-2 text-xs">
-                      <p className="text-overline">Courier Partner Dispatch</p>
-                      <p className="text-xs text-[var(--text-secondary)] font-medium">{getDeliveryStatusLabel(delivery.status)}</p>
+                    <div className="px-3 py-2.5 rounded-xl bg-[var(--surface-warm)] border border-[var(--divider)] space-y-2 text-xs">
+                      <div className="flex items-center gap-2">
+                        <Truck className="w-3.5 h-3.5 text-[var(--primary-dim)] flex-shrink-0" />
+                        <p className="text-xs text-[var(--text-primary)] font-medium">{getDeliveryStatusLabel(delivery.status)}</p>
+                      </div>
 
                       {hasPartner && (
                         <div className="flex items-center justify-between pt-2 border-t border-[var(--divider)]">
@@ -236,9 +248,9 @@ export default function FarmerOrdersPage() {
 
                           <a
                             href={`tel:${delivery.delivery_partner?.phone}`}
-                            className="px-3 py-1 rounded-xl border border-[var(--primary-glow)] text-[10px] font-bold text-[var(--primary-deep)] bg-white shadow-xs hover:bg-[var(--primary-subtle)]"
+                            className="inline-flex items-center gap-1 h-8 px-3 rounded-lg border border-[var(--border)] text-xs font-semibold text-[var(--primary-deep)] bg-[var(--surface)] hover:border-[var(--primary)]"
                           >
-                            <Phone className="w-3 h-3 inline mr-1" /> Call
+                            <Phone className="w-3.5 h-3.5" /> Call
                           </a>
                         </div>
                       )}
@@ -246,10 +258,11 @@ export default function FarmerOrdersPage() {
                   )}
 
                   {/* Action Controls */}
-                  <div className="flex items-center justify-between pt-2 border-t border-[var(--divider)]">
-                    <span className="text-xs font-bold text-[var(--text-primary)]">
-                      Total Payout: <span className="text-sm font-black text-[var(--primary-deep)]">₹{Number(order.total_amount).toFixed(2)}</span>
-                    </span>
+                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-[var(--divider)]">
+                    <div className="leading-tight">
+                      <p className="text-[11px] text-[var(--text-secondary)]">Total payout</p>
+                      <p className="text-base font-bold text-[var(--text-primary)] tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>₹{Number(order.total_amount).toFixed(2)}</p>
+                    </div>
 
                     {order.status === "accepted" && (
                       <Button
@@ -276,12 +289,12 @@ export default function FarmerOrdersPage() {
                     )}
 
                     {order.status === "ready_for_pickup" && (
-                      <span className="text-xs font-bold text-[var(--primary)] flex items-center gap-1">
-                        🚚 Awaiting Courier
+                      <span className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-[var(--info-bg)] text-xs font-semibold text-[#075985]">
+                        <Truck className="w-3.5 h-3.5" /> Awaiting courier
                       </span>
                     )}
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>

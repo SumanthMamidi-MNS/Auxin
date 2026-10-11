@@ -11,16 +11,18 @@ import { clsx } from "clsx";
 export interface TimelineStep {
   id: string;
   label: string;
+  /** Compact label used by the horizontal stepper on small screens */
+  short?: string;
   description?: string;
   icon: typeof Check;
 }
 
 const MILESTONES: TimelineStep[] = [
-  { id: "confirmed", label: "Order Confirmed", description: "Payment escrow locked", icon: ClipboardList },
-  { id: "packing", label: "Farm Packing", description: "Fresh harvest prepared", icon: Package },
-  { id: "assigned", label: "Courier Assigned", description: "Partner heading to farm", icon: Navigation },
-  { id: "out_for_delivery", label: "On the Road", description: "Heading to your doorstep", icon: Truck },
-  { id: "delivered", label: "Delivered", description: "Doorstep OTP verified", icon: Home },
+  { id: "confirmed", label: "Order Confirmed", short: "Confirmed", description: "Payment escrow locked", icon: ClipboardList },
+  { id: "packing", label: "Farm Packing", short: "Packing", description: "Fresh harvest prepared", icon: Package },
+  { id: "assigned", label: "Courier Assigned", short: "Courier", description: "Partner heading to farm", icon: Navigation },
+  { id: "out_for_delivery", label: "On the Road", short: "On the way", description: "Heading to your doorstep", icon: Truck },
+  { id: "delivered", label: "Delivered", short: "Delivered", description: "Doorstep OTP verified", icon: Home },
 ];
 
 function getStepIndex(status: string): number {
@@ -133,12 +135,12 @@ export function OrderTimeline({
     <div className={clsx("w-full py-2", className)}>
       <div className="flex items-center justify-between relative">
         {/* Background Connecting Line */}
-        <div className="absolute left-4 right-4 top-4.5 h-0.5 bg-[var(--border)] -z-0" />
+        <div className="absolute left-[10%] right-[10%] top-[15px] sm:top-[17px] h-0.5 bg-[var(--border)] -z-0" />
         
         {/* Active Progress Connecting Line */}
         <div
-          className="absolute left-4 top-4.5 h-0.5 bg-[var(--primary)] -z-0 transition-all duration-500"
-          style={{ width: `${(currentIndex / (MILESTONES.length - 1)) * 100}%` }}
+          className="absolute left-[10%] top-[15px] sm:top-[17px] h-0.5 bg-[var(--primary)] -z-0 transition-all duration-500"
+          style={{ width: `${isFailed ? 0 : (currentIndex / (MILESTONES.length - 1)) * 80}%` }}
         />
 
         {MILESTONES.map((step, idx) => {
@@ -152,9 +154,9 @@ export function OrderTimeline({
                 className={clsx(
                   "w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-xs",
                   isCurrent
-                    ? "bg-[var(--primary)] text-white shadow-md shadow-[var(--primary-glow)] scale-110"
+                    ? "bg-[var(--primary)] text-white ring-4 ring-[var(--primary-glow)]"
                     : isDone
-                    ? "bg-[var(--primary-subtle)] text-[var(--primary)] border-2 border-[var(--primary)]"
+                    ? "bg-[var(--primary-muted)] text-[var(--primary-deep)] border-2 border-[var(--primary)]"
                     : "bg-[var(--surface)] text-[var(--text-tertiary)] border-2 border-[var(--border)]"
                 )}
               >
@@ -167,7 +169,7 @@ export function OrderTimeline({
 
               <span
                 className={clsx(
-                  "text-[9px] sm:text-[11px] font-bold tracking-tight px-1 truncate max-w-[65px] sm:max-w-none",
+                  "text-[10px] sm:text-[11px] font-semibold leading-tight px-0.5",
                   isCurrent
                     ? "text-[var(--primary-deep)] font-extrabold"
                     : isDone
@@ -175,7 +177,8 @@ export function OrderTimeline({
                     : "text-[var(--text-tertiary)]"
                 )}
               >
-                {step.label}
+                <span className="sm:hidden">{step.short ?? step.label}</span>
+                <span className="hidden sm:inline">{step.label}</span>
               </span>
             </div>
           );

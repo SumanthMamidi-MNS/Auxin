@@ -1,49 +1,26 @@
 "use client";
 /**
- * components/features/ProductCard.tsx — Auxin v3.0
- * Premium marketplace product cards supporting Grid and List layouts,
- * aggregated CatalogueProduct types, and interactive local storage wishlists.
+ * components/features/ProductCard.tsx — Auxin v3.1
+ * Uniform marketplace product cards (grid + list).
+ *
+ * Every card has the same anatomy and fixed row heights, so cards line up
+ * regardless of name length, badges, or stock state:
+ *   square image (object-cover) · meta row · 1-line title · sub row · price/action row
+ * Hover only changes shadow/border (no lift, no layout shift).
  */
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Minus, Leaf, Heart, Star, Store, AlertTriangle, Sparkles } from "lucide-react";
+import { Plus, Minus, Leaf, Heart, Star, Store, AlertTriangle } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
-import { PriceBadge } from "@/components/ui/PriceBadge";
-import { ImageWithOverlay } from "@/components/ui/ImageWithOverlay";
+import { ProductImage, getProductImage, resolveProductImage } from "@/components/features/ProductImage";
 import toast from "react-hot-toast";
 import { clsx } from "clsx";
 
-/* ── Image resolver with optimized Unsplash sizing ──────────────────────── */
-
-const PRODUCT_IMAGES: Record<string, string> = {
-  tomato:    "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=600&q=80&fit=crop",
-  mango:     "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=600&q=80&fit=crop",
-  rice:      "https://images.unsplash.com/photo-1536304993881-ff86e6d42a46?w=600&q=80&fit=crop",
-  spinach:   "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&q=80&fit=crop",
-  potato:    "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&q=80&fit=crop",
-  onion:     "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=600&q=80&fit=crop",
-  wheat:     "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80&fit=crop",
-  carrot:    "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&q=80&fit=crop",
-  brinjal:   "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&q=80&fit=crop",
-  apple:     "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&q=80&fit=crop",
-  banana:    "https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=600&q=80&fit=crop",
-  lemon:     "https://images.unsplash.com/photo-1582476561868-cd4d22d7cd1e?w=600&q=80&fit=crop",
-  cucumber:  "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=600&q=80&fit=crop",
-  capsicum:  "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=600&q=80&fit=crop",
-  default:   "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80&fit=crop",
-};
-
-export function getProductImage(name: string, url?: string | null): string {
-  if (url && url.trim() !== "") return url;
-  const key = name.toLowerCase();
-  for (const k of Object.keys(PRODUCT_IMAGES)) {
-    if (key.includes(k)) return PRODUCT_IMAGES[k];
-  }
-  return PRODUCT_IMAGES.default;
-}
+/* Image resolution lives in ProductImage.tsx; re-exported for existing imports. */
+export { getProductImage, resolveProductImage };
 
 /* ── Wishlist State Manager ─────────────────────────────────────────────── */
 
@@ -86,6 +63,13 @@ export function useWishlist(productId: number) {
   return { isWishlisted, toggleWishlist };
 }
 
+/* ── Helpers ───────────────────────────────────────────────────────────── */
+
+function formatPrice(n: number) {
+  const v = Number(n);
+  return Number.isInteger(v) ? `${v}` : v.toFixed(2);
+}
+
 /* ── CartAwareProductCard ────────────────────────────────────────────────── */
 
 interface CardProps {
@@ -98,7 +82,7 @@ export function CartAwareProductCard({ product, viewMode = "grid" }: CardProps) 
   const { items, addItem, updateQty } = useCartStore();
   const { isWishlisted, toggleWishlist } = useWishlist(product.id);
 
-  // Eagerly resolve properties for CatalogueProduct (multi-farmer) vs standard Product (single-supplier)
+  // Resolve properties for CatalogueProduct (multi-farmer) vs standard Product (single-supplier)
   const isCatalogue = "min_price" in product;
   const price = isCatalogue ? product.min_price : product.price;
   const maxPrice = isCatalogue ? product.max_price : product.price;
@@ -107,8 +91,10 @@ export function CartAwareProductCard({ product, viewMode = "grid" }: CardProps) 
   const hasOrganic = isCatalogue ? product.has_organic : product.is_organic;
   const isSeasonal = !!product.is_seasonal;
   const outOfStock = quantity === 0;
+  const lowStock = !outOfStock && quantity <= 10;
+  const href = `/customer/product/${product.id}`;
 
-  // Retrieve current cart quantity for this master product
+  // Current cart quantity for this master product
   const cartItems = items.filter(
     (i) => i.master_product_id === product.id || i.product.id === product.id
   );
@@ -116,9 +102,10 @@ export function CartAwareProductCard({ product, viewMode = "grid" }: CardProps) 
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (isCatalogue) {
-      // For multi-seller catalog entries, go to details page to choose farmer
-      router.push(`/customer/product/${product.id}`);
+      // Multi-seller catalogue entries: go to the details page to choose a farmer
+      router.push(href);
       return;
     }
     addItem(product, 1);
@@ -127,212 +114,254 @@ export function CartAwareProductCard({ product, viewMode = "grid" }: CardProps) 
 
   const handleDec = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (isCatalogue) return;
     updateQty(product.id, cartQty - 1);
   };
 
   const isList = viewMode === "list";
-  const imageSrc = getProductImage(product.name, product.image_url);
+  const hasRange = isCatalogue && maxPrice > price;
 
-  return (
-    <div
-      onClick={() => router.push(`/customer/product/${product.id}`)}
-      className={clsx(
-        "group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300",
-        "bg-[var(--surface)] border border-[var(--border)] shadow-xs hover:border-[var(--card-hover-border)] hover:shadow-md hover:-translate-y-1 active:scale-[0.99]",
-        isList ? "flex gap-4 p-3 items-center" : "flex flex-col"
-      )}
-    >
-      {/* ── Image Section ── */}
-      <div
+  const metaLabel =
+    isCatalogue && product.farmer_count > 0
+      ? `${product.farmer_count} ${product.farmer_count === 1 ? "seller" : "sellers"}`
+      : product.farmer_name || "Direct from farm";
+
+  /* ── Shared pieces ── */
+
+  const priceBlock = (
+    <div className="min-w-0 leading-none">
+      <p
+        className="text-[15px] font-bold text-[var(--text-price)] tracking-tight truncate tabular-nums"
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
+        ₹{formatPrice(price)}
+        {hasRange && (
+          <span className="text-[13px] font-semibold text-[var(--text-secondary)]">–{formatPrice(maxPrice)}</span>
+        )}
+      </p>
+      <p className="text-[11px] text-[var(--text-tertiary)] mt-1 truncate">per {unit}</p>
+    </div>
+  );
+
+  const action =
+    cartQty > 0 ? (
+      <div className="relative z-10 flex items-center h-8 rounded-full bg-[var(--primary)] text-white shadow-xs flex-shrink-0">
+        <button
+          onClick={handleDec}
+          disabled={isCatalogue}
+          aria-label={`Decrease ${product.name} quantity`}
+          className="w-7 h-8 flex items-center justify-center rounded-l-full hover:bg-black/10 disabled:opacity-40"
+        >
+          <Minus className="w-3.5 h-3.5" strokeWidth={2.5} />
+        </button>
+        <span className="min-w-[1.25rem] text-center text-xs font-bold tabular-nums" aria-live="polite">
+          {cartQty}
+        </span>
+        <button
+          onClick={handleAdd}
+          aria-label={`Increase ${product.name} quantity`}
+          className="w-7 h-8 flex items-center justify-center rounded-r-full hover:bg-black/10"
+        >
+          <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+        </button>
+      </div>
+    ) : (
+      <button
+        onClick={handleAdd}
+        disabled={outOfStock}
+        aria-label={outOfStock ? `${product.name} is sold out` : `Add ${product.name}`}
         className={clsx(
-          "relative overflow-hidden rounded-xl flex-shrink-0 bg-[var(--surface-2)]",
-          isList ? "w-28 h-28" : "w-full aspect-[4/5]"
+          "relative z-10 h-8 rounded-full flex items-center justify-center gap-1 text-xs font-bold flex-shrink-0 border transition-colors duration-150 active:scale-95",
+          outOfStock ? "px-2.5" : "w-8 sm:w-auto sm:px-3",
+          outOfStock
+            ? "bg-[var(--surface-2)] text-[var(--text-tertiary)] border-[var(--border)] cursor-not-allowed"
+            : "bg-[var(--primary-muted)] text-[var(--primary-deep)] border-[var(--primary-ring)] hover:bg-[var(--primary)] hover:text-white hover:border-[var(--primary)]"
         )}
       >
-        <Image
-          src={imageSrc}
-          alt={product.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          sizes={isList ? "112px" : "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"}
-          style={{ filter: "saturate(1.05) brightness(1.01)" }}
-        />
-        {/* Subtle Vignette Scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
+        {outOfStock ? "Sold out" : (<><Plus className="w-4 h-4 sm:w-3.5 sm:h-3.5" strokeWidth={2.75} /><span className="hidden sm:inline">Add</span></>)}
+      </button>
+    );
 
-        {/* Wishlist Button */}
-        <button
-          onClick={toggleWishlist}
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-150 active:scale-75 shadow-xs z-20 backdrop-blur-md"
-          style={{
-            background: "rgba(255, 255, 255, 0.90)",
-            color: isWishlisted ? "var(--danger)" : "var(--text-secondary)",
-          }}
-        >
-          <Heart className="w-4 h-4" fill={isWishlisted ? "#EF4444" : "none"} strokeWidth={2} />
-        </button>
+  const subRow = lowStock ? (
+    <p className="h-4 flex items-center gap-1 text-[11px] font-semibold text-[#B45309] truncate">
+      <AlertTriangle className="w-3 h-3 flex-shrink-0" />
+      Only {quantity} left
+    </p>
+  ) : (
+    <p className="h-4 text-[11px] text-[var(--text-secondary)] truncate">
+      {hasOrganic ? "Organic available" : product.category_name || "Fresh harvest"}
+    </p>
+  );
 
-        {/* Badges on Top Left */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-20 pointer-events-none">
-          {hasOrganic && (
-            <div
-              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold shadow-xs"
-              style={{
-                background: "rgba(20, 83, 45, 0.92)",
-                color: "#DCFCE7",
-                backdropFilter: "blur(4px)",
-              }}
-            >
-              <Leaf className="w-3 h-3 text-[var(--primary-light)]" />
-              <span>Organic</span>
-            </div>
-          )}
-          {isSeasonal && (
-            <div
-              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold shadow-xs"
-              style={{
-                background: "rgba(212, 175, 55, 0.92)",
-                color: "#FFFFFF",
-                backdropFilter: "blur(4px)",
-              }}
-            >
-              <Star className="w-3 h-3 fill-current" />
-              <span>Seasonal</span>
-            </div>
-          )}
+  const titleLink = (
+    <Link
+      href={href}
+      className={clsx(
+        "block font-semibold text-[13px] sm:text-sm leading-5 h-5 text-[var(--text-primary)] truncate",
+        "after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+      )}
+      style={{ fontFamily: "var(--font-heading)" }}
+    >
+      {product.name}
+    </Link>
+  );
+
+  /* ── List layout ── */
+  if (isList) {
+    return (
+      <article
+        className={clsx(
+          "group relative flex items-stretch gap-3 p-2.5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-xs",
+          "transition-[box-shadow,border-color] duration-200 hover:shadow-md hover:border-[var(--card-hover-border)]",
+          "has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-[var(--primary)]"
+        )}
+      >
+        <div className="relative w-[84px] h-[84px] sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0">
+          <ProductImage
+            name={product.name}
+            imageUrl={product.image_url}
+            categorySlug={product.category_slug}
+            categoryIcon={product.category_icon}
+            sizes="96px"
+            width={240}
+          />
+          {outOfStock && <div className="absolute inset-0 bg-white/60" />}
         </div>
 
-        {/* Out of Stock Overlay */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+          <div className="min-w-0">
+            <p className="h-4 flex items-center gap-1.5 text-[11px] font-medium text-[var(--text-secondary)] truncate">
+              {isCatalogue && product.farmer_count > 0 ? <Store className="w-3 h-3 flex-shrink-0" /> : <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] flex-shrink-0" />}
+              <span className="truncate">{metaLabel}</span>
+              {hasOrganic && <Leaf className="w-3 h-3 text-[var(--primary-dim)] flex-shrink-0" aria-label="Organic" />}
+              {isSeasonal && <Star className="w-3 h-3 text-[var(--gold)] fill-current flex-shrink-0" aria-label="Seasonal" />}
+            </p>
+            {titleLink}
+            {subRow}
+          </div>
+          <div className="flex items-end justify-between gap-2 mt-1.5">
+            {priceBlock}
+            {action}
+          </div>
+        </div>
+
+        <button
+          onClick={toggleWishlist}
+          aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          aria-pressed={isWishlisted}
+          className="relative z-10 self-start w-8 h-8 -mt-0.5 -mr-0.5 rounded-full flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--danger)] hover:bg-[var(--danger-bg)] transition-colors"
+        >
+          <Heart className="w-4 h-4" fill={isWishlisted ? "#EF4444" : "none"} color={isWishlisted ? "#EF4444" : "currentColor"} />
+        </button>
+      </article>
+    );
+  }
+
+  /* ── Grid layout ── */
+  return (
+    <article
+      className={clsx(
+        "group relative flex flex-col h-full p-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-xs",
+        "transition-[box-shadow,border-color] duration-200 hover:shadow-md hover:border-[var(--card-hover-border)]",
+        "has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-[var(--primary)]"
+      )}
+    >
+      {/* Image */}
+      <div className="relative aspect-square w-full rounded-xl overflow-hidden">
+        <ProductImage
+          name={product.name}
+          imageUrl={product.image_url}
+          categorySlug={product.category_slug}
+          categoryIcon={product.category_icon}
+          imgClassName="transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+        />
+
+        {/* Badges */}
+        {(hasOrganic || isSeasonal) && (
+          <div className="absolute top-1.5 left-1.5 flex flex-col items-start gap-1 pointer-events-none">
+            {hasOrganic && (
+              <span className="inline-flex items-center gap-0.5 h-5 px-1.5 rounded-md text-[10px] font-bold bg-[var(--organic-badge-bg)]/90 text-[var(--organic-text)]">
+                <Leaf className="w-2.5 h-2.5" /> Organic
+              </span>
+            )}
+            {isSeasonal && (
+              <span className="inline-flex items-center gap-0.5 h-5 px-1.5 rounded-md text-[10px] font-bold bg-white/95 text-[var(--gold-deep)] shadow-xs ring-1 ring-black/5">
+                <Star className="w-2.5 h-2.5 fill-[var(--gold)] text-[var(--gold)]" /> Seasonal
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Wishlist */}
+        <button
+          onClick={toggleWishlist}
+          aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          aria-pressed={isWishlisted}
+          className="absolute z-10 top-1.5 right-1.5 w-8 h-8 rounded-full flex items-center justify-center bg-white/90 shadow-xs backdrop-blur-sm text-[var(--text-secondary)] hover:text-[var(--danger)] transition-colors active:scale-90"
+        >
+          <Heart className="w-4 h-4" fill={isWishlisted ? "#EF4444" : "none"} color={isWishlisted ? "#EF4444" : "currentColor"} strokeWidth={2} />
+        </button>
+
         {outOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20">
-            <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-black/80 text-[var(--text-tertiary)] border border-white/10 tracking-wider">
+          <div className="absolute inset-0 flex items-center justify-center bg-white/55">
+            <span className="text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full bg-[var(--text-primary)]/85 text-white">
               SOLD OUT
             </span>
           </div>
         )}
       </div>
 
-      {/* ── Info & Details Section ── */}
-      <div className={clsx("flex-1 flex flex-col justify-between", isList ? "py-1 pr-1" : "p-3.5 sm:p-4")}>
-        <div>
-          {/* Farm Origin / Multi-Seller Indicator */}
-          <div className="flex items-center gap-1.5 flex-wrap mb-1 text-[11px] text-[var(--text-secondary)] font-medium">
-            {isCatalogue && product.farmer_count > 0 ? (
-              <span className="inline-flex items-center gap-1 text-[var(--purple)] font-semibold">
-                <Store className="w-3 h-3" />
-                {product.farmer_count} {product.farmer_count === 1 ? "seller" : "sellers"}
-              </span>
-            ) : (
-              <span className="truncate flex items-center gap-1 text-[var(--primary-deep)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
-                {product.farmer_name || "Direct Farm"}
-              </span>
-            )}
-          </div>
-
-          {/* Product Name */}
-          <h3
-            className="font-bold text-sm sm:text-base leading-snug text-[var(--text-primary)] line-clamp-1 group-hover:text-[var(--primary-deep)] transition-colors"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            {product.name}
-          </h3>
-
-          {/* Unit Description */}
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5 line-clamp-1">
-            {isCatalogue ? `Fresh ${unit} pack` : `Fresh harvest • /${unit}`}
-          </p>
-
-          {/* Low Stock Warning */}
-          {!outOfStock && quantity <= 10 && (
-            <div className="flex items-center gap-1 mt-1 text-[10px] font-bold text-[var(--warning)]">
-              <AlertTriangle className="w-3 h-3" />
-              Only {quantity} left!
-            </div>
-          )}
-        </div>
-
-        {/* Pricing & Action Row */}
-        <div className={clsx("flex items-center justify-between gap-2", isList ? "mt-2" : "mt-3 pt-2 border-t border-[var(--divider)]")}>
-          <div>
-            <PriceBadge
-              price={price}
-              maxPrice={isCatalogue && maxPrice > price ? maxPrice : undefined}
-              unit={unit}
-              size="md"
-            />
-          </div>
-
-          {/* Cart Actions */}
-          {cartQty > 0 ? (
-            <div
-              className="flex items-center rounded-full overflow-hidden shadow-xs bg-[var(--primary)]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={handleDec}
-                disabled={isCatalogue}
-                aria-label="Decrease quantity"
-                className="w-7 h-7 flex items-center justify-center transition-all hover:bg-black/15 active:scale-90 disabled:opacity-40 text-[#FFFFFF]"
-              >
-                <Minus className="w-3.5 h-3.5" strokeWidth={2.5} />
-              </button>
-              <span
-                className="text-xs font-black min-w-[1.25rem] text-center text-[#FFFFFF] tabular-nums"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                {cartQty}
-              </span>
-              <button
-                onClick={handleAdd}
-                aria-label="Increase quantity"
-                className="w-7 h-7 flex items-center justify-center transition-all hover:bg-black/15 active:scale-90 text-[#FFFFFF]"
-              >
-                <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-              </button>
-            </div>
+      {/* Info */}
+      <div className="flex-1 flex flex-col px-1 pt-2.5">
+        <p className="h-4 flex items-center gap-1 text-[11px] font-medium text-[var(--text-secondary)] truncate">
+          {isCatalogue && product.farmer_count > 0 ? (
+            <Store className="w-3 h-3 flex-shrink-0 text-[var(--primary-dim)]" />
           ) : (
-            <button
-              onClick={handleAdd}
-              disabled={outOfStock}
-              className={clsx(
-                "px-3.5 h-8 rounded-full flex items-center justify-center gap-1 text-xs font-bold transition-all duration-150 active:scale-95 shadow-xs",
-                outOfStock
-                  ? "bg-[var(--border)] text-[var(--text-tertiary)] cursor-not-allowed"
-                  : "bg-[var(--primary)] text-[#FFFFFF] hover:bg-[var(--primary-hover)] hover:shadow-sm"
-              )}
-            >
-              <span>Add</span>
-              <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-            </button>
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] flex-shrink-0" />
           )}
+          <span className="truncate">{metaLabel}</span>
+        </p>
+        <div className="mt-1">{titleLink}</div>
+        {subRow}
+
+        <div className="mt-auto pt-2.5 flex items-end justify-between gap-1.5">
+          {priceBlock}
+          {action}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
 /* ── ProductCardSkeleton ────────────────────────────────────────────────── */
 
 export function ProductCardSkeleton({ viewMode = "grid" }: { viewMode?: "grid" | "list" }) {
-  const isList = viewMode === "list";
+  if (viewMode === "list") {
+    return (
+      <div className="flex gap-3 p-2.5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xs">
+        <div className="skeleton w-[84px] h-[84px] sm:w-24 sm:h-24 rounded-xl flex-shrink-0" />
+        <div className="flex-1 space-y-2 py-1">
+          <div className="h-3 skeleton w-1/3 rounded" />
+          <div className="h-4 skeleton w-2/3 rounded" />
+          <div className="flex items-center justify-between pt-2">
+            <div className="h-5 skeleton w-14 rounded" />
+            <div className="h-8 w-16 skeleton rounded-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
-    <div
-      className={clsx(
-        "rounded-2xl overflow-hidden p-3 border border-[var(--border)] bg-[var(--surface)] shadow-xs",
-        isList ? "flex gap-4 items-center" : "flex flex-col space-y-3"
-      )}
-    >
-      <div className={clsx("skeleton rounded-xl flex-shrink-0", isList ? "w-28 h-28" : "w-full aspect-[4/5]")} />
-      <div className="flex-1 space-y-2 py-1">
-        <div className="h-3 skeleton w-1/3 rounded" />
-        <div className="h-4 skeleton w-3/4 rounded" />
+    <div className="flex flex-col p-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xs">
+      <div className="skeleton aspect-square w-full rounded-xl" />
+      <div className="px-1 pt-2.5 space-y-2">
         <div className="h-3 skeleton w-1/2 rounded" />
-        <div className="flex items-center justify-between pt-2">
-          <div className="h-5 skeleton w-16 rounded" />
-          <div className="h-7 w-14 skeleton rounded-full" />
+        <div className="h-4 skeleton w-3/4 rounded" />
+        <div className="h-3 skeleton w-2/5 rounded" />
+        <div className="flex items-center justify-between pt-1">
+          <div className="h-6 skeleton w-12 rounded" />
+          <div className="h-8 w-14 skeleton rounded-full" />
         </div>
       </div>
     </div>

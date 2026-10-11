@@ -1444,8 +1444,8 @@ class AdminService:
 
         # Seed some legacy direct product listings
         legacy_products = [
-            {"name": "Direct Farm Cabbage", "description": "Fresh organic cabbage", "price": 25.0, "quantity": 30, "unit": "piece", "image_url": "https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=200"},
-            {"name": "Direct Farm Coriander", "description": "Fresh coriander leaves", "price": 12.0, "quantity": 40, "unit": "bunch", "image_url": "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?w=200"},
+            {"name": "Direct Farm Cabbage", "description": "Fresh organic cabbage", "price": 25.0, "quantity": 30, "unit": "piece", "image_url": None},
+            {"name": "Direct Farm Coriander", "description": "Fresh coriander leaves", "price": 12.0, "quantity": 40, "unit": "bunch", "image_url": None},
         ]
         if farmer_profile:
             for lp in legacy_products:

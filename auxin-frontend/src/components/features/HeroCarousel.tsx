@@ -1,14 +1,15 @@
 "use client";
 /**
- * components/features/HeroCarousel.tsx — Auxin v3.0
- * Editorial promotional carousel with auto-rotation, pagination dots,
- * responsive aspect ratios (16:9 on desktop, 2:1 on mobile), and micro-motion.
+ * components/features/HeroCarousel.tsx — Auxin v3.1
+ * Slim promotional strip (replaces the old full-height slide carousel).
+ *
+ * Phones: horizontally swipeable tiles with snap + a peek of the next tile.
+ * Tablets/laptops: all tiles side by side in one compact row.
+ * No stock photography, so the art can never mismatch the message.
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { clsx } from "clsx";
 
 export interface HeroSlide {
@@ -21,6 +22,7 @@ export interface HeroSlide {
   ctaText: string;
   ctaLink: string;
   bgGradient: string;
+  /** Kept for backward compatibility; not rendered. */
   imageSrc?: string;
   icon?: string;
 }
@@ -28,80 +30,46 @@ export interface HeroSlide {
 const DEFAULT_SLIDES: HeroSlide[] = [
   {
     id: "fair-trade",
-    tag: "100% DIRECT",
-    tagColor: "#DCFCE7",
-    tagBg: "rgba(20, 83, 45, 0.9)",
-    title: "Empower Indian Farmers",
-    description: "Skip the middlemen. 100% of profit margins flow straight to the producer at your doorstep.",
-    ctaText: "Explore Harvest",
+    tag: "100% farm direct",
+    title: "No middlemen",
+    description: "Fair prices, paid to farmers.",
+    ctaText: "Explore harvest",
     ctaLink: "#catalog",
-    bgGradient: "linear-gradient(135deg, #14532D 0%, #166534 50%, #052E16 100%)",
-    imageSrc: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=1200&q=80&fit=crop",
+    bgGradient: "linear-gradient(135deg, #0F3D22 0%, #14532D 55%, #166534 100%)",
     icon: "🌾",
   },
   {
-    id: "seasonal-mangoes",
-    tag: "SEASON'S BEST",
-    tagColor: "#FFFFFF",
-    tagBg: "rgba(212, 175, 55, 0.9)",
-    title: "Ratnagiri Alphonso Mangoes",
-    description: "Naturally tree-ripened, chemical-free organic mangoes harvested fresh this morning.",
-    ctaText: "Shop Mangoes",
-    ctaLink: "#catalog",
-    bgGradient: "linear-gradient(135deg, #78350F 0%, #B45309 50%, #D97706 100%)",
-    imageSrc: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=1200&q=80&fit=crop",
+    id: "seasonal",
+    tag: "In season",
+    title: "Picked at peak",
+    description: "Ripened naturally, picked at peak.",
+    ctaText: "Shop seasonal",
+    ctaLink: "#seasonal",
+    bgGradient: "linear-gradient(135deg, #6B3A0C 0%, #92400E 55%, #B45309 100%)",
     icon: "🥭",
   },
   {
     id: "hyper-local-fresh",
-    tag: "25 KM PROMISE",
-    tagColor: "#E0F2FE",
-    tagBg: "rgba(7, 89, 133, 0.9)",
-    title: "Harvest to Door in 2 Hours",
-    description: "Hyper-local geo-fenced deliveries preserving maximum vitamins and crisp farm texture.",
-    ctaText: "Order Fresh",
+    tag: "25 km promise",
+    title: "Harvest to door",
+    description: "From farms within 25 km of you.",
+    ctaText: "Order fresh",
     ctaLink: "#catalog",
-    bgGradient: "linear-gradient(135deg, #0C4A6E 0%, #0369A1 50%, #0284C7 100%)",
-    imageSrc: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&q=80&fit=crop",
+    bgGradient: "linear-gradient(135deg, #115E3B 0%, #15803D 55%, #16A34A 100%)",
     icon: "🚚",
   },
 ];
 
 interface HeroCarouselProps {
   slides?: HeroSlide[];
+  /** Kept for backward compatibility; the strip no longer auto-rotates. */
   autoPlayInterval?: number;
   className?: string;
   onSlideClick?: (slide: HeroSlide) => void;
 }
 
-export function HeroCarousel({
-  slides = DEFAULT_SLIDES,
-  autoPlayInterval = 6000,
-  className,
-  onSlideClick,
-}: HeroCarouselProps) {
-  const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+export function HeroCarousel({ slides = DEFAULT_SLIDES, className, onSlideClick }: HeroCarouselProps) {
   const router = useRouter();
-
-  const nextSlide = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-  }, [slides.length]);
-
-  const prevSlide = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [slides.length]);
-
-  useEffect(() => {
-    if (isPaused) return;
-    timerRef.current = setInterval(nextSlide, autoPlayInterval);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isPaused, nextSlide, autoPlayInterval]);
-
-  const activeSlide = slides[current];
 
   const handleAction = (slide: HeroSlide) => {
     if (onSlideClick) {
@@ -109,8 +77,8 @@ export function HeroCarousel({
       return;
     }
     if (slide.ctaLink.startsWith("#")) {
-      const el = document.querySelector(slide.ctaLink);
-      el?.scrollIntoView({ behavior: "smooth" });
+      const el = document.querySelector(slide.ctaLink) ?? document.querySelector("#catalog");
+      el?.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
       router.push(slide.ctaLink);
     }
@@ -119,113 +87,57 @@ export function HeroCarousel({
   return (
     <div
       className={clsx(
-        "relative rounded-3xl overflow-hidden shadow-md group select-none",
-        "h-52 sm:h-64 lg:h-72 w-full",
+        "flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-px-4 -mx-4 px-4",
+        "md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible",
         className
       )}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      aria-label="Highlights"
     >
-      {/* Slides Background Container */}
-      {slides.map((slide, idx) => {
-        const isActive = idx === current;
-        return (
-          <div
-            key={slide.id}
-            className={clsx(
-              "absolute inset-0 transition-opacity duration-700 ease-in-out",
-              isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-            )}
-            style={{ background: slide.bgGradient }}
+      {slides.map((slide) => (
+        <button
+          key={slide.id}
+          type="button"
+          onClick={() => handleAction(slide)}
+          className={clsx(
+            "group relative snap-start flex-shrink-0 w-[84%] max-w-[340px] md:w-auto md:max-w-none",
+            "h-[104px] sm:h-[112px] rounded-2xl overflow-hidden text-left text-white",
+            "shadow-xs transition-shadow duration-200 hover:shadow-md",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
+          )}
+          style={{ background: slide.bgGradient }}
+        >
+          {/* Decorative art */}
+          <span aria-hidden="true" className="absolute -right-6 -bottom-8 w-32 h-32 rounded-full bg-white/10" />
+          <span aria-hidden="true" className="absolute right-10 -top-10 w-20 h-20 rounded-full bg-white/[0.06]" />
+          <span
+            aria-hidden="true"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[44px] sm:text-[48px] leading-none drop-shadow-[0_6px_12px_rgba(0,0,0,0.25)]"
           >
-            {/* Background Image with Dark Vignette */}
-            {slide.imageSrc && (
-              <div className="absolute inset-0">
-                <Image
-                  src={slide.imageSrc}
-                  alt={slide.title}
-                  fill
-                  priority={idx === 0}
-                  className="object-cover opacity-35 mix-blend-overlay"
-                  sizes="(max-width: 1024px) 100vw, 1280px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-              </div>
-            )}
+            {slide.icon || "🌱"}
+          </span>
 
-            {/* Slide Content */}
-            <div className="relative z-10 h-full p-5 sm:p-8 lg:p-10 flex flex-col justify-between max-w-xl text-white">
-              <div>
-                {/* Tag Pill */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase backdrop-blur-md mb-2 sm:mb-3 shadow-xs"
-                  style={{
-                    background: slide.tagBg || "rgba(255, 255, 255, 0.2)",
-                    color: slide.tagColor || "#FFFFFF",
-                  }}
-                >
-                  <span>{slide.icon || "🌱"}</span>
-                  <span>{slide.tag}</span>
-                </div>
-
-                {/* Title */}
-                <h2
-                  className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {slide.title}
-                </h2>
-
-                {/* Description */}
-                <p className="text-xs sm:text-sm text-white/85 mt-1 sm:mt-2 line-clamp-2 max-w-md leading-relaxed">
-                  {slide.description}
-                </p>
-              </div>
-
-              {/* Action Button */}
-              <div className="pt-2">
-                <button
-                  onClick={() => handleAction(slide)}
-                  className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold bg-white text-[var(--text-primary)] hover:bg-[var(--primary)] hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
-                >
-                  <span>{slide.ctaText}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Manual Navigation Controls (Hover visible on desktop) */}
-      <button
-        onClick={prevSlide}
-        aria-label="Previous slide"
-        className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-20 backdrop-blur-sm"
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
-      <button
-        onClick={nextSlide}
-        aria-label="Next slide"
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-20 backdrop-blur-sm"
-      >
-        <ChevronRight className="w-4 h-4" />
-      </button>
-
-      {/* Pagination Dots */}
-      <div className="absolute bottom-3 right-4 sm:bottom-5 sm:right-6 flex items-center gap-1.5 z-20">
-        {slides.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrent(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-            className={clsx(
-              "h-1.5 rounded-full transition-all duration-300",
-              idx === current ? "w-6 bg-white shadow-xs" : "w-1.5 bg-white/40 hover:bg-white/70"
-            )}
-          />
-        ))}
-      </div>
+          <span className="relative z-10 flex h-full flex-col justify-between p-4 pr-20">
+            <span>
+              <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-white/75">
+                {slide.tag}
+              </span>
+              <span
+                className="mt-1 block text-base sm:text-[17px] font-bold leading-tight truncate"
+                style={{ fontFamily: "var(--font-heading)", color: "#FFFFFF" }}
+              >
+                {slide.title}
+              </span>
+              <span className="mt-0.5 block text-xs text-white/80 leading-snug line-clamp-1">
+                {slide.description}
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-white">
+              {slide.ctaText}
+              <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </span>
+        </button>
+      ))}
     </div>
   );
 }

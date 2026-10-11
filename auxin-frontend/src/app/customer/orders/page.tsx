@@ -129,25 +129,25 @@ export default function CustomerOrdersPage() {
         }
       />
 
-      <div className="page-content py-4 sm:py-6 space-y-5">
+      <div className="page-content py-4 sm:py-6 space-y-4 sm:space-y-5">
         {/* Navigation Filter Tabs */}
-        <div className="flex items-center gap-2 p-1 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] max-w-md">
+        <div role="tablist" aria-label="Filter orders" className="flex items-center gap-1 p-1 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] w-full sm:max-w-md">
           <button
             onClick={() => setTab("all")}
             className={clsx(
-              "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all",
+              "flex-1 h-9 rounded-lg text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center",
               tab === "all"
                 ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-xs"
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             )}
           >
-            All Orders ({allOrders.length})
+            All <span className="ml-1 text-[var(--text-tertiary)] tabular-nums">{allOrders.length}</span>
           </button>
 
           <button
             onClick={() => setTab("active")}
             className={clsx(
-              "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all relative",
+              "flex-1 h-9 rounded-lg text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center",
               tab === "active"
                 ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-xs"
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -155,7 +155,7 @@ export default function CustomerOrdersPage() {
           >
             <span>Active</span>
             {activeCount > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.2 text-[10px] rounded-full bg-[var(--primary)] text-white font-black">
+              <span className="ml-1.5 min-w-[18px] h-[18px] px-1 inline-flex items-center justify-center text-[10px] rounded-full bg-[var(--primary)] text-white font-bold tabular-nums">
                 {activeCount}
               </span>
             )}
@@ -164,7 +164,7 @@ export default function CustomerOrdersPage() {
           <button
             onClick={() => setTab("completed")}
             className={clsx(
-              "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all",
+              "flex-1 h-9 rounded-lg text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center",
               tab === "completed"
                 ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-xs"
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -195,7 +195,7 @@ export default function CustomerOrdersPage() {
             />
           </div>
         ) : (
-          <div className="space-y-5 max-w-3xl">
+          <div className="space-y-3 sm:space-y-4 max-w-3xl">
             {filteredOrders.map((order) => (
               <OrderCard key={order.id} order={order} queryClient={queryClient} user={user} />
             ))}
@@ -270,28 +270,28 @@ function OrderCard({
   const isCancelled = order.status === "cancelled" || order.status === "rejected";
 
   return (
-    <div className="rounded-3xl overflow-hidden border border-[var(--border)] bg-[var(--surface)] shadow-xs transition-all hover:shadow-md hover:border-[var(--card-hover-border)] animate-fade-in">
+    <article className="rounded-2xl overflow-hidden border border-[var(--border)] bg-[var(--surface)] shadow-xs animate-fade-in">
       {/* Order Header */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--divider)] bg-[var(--surface)]">
-        <div>
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="text-xs font-black uppercase tracking-wider text-[var(--primary-deep)]">
+      <div className="flex items-start justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-[var(--divider)]">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-[15px] font-semibold text-[var(--text-primary)] leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
               Order #{order.id}
-            </span>
+            </h3>
             {delivery?.formatted_eta && order.status !== "completed" && (
               <ETABadge eta={delivery.formatted_eta} size="sm" />
             )}
           </div>
-          <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium">
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
             Placed {new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })} at {new Date(order.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-            {order.farmer_name && <span className="text-[var(--primary-dim)] font-bold ml-1.5">🌾 {order.farmer_name}</span>}
+            {order.farmer_name && <span className="block text-[var(--text-primary)] font-medium truncate">{order.farmer_name}</span>}
           </p>
         </div>
 
         <Badge label={order.status} dot />
       </div>
 
-      <div className="p-4 sm:p-6 space-y-4">
+      <div className="p-4 sm:p-5 space-y-4">
         {/* Milestone Timeline (Visual 5-step progress) */}
         {!isCancelled && (
           <div className="py-1">
@@ -300,7 +300,7 @@ function OrderCard({
         )}
 
         {/* Itemized Harvest List */}
-        <div className="rounded-2xl p-3.5 sm:p-4 bg-[var(--surface-2)] border border-[var(--border)] space-y-2">
+        <div className="rounded-xl p-3 sm:p-3.5 bg-[var(--surface-warm)] border border-[var(--divider)] space-y-2">
           <div className="divide-y divide-[var(--divider)]">
             {order.items.map((item) => (
               <div key={item.id} className="py-1.5 first:pt-0 last:pb-0 flex items-center justify-between text-xs sm:text-sm">
@@ -316,7 +316,7 @@ function OrderCard({
 
           <div className="pt-2.5 border-t border-[var(--divider)] flex items-center justify-between text-xs sm:text-sm font-bold">
             <span className="text-[var(--text-secondary)]">Total Amount</span>
-            <span className="text-[var(--primary-deep)] text-base font-black" style={{ fontFamily: "var(--font-heading)" }}>
+            <span className="text-[var(--text-primary)] text-base font-bold tabular-nums" style={{ fontFamily: "var(--font-heading)" }}>
               ₹{order.total_amount.toFixed(2)}
             </span>
           </div>
@@ -325,19 +325,19 @@ function OrderCard({
         {/* Dynamic Delivery Status Card & Doorstep OTP */}
         {delivery && deliveryInfo && !isCancelled && (
           <div
-            className="rounded-2xl p-4 sm:p-5 border space-y-3.5 transition-all"
+            className="rounded-xl p-3.5 sm:p-4 border space-y-3"
             style={{ background: deliveryInfo.bg, borderColor: `${deliveryInfo.color}35` }}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 shadow-xs"
-                  style={{ background: "var(--surface)" }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 border"
+                  style={{ background: "var(--surface)", borderColor: `${deliveryInfo.color}40` }}
                 >
                   {deliveryInfo.icon}
                 </div>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: deliveryInfo.color, fontFamily: "var(--font-heading)" }}>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]" style={{ fontFamily: "var(--font-heading)" }}>
                     {deliveryInfo.label}
                   </p>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">
@@ -408,7 +408,7 @@ function OrderCard({
 
                 <a
                   href={`tel:${delivery.delivery_partner.phone}`}
-                  className="px-4 h-9 rounded-xl flex items-center gap-1.5 text-xs font-bold bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all shadow-xs active:scale-95"
+                  className="px-3.5 h-9 rounded-lg flex items-center gap-1.5 text-xs font-semibold bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--primary)] transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-[var(--primary)]" />
                   <span>Call Courier</span>
@@ -443,7 +443,7 @@ function OrderCard({
 
         {/* Post-Delivery Success Notice */}
         {(order.status === "completed" || delivery?.status === "delivered") && (
-          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[var(--primary-subtle)] border border-[var(--primary-glow)]">
+          <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[var(--primary-muted)]/60 border border-[var(--success-border)]">
             <div className="flex items-center gap-2.5">
               <CheckCircle2 className="w-5 h-5 text-[var(--primary)] flex-shrink-0" />
               <div>
@@ -454,13 +454,13 @@ function OrderCard({
 
             <button
               onClick={() => toast.success("Review feature coming soon!")}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[var(--surface)] text-[var(--primary)] border border-[var(--primary-glow)] hover:bg-[var(--primary)] hover:text-white transition-all shadow-xs"
+              className="h-8 px-3 rounded-lg text-xs font-semibold flex-shrink-0 bg-[var(--surface)] text-[var(--primary-deep)] border border-[var(--success-border)] hover:bg-[var(--primary)] hover:text-white transition-colors"
             >
               Write Review
             </button>
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }
