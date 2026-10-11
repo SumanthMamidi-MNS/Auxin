@@ -61,6 +61,15 @@ export async function sendOtp(
     return { success: true };
   }
 
+  // Demo addresses are not real mailboxes: never try to email them.
+  if (DEMO_EMAILS.includes(email.trim().toLowerCase())) {
+    return {
+      success: false,
+      error:
+        "Demo sign-in is not enabled. Set NEXT_PUBLIC_DEMO_PASSWORD in auxin-frontend/.env.local and restart start.bat.",
+    };
+  }
+
   const { error } = await supabase.auth.signInWithOtp({
     email: email.trim(),
     options: {
