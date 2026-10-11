@@ -109,7 +109,7 @@ Payments in the browser: the frontend opens Razorpay Checkout with the order ret
 - Reads and writes go Browser -> FastAPI -> services -> repositories -> Postgres. The frontend never queries Supabase tables directly (only Supabase Auth is used client-side).
 - `get_db` (`app/db/session.py`) opens one `AsyncSession` per request, commits after the endpoint returns, and rolls back on exception.
 - Money is `Numeric(12,2)` in the DB and `Decimal` in code; Razorpay amounts are converted to paise.
-- Delivery OTP: generated server-side, shown once in the `out_for_delivery` response to the partner, and also readable by the customer through the order payload while the delivery is `out_for_delivery` (see 6.7). bcrypt hash is stored in `deliveries.otp_code`; a plaintext copy is stored in `deliveries.plain_otp`.
+- Delivery OTP: generated server-side, shown once in the `out_for_delivery` response to the partner, and also readable by the customer through the order payload while the delivery is `out_for_delivery` (see section 6, step 9). bcrypt hash is stored in `deliveries.otp_code`; a plaintext copy is stored in `deliveries.plain_otp`.
 - Live GPS: partners `PUT /delivery/location`; order payloads expose partner coordinates only while `out_for_delivery`.
 
 ---

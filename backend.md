@@ -304,7 +304,7 @@ pytest
 
 Prerequisite: `DATABASE_URL` must be set in the environment or `.env` (Settings requires it at import). `SUPABASE_JWT_SECRET` must be set for token-based tests. Gap noted: no test covers `sync-user` with `role=admin` (see risks).
 
-UNVERIFIED: I did not run the suite, so pass or fail status is unknown.
+Last recorded run: `deployment.md` section 2 reports `pytest tests` at 62/62 passing on 2026-10-11 (default `.env`). That run is not repeated here; this document only reads the code.
 
 `root pytest.ini` duplicates `pytest.ini` contents (both exist).
 
