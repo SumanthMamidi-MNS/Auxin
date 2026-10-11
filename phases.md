@@ -15,7 +15,9 @@ owner's request to make Auxin deployable. Updated at the end of each work sessio
 - [ ] Block self-registration as `admin` on `/auth/sync-user` (needs admin-bootstrap decision)
 - [ ] Gate or remove the `demo.*` client login bypass (`auxin-frontend/src/lib/auth.ts`)
 - [ ] Remove or env-guard the `000000` OTP bypass (`app/core/security.py`)
-- [ ] Create the real Supabase project and supply env values (none reachable today)
+- [x] Supabase project `Auxin` exists (healthy) — still need its env values on Render
+- [ ] Apply migrations 009 + 010 to Supabase (010 drafted, awaiting approval)
+- [ ] Enable RLS on public tables (owner decision, SQL in deployment.md §6)
 - [ ] Replace placeholder domains in `.env.production`, `render.yaml` `ALLOWED_ORIGINS`
 
 ## Phase C — First live deploy  ⬜ not started
