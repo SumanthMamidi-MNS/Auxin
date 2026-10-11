@@ -51,17 +51,16 @@ Exactly five special accounts exist next to the real users:
 |---|---|---|
 | your super admin (`SUPER_ADMIN_EMAIL`) | the one super admin | never touched |
 | `demo.admin@auxin.app` | the one normal admin | never touched |
-| `demo.customer@auxin.app` | demo account | approved, **no address** (normal profile onboarding on login) |
-| `demo.farmer@auxin.app` | demo account | **pending** - an approval request appears under Approvals |
-| `demo.delivery@auxin.app` | demo account | **pending** - an approval request appears under Approvals |
+| `demo.customer@auxin.app` | demo account | approved but **blank**: no address, so the details form appears on first login |
+| `demo.farmer@auxin.app` | demo account | **blank applicant**: no farm profile, no listings, no earnings. Details form on login, then the request appears under Approvals |
+| `demo.delivery@auxin.app` | demo account | **blank applicant**: no courier profile. Details form on login, then the request appears under Approvals |
 
-- **First run:** `start.bat` creates them (plus a demo farm, a demo courier and 6 baseline listings) in the local
-  database. Existing demo data is never overwritten on later runs.
+- **First run:** `start.bat` creates them (all blank) in the local database. Existing demo data is never overwritten on later runs.
 - **Reset:** admin portal → **Demo Workspace** → **Reset Sandbox** (super admin, one click). It deletes only demo
   orders, payments, deliveries, reviews and listings (rows flagged `is_demo`) and returns the three demo accounts to
-  the fresh state above. The dashboard counters return to baseline; real users and real orders are untouched.
-- **Demo walkthrough:** Reset → Approvals → approve the demo Farmer and Courier → customer sees the produce →
-  order → farmer packs → courier delivers with the customer's 6-digit code.
+  the blank state above. The dashboard counters return to zero; real users and real orders are untouched.
+- **Demo walkthrough:** Reset → sign in as the demo Farmer, fill in the details → Approvals → approve → farmer lists produce →
+  customer orders → farmer packs → courier (also onboarded and approved) delivers with the customer's 6-digit code.
 - **Signing in as a demo account:** use the normal login form with the demo email and code `111111`. This works
   once `NEXT_PUBLIC_DEMO_PASSWORD` is set in `auxin-frontend\.env.local`. There is no demo panel on the login page.
   Real sign-up (email → OTP → details form → admin approval) is unchanged.

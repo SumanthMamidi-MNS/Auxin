@@ -224,6 +224,16 @@ class FarmerService:
             raise FarmerNotFoundError()
 
         farmer = await self._farmer_repo.approve(farmer)
+
+        # Keep the account status in step with the profile (the admin portal's route does the same).
+        from app.models.user import UserStatus
+        from app.repositories.user_repository import UserRepository
+
+        user_repo = UserRepository(self._db)
+        farmer_user = await user_repo.get_by_id(farmer.user_id)
+        if farmer_user is not None and farmer_user.status == UserStatus.pending:
+            await user_repo.update_status(farmer_user, UserStatus.approved)
+
         return FarmerApprovalOut(
             id=farmer.id,
             user_id=farmer.user_id,

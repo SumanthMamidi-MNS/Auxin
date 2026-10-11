@@ -196,7 +196,7 @@ export default function DemoWorkspacePage() {
             <h3 className="text-base font-bold text-[#FAFAFA]">Reset Demonstration Sandbox</h3>
             <p className="text-xs text-[#A1A1AA] mt-1 leading-relaxed">
               Purges all simulated demonstration orders, payments, transactions, delivery histories, reviews, and disputes. 
-              Returns the three demo accounts (<span className="text-[#FAFAFA] font-medium">Customer, Farmer, Courier</span>) to a fresh state: the Customer starts with no address, and the Farmer and Courier go back to <span className="text-[#FAFAFA] font-medium">pending</span> and appear under Approvals. The normal admin and all real users are untouched.
+              Returns the three demo accounts (<span className="text-[#FAFAFA] font-medium">Customer, Farmer, Courier</span>) to a blank, brand-new state: no profile, address, listings or earnings. They fill in their details at first sign-in, and the Farmer and Courier then appear under <span className="text-[#FAFAFA] font-medium">Approvals</span> for you. The normal admin and all real users are untouched.
             </p>
             <div className="flex items-center gap-2 mt-2 text-[11px] text-[#22C55E] font-semibold">
               <ShieldCheck className="w-4 h-4" />
@@ -251,7 +251,7 @@ export default function DemoWorkspacePage() {
               <li className="flex items-start gap-2">
                 <span className="flex-shrink-0 w-4 h-4 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] text-[10px] font-bold flex items-center justify-center border border-[#3B82F6]/30">1</span>
                 <div>
-                  <strong className="text-[#FAFAFA]">Clean Reset:</strong> Click <span className="text-[#22C55E] font-semibold">Reset Sandbox</span> above to zero all demo orders and return metrics to baseline. Then open <span className="text-[#22C55E] font-semibold">Approvals</span> and approve the demo Farmer and Courier (they are pending after every reset).
+                  <strong className="text-[#FAFAFA]">Clean Reset:</strong> Click <span className="text-[#22C55E] font-semibold">Reset Sandbox</span> above to zero all demo orders and return metrics to baseline. Then sign in as the demo Farmer and Courier, fill in their details, and approve their requests under <span className="text-[#22C55E] font-semibold">Approvals</span>.
                 </div>
               </li>
               <li className="flex items-start gap-2">

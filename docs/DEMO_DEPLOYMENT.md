@@ -48,8 +48,7 @@ project must be kept awake (section 5).
 - The shared demo password is public by nature; it is set from `DEMO_SEED_PASSWORD` /
   `NEXT_PUBLIC_DEMO_PASSWORD`, never committed, and only valid inside the demo project.
 - **Reset:** admin → Demo workspace → Reset Sandbox (server-side: super admin only). It deletes only rows flagged
-  `is_demo`; the demo customer returns fresh and the demo farmer and courier return to *pending*, so the visitor sees
-  the real approval-request flow. Real users, orders and payments are never touched.
+  `is_demo`; the three demo accounts return blank, so the visitor sees the real onboarding and approval-request flow. Real users, orders and payments are never touched.
 
 ### Visitor interference — honest limitation
 All visitors share the same three demo identities, so two people walking the order flow at once will

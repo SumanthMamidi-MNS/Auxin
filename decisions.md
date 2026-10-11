@@ -27,3 +27,6 @@ One line per non-obvious technical choice: what, and why.
 - 2026-10-11 — Reset returns demo farmer/courier to *pending* (profile rows kept, `is_approved=False`) and the customer to *no address*, instead of pre-approving them: the owner wants the real approval-request flow on every demo, and keeping the prefilled rows makes it two clicks instead of two long forms.
 - 2026-10-11 — Customer-facing produce queries now require an approved farmer: otherwise a pending demo farmer's listings were visible but impossible to order; this also fixes the same gap for real unapproved farmers.
 - 2026-10-11 — `demo.admin@auxin.app` is a normal (non-demo) admin: the owner's model is one super admin, one normal admin and exactly three resettable demo accounts.
+- 2026-10-11 — Reset makes the demo farmer and courier truly blank (no profile, address, listings or earnings) instead of prefilled-pending: the owner wants the real flow on every demo (email → OTP → details form → admin request → approval); prefilled rows made the farmer dashboard look already in use.
+- 2026-10-11 — Legacy `POST /farmers/{id}/approve` now also approves the user account: it previously left the account pending while marking the farm approved (found by the onboarding test).
+- 2026-10-11 — Logo draft removed at the owner's request; no brand assets are kept in the repo.

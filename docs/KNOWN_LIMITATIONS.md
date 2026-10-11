@@ -16,7 +16,7 @@ unattended production use with real money or real personal data. This list is th
 | `000000` OTP backdoor under `DEBUG` | Removed | same |
 | Partner received the customer's OTP | OTP only on the customer's order | functional tests |
 | Unlimited OTP guessing | 5 failures per delivery per process | same |
-| Demo reset ran for any admin, broke the button, left demo accounts pre-approved | Super admin only, one click; deletes `is_demo` rows only (test: real order and customer survive repeated resets); demo customer returns fresh, demo farmer and courier return to pending and appear under Approvals; unapproved farmers' produce is hidden from customers | tests |
+| Demo reset ran for any admin, broke the button, left demo accounts pre-approved | Super admin only, one click; deletes `is_demo` rows only (test: real order and customer survive repeated resets); demo customer, farmer and courier return blank (no profile, address or listings) and the farmer and courier appear under Approvals after they submit their details; unapproved farmers' produce is hidden from customers | tests |
 | Wildcard CORS + credentials; `create_all` in production | Rejected / skipped in production | code |
 | Service-role key literal in Milo scripts | Removed (never committed) | scan |
 | Production CSP blocked Supabase and non-`auxin.in` APIs | Derived from env | header check |

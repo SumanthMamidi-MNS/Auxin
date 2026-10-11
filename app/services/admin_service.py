@@ -1378,102 +1378,37 @@ class AdminService:
             customer.status = UserStatus.approved
             self._db.add(customer)
 
-        # 2. Reset & Seed Farmer Profile & Farm Address
+        # 2. Farmer: a brand-new applicant. No profile, no address, no inventory, no
+        #    earnings. After sign-in the normal onboarding form appears; submitting it
+        #    creates the request that shows up under Approvals.
+        farmer_profile = None
         if farmer_user:
             await self._db.execute(text("DELETE FROM addresses WHERE user_id = :uid;"), {"uid": farmer_user.id})
             farmer_user.name = "Demo Farmer"
             farmer_user.phone = "+919999999992"
-            farmer_user.address = "Farm No. 42, Auxin Green Farm, Siddhagatta Road, Chikballapur, Bengaluru Rural, Karnataka - 562101"
-            farmer_user.status = UserStatus.pending  # fresh: waits for an admin to approve (Approvals page)
+            farmer_user.address = None
+            farmer_user.status = UserStatus.pending
             farmer_user.approved_by = None
             farmer_user.approved_at = None
             farmer_user.rejected_at = None
             farmer_user.rejection_reason = None
             self._db.add(farmer_user)
-            
-            farmer_profile = Farmer(
-                user_id=farmer_user.id,
-                full_name="Demo Farmer",
-                phone="+919999999992",
-                location="Bengaluru Rural, Karnataka",
-                bank_account_number=encrypt_field("123456789012"),
-                ifsc_code="SBIN0001234",
-                is_approved=False,  # pending until an admin approves
-                bank_name="State Bank of India",
-                account_holder_name="Demo Farmer",
-                upi_id="demofarmer@okaxis"
-            )
-            self._db.add(farmer_profile)
-            await self._db.flush()
 
-            farm_addr = Address(
-                user_id=farmer_user.id,
-                house_flat="Farm No. 42",
-                building="Auxin Green Farm",
-                street="Siddhagatta Road",
-                area="Chikballapur",
-                city="Bengaluru Rural",
-                state="Karnataka",
-                pin_code="562101",
-                latitude=12.9816,
-                longitude=77.5846,
-                address_type="Farm",
-                is_default=True,
-                is_demo=True
-            )
-            self._db.add(farm_addr)
-
-        # 3. Reset & Seed Delivery Partner Profile & Address
+        # 3. Delivery partner: same - a brand-new applicant with nothing set up.
         if delivery_user:
             await self._db.execute(text("DELETE FROM addresses WHERE user_id = :uid;"), {"uid": delivery_user.id})
             delivery_user.name = "Demo Delivery Partner"
             delivery_user.phone = "+919999999993"
-            delivery_user.address = "Plot 88, Delivery Logistics Hub, Indiranagar, Bengaluru, Karnataka - 560038"
-            delivery_user.status = UserStatus.pending  # fresh: waits for an admin to approve (Approvals page)
+            delivery_user.address = None
+            delivery_user.status = UserStatus.pending
             delivery_user.approved_by = None
             delivery_user.approved_at = None
             delivery_user.rejected_at = None
             delivery_user.rejection_reason = None
             self._db.add(delivery_user)
 
-            dp_profile = DeliveryPartner(
-                user_id=delivery_user.id,
-                full_name="Demo Delivery Partner",
-                phone="+919999999993",
-                is_active=True,
-                is_available=True,
-                current_latitude=12.9716,
-                current_longitude=77.5946,
-                bank_name="HDFC Bank",
-                account_holder_name="Demo Delivery Partner",
-                bank_account_number=encrypt_field("987654321098"),
-                ifsc_code="HDFC0000001",
-                upi_id="demodelivery@okhdfc",
-                vehicle_type="Motorcycle",
-                vehicle_number="KA-03-HA-9876",
-                driving_license="DL-123456789"
-            )
-            self._db.add(dp_profile)
-            await self._db.flush()
-
-            dp_addr = Address(
-                user_id=delivery_user.id,
-                house_flat="Room 12",
-                building="Courier Transit Hub",
-                street="MG Road",
-                area="Central Bengaluru",
-                city="Bengaluru",
-                state="Karnataka",
-                pin_code="560001",
-                latitude=12.9716,
-                longitude=77.5946,
-                address_type="Home",
-                is_default=True,
-                is_demo=True
-            )
-            self._db.add(dp_addr)
-
-        # 4. Seed Farmer Inventory Listings (is_demo = True)
+        # 4. Baseline listings: none while the demo farmer has no approved profile.
+        #    (They are created by the farmer after approval; the guards below skip seeding.)
         # Category IDs: Leafy Greens (10), Root Vegetables (11)
         # Master Product IDs: Spinach (1), Tomato (7), Onion (8), Potato (9), Carrot (10), Mint (4)
         from app.models.catalogue import FarmerInventory

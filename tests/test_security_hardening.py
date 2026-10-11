@@ -253,8 +253,20 @@ async def test_demo_reset_is_super_admin_only(client: AsyncClient, admin_tokens:
     assert resp.status_code == 403, resp.text
 
 
+PROFILE_BODY = {
+    "name": "Demo Applicant",
+    "phone": "9845012345",
+    "house_flat": "Plot 7",
+    "street": "Mill Road",
+    "area": "Hebbal",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "pin_code": "560024",
+}
+
+
 @pytest.mark.asyncio
-async def test_demo_reset_gives_fresh_accounts_pending_requests_and_spares_real_data(
+async def test_demo_reset_makes_blank_applicants_who_onboard_and_need_approval(
     client: AsyncClient, db: AsyncSession, super_admin_tokens: dict, customer_tokens: dict, admin_tokens: dict
 ):
     from sqlalchemy import func, select
@@ -262,7 +274,6 @@ async def test_demo_reset_gives_fresh_accounts_pending_requests_and_spares_real_
     from app.models.address import Address
     from app.models.catalogue import FarmerInventory
     from app.models.delivery import DeliveryPartner
-    from app.repositories.inventory_repository import InventoryRepository
 
     # A REAL (non-demo) order that must survive any number of resets.
     _, real_farmer, _ = await _make_farmer(db, 4)
@@ -277,12 +288,11 @@ async def test_demo_reset_gives_fresh_accounts_pending_requests_and_spares_real_
     await db.refresh(real_order)
     real_order_id = real_order.id
 
-    # One click: no password, no body. Twice: it must be repeatable and idempotent.
+    # One click, no password. Twice: repeatable and idempotent.
     for _ in range(2):
         resp = await client.post("/api/v1/admin/demo/reset", json={}, headers=super_admin_tokens["headers"])
         assert resp.status_code == 200, resp.text
         assert resp.json()["success"] is True
-
     db.expire_all()
 
     rows = {
@@ -294,55 +304,60 @@ async def test_demo_reset_gives_fresh_accounts_pending_requests_and_spares_real_
         ).all()
     }
     assert set(rows) == DEMO_EMAILS
-
-    # Three demo accounts + one normal (non-demo) admin.
-    assert rows["demo.admin@auxin.app"].is_demo is False
-    assert sum(1 for r in rows.values() if r.is_demo) == 3
-
-    # Customer is fresh and approved; farmer and courier are PENDING (requests for the admin).
+    assert rows["demo.admin@auxin.app"].is_demo is False          # the one normal admin
+    assert sum(1 for r in rows.values() if r.is_demo) == 3          # three demo accounts
     assert rows["demo.customer@auxin.app"].status == UserStatus.approved
     assert rows["demo.farmer@auxin.app"].status == UserStatus.pending
     assert rows["demo.delivery@auxin.app"].status == UserStatus.pending
-    assert rows["demo.admin@auxin.app"].status == UserStatus.approved
 
-    customer_addresses = (
-        await db.execute(
-            select(func.count()).select_from(Address).where(Address.user_id == rows["demo.customer@auxin.app"].id)
-        )
-    ).scalar_one()
-    assert customer_addresses == 0
+    # Truly blank: no addresses, no farm, no courier profile, no inventory.
+    demo_ids = [rows[e].id for e in DEMO_EMAILS if e != "demo.admin@auxin.app"]
+    assert (await db.execute(select(func.count()).select_from(Address).where(Address.user_id.in_(demo_ids)))).scalar_one() == 0
+    assert (await db.execute(select(func.count()).select_from(DeliveryPartner).where(DeliveryPartner.user_id.in_(demo_ids)))).scalar_one() == 0
+    assert (await db.execute(select(func.count()).select_from(Farmer).where(Farmer.user_id.in_(demo_ids)))).scalar_one() == 0
+    assert (await db.execute(select(func.count()).select_from(FarmerInventory).where(FarmerInventory.is_demo.is_(True)))).scalar_one() == 0
 
-    # The requests really show up for the admin.
-    pending_farmers = await client.get("/api/v1/admin/farmers/pending", headers=admin_tokens["headers"])
-    assert pending_farmers.status_code == 200, pending_farmers.text
-    farmer_names = [f["full_name"] for f in pending_farmers.json()["items"]]
-    assert "Demo Farmer" in farmer_names
-    pending_partners = (
-        await db.execute(select(func.count()).select_from(DeliveryPartner).where(DeliveryPartner.user_id == rows["demo.delivery@auxin.app"].id))
-    ).scalar_one()
-    assert pending_partners == 1
+    # Nothing is waiting in Approvals until the applicants submit their details.
+    farmers_pending = await client.get("/api/v1/admin/farmers/pending", headers=admin_tokens["headers"])
+    assert "Demo Applicant" not in [f["full_name"] for f in farmers_pending.json()["items"]]
 
-    # Baseline produce exists once, but customers cannot see it until the farmer is approved.
-    inv_count = (
-        await db.execute(select(func.count()).select_from(FarmerInventory).where(FarmerInventory.is_demo.is_(True)))
-    ).scalar_one()
-    assert inv_count == 6
-    inv_repo = InventoryRepository(db)
-    assert len(await inv_repo.list_for_product(master_product_id=7)) == 0
+    # --- the demo farmer signs in for the first time and fills in the details form ---
+    farmer_headers = _token(str(uuid.uuid4()), "demo.farmer@auxin.app")
+    sync = await client.post(
+        "/api/v1/auth/sync-user",
+        json={"name": "Demo Applicant", "phone": "+919845012345", "role": "farmer", "email": "demo.farmer@auxin.app"},
+        headers=farmer_headers,
+    )
+    assert sync.status_code == 201, sync.text
+    assert sync.json()["status"] == "pending"
 
-    # Admin approves the demo farmer -> produce becomes visible to customers.
-    farmer_id = next(f["id"] for f in pending_farmers.json()["items"] if f["full_name"] == "Demo Farmer")
-    approve = await client.post(f"/api/v1/farmers/{farmer_id}/approve", headers=admin_tokens["headers"])
+    created = await client.post("/api/v1/profile", json={**PROFILE_BODY, "farm_name": "Demo Farm"}, headers=farmer_headers)
+    assert created.status_code == 201, created.text
+
+    # ...and the request now appears for the admin, who approves it.
+    farmers_pending = await client.get("/api/v1/admin/farmers/pending", headers=admin_tokens["headers"])
+    request = next(f for f in farmers_pending.json()["items"] if f["full_name"] == "Demo Applicant")
+    approve = await client.patch(f"/api/v1/admin/farmers/{request['id']}/approve", headers=admin_tokens["headers"])
     assert approve.status_code == 200, approve.text
-    db.expire_all()
-    assert len(await inv_repo.list_for_product(master_product_id=7)) == 1
+    me = await client.get("/api/v1/auth/me", headers=farmer_headers)
+    assert me.json()["status"] == "approved"
 
-    # Real data is untouched.
-    survivors = (
-        await db.execute(select(func.count()).select_from(Order).where(Order.id == real_order_id))
-    ).scalar_one()
+    # --- same for the demo courier ---
+    courier_headers = _token(str(uuid.uuid4()), "demo.delivery@auxin.app")
+    sync = await client.post(
+        "/api/v1/auth/sync-user",
+        json={"name": "Demo Courier", "phone": "+919845012346", "role": "delivery", "email": "demo.delivery@auxin.app"},
+        headers=courier_headers,
+    )
+    assert sync.status_code == 201, sync.text
+    created = await client.post("/api/v1/profile", json={**PROFILE_BODY, "name": "Demo Courier", "phone": "9845012346"}, headers=courier_headers)
+    assert created.status_code == 201, created.text
+    partners_pending = await client.get("/api/v1/admin/delivery/pending", headers=admin_tokens["headers"])
+    assert partners_pending.status_code == 200, partners_pending.text
+    assert partners_pending.json()["total"] >= 1
+
+    # Real data is untouched by all of this.
+    db.expire_all()
+    survivors = (await db.execute(select(func.count()).select_from(Order).where(Order.id == real_order_id))).scalar_one()
     assert survivors == 1
-    real_customer_is_demo = (
-        await db.execute(select(User.is_demo).where(User.id == customer_tokens["user"]["id"]))
-    ).scalar_one()
-    assert real_customer_is_demo is False
+    assert (await db.execute(select(User.is_demo).where(User.id == customer_tokens["user"]["id"]))).scalar_one() is False
