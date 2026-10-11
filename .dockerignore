@@ -1,12 +1,17 @@
+# Secrets (never bake into an image)
 .env
 .env.*
 !.env.example
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 *.egg-info/
+venv/
+.venv/
 dist/
 build/
 .pytest_cache/
@@ -15,11 +20,28 @@ build/
 htmlcov/
 .coverage
 *.log
+
+# Not part of the API image
 tests/
-alembic/versions/
 .git/
 .gitignore
 README.md
 schema.sql
 Dockerfile
 docker-compose*.yml
+
+# Other services / large local data (API image only needs main.py, app/, alembic/)
+auxin-frontend/
+auxin-admin/
+auxin-landing/
+Milo_AI/
+Dataset/
+Reports/
+scratch/
+docs/
+node_modules/
+*.db
+*.sqlite
+
+# NOTE: alembic/ (including versions/) MUST be in the image: the container runs
+# `alembic upgrade head` on start.

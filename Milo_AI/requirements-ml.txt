@@ -1,0 +1,5 @@
+# OPTIONAL — higher-quality semantic retrieval.
+# Installs PyTorch (large) and downloads the BAAI/bge-small-en-v1.5 embedding
+# model (~130 MB) from Hugging Face on first start. Install on top of requirements.txt:
+#   Milo_AI\.venv\Scripts\python.exe -m pip install -r Milo_AI\requirements-ml.txt
+sentence-transformers==5.6.1
