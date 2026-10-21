@@ -40,10 +40,12 @@ const api: AxiosInstance = axios.create({
 import { useAuthStore } from "@/store/authStore";
 
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-  const { data } = await supabase.auth.getSession();
-  let token: string | undefined = data.session?.access_token || undefined;
+  let token: string | undefined = useAuthStore.getState().token || undefined;
   if (!token) {
-    token = useAuthStore.getState().token || undefined;
+    try {
+      const { data } = await supabase.auth.getSession();
+      token = data?.session?.access_token || undefined;
+    } catch {}
   }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -86,7 +88,7 @@ api.interceptors.response.use(
     // Cold-start detection: Render free-tier returns 503 while waking up
     const is503     = error.response?.status === 503;
     const isTimeout = error.code === "ECONNABORTED" || error.code === "ERR_NETWORK";
-    if ((is503 || isTimeout) && !originalRequest._retry) {
+    if ((is503 || isTimeout) && !originalRequest._retry && !originalRequest.url?.includes("/milo")) {
       setColdStart(true);
       await new Promise((r) => setTimeout(r, 3000)); // wait 3s for backend to wake
       originalRequest._retry = true;
@@ -112,18 +114,23 @@ api.interceptors.response.use(
       }
 
       _refreshing = true;
-      const { data, error: refreshError } = await supabase.auth.refreshSession();
+      let sessionToken: string | null = null;
+      try {
+        const { data, error: refreshError } = await supabase.auth.refreshSession();
+        if (!refreshError && data?.session) {
+          sessionToken = data.session.access_token;
+        }
+      } catch {}
       _refreshing = false;
 
-      if (refreshError || !data.session) {
-        await supabase.auth.signOut();
+      if (!sessionToken) {
         return Promise.reject(error);
       }
 
-      onRefreshed(data.session.access_token);
+      onRefreshed(sessionToken);
       originalRequest.headers = {
         ...originalRequest.headers,
-        Authorization: `Bearer ${data.session.access_token}`,
+        Authorization: `Bearer ${sessionToken}`,
       };
       return api(originalRequest);
     }

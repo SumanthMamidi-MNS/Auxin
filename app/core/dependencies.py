@@ -67,8 +67,9 @@ async def get_current_user(
         payload = decode_supabase_jwt(raw_token)
     except ExpiredSignatureError:
         raise TokenExpiredError()
-    except JWTError:
-        raise TokenInvalidError()
+    except JWTError as exc:
+        print("JWT EXCEPTION CAUSE:", repr(exc))
+        raise TokenInvalidError(str(exc))
 
     supabase_uid: str | None = payload.get("sub")
     if not supabase_uid:
@@ -138,8 +139,9 @@ async def get_current_user_for_profile(
         payload = decode_supabase_jwt(raw_token)
     except ExpiredSignatureError:
         raise TokenExpiredError()
-    except JWTError:
-        raise TokenInvalidError()
+    except JWTError as exc:
+        print("JWT EXCEPTION CAUSE:", repr(exc))
+        raise TokenInvalidError(str(exc))
 
     supabase_uid: str | None = payload.get("sub")
     if not supabase_uid:

@@ -33,9 +33,14 @@ export default function FarmerDashboardPage() {
 
   // Load orders for statistics
   const { data: ordersData, isLoading } = useQuery({
-    queryKey: ["farmer-orders-stats"],
-    queryFn: () => ordersApi.farmerOrders({ page: 1, page_size: 100 }).then((r) => r.data),
+    queryKey: ["farmer-orders-stats", token],
+    queryFn: () => {
+      if (!token) return Promise.resolve({ items: [], total: 0 } as any);
+      return ordersApi.farmerOrders({ page: 1, page_size: 100 }).then((r) => r.data).catch(() => ({ items: [], total: 0 }));
+    },
+    enabled: !!token,
     refetchInterval: 10000,
+    retry: 0,
   });
 
   // Load inventory list to compute low stock counts and valuation
@@ -64,7 +69,7 @@ export default function FarmerDashboardPage() {
   const [upiId, setUpiId] = useState("");
   const [submittingBank, setSubmittingBank] = useState(false);
 
-  const isBankMissing = !profileData || !profileData.bank_account_number || profileData.bank_account_number.startsWith("00000");
+  const isBankMissing = Boolean(profileData && (!profileData.bank_account_number || profileData.bank_account_number.startsWith("00000")));
 
   const handleBankSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,28 +112,28 @@ export default function FarmerDashboardPage() {
     }
   };
 
-  const orders = ordersData?.items ?? [];
-  const inventoryList = invData?.items ?? [];
+  const orders: any[] = (ordersData as any)?.items ?? [];
+  const inventoryList: any[] = (invData as any)?.items ?? [];
 
   // Calculations
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   
-  const todayOrders = orders.filter((o) => new Date(o.created_at).getTime() >= startOfDay);
+  const todayOrders = orders.filter((o: any) => new Date(o.created_at).getTime() >= startOfDay);
   const todaySales = todayOrders
-    .filter((o) => o.status === "completed" || o.status === "accepted" || o.status === "packing" || o.status === "ready_for_pickup")
-    .reduce((s, o) => s + Number(o.total_amount), 0);
+    .filter((o: any) => o.status === "completed" || o.status === "accepted" || o.status === "packing" || o.status === "ready_for_pickup")
+    .reduce((s: number, o: any) => s + Number(o.total_amount), 0);
 
-  const pendingPacking = orders.filter((o) => o.status === "accepted" || o.status === "packing");
+  const pendingPacking = orders.filter((o: any) => o.status === "accepted" || o.status === "packing");
   const inventoryValue = inventoryList.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
   const lowStockItems = inventoryList.filter((item: any) => item.quantity <= 10 && item.quantity > 0);
   const lowStockCount = lowStockItems.length;
 
   const sevenDaysAgo = startOfDay - 7 * 24 * 60 * 60 * 1000;
-  const completedOrders = orders.filter((o) => o.status === "completed");
+  const completedOrders = orders.filter((o: any) => o.status === "completed");
   const weeklyRevenue = completedOrders
-    .filter((o) => new Date(o.created_at).getTime() >= sevenDaysAgo)
-    .reduce((s, o) => s + Number(o.total_amount), 0);
+    .filter((o: any) => new Date(o.created_at).getTime() >= sevenDaysAgo)
+    .reduce((s: number, o: any) => s + Number(o.total_amount), 0);
 
   // Weekly Chart Points
   const last7Days = Array.from({ length: 7 }, (_, i) => {

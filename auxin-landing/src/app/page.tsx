@@ -70,7 +70,7 @@ const PORTAL_TABS = [
       "Two-phase atomic escrow protection on every order",
       "Live 5-milestone journey tracking with ETA badge"
     ],
-    screenshot: "/screenshots/03_mobile_customer_home.png",
+    screenshot: "/screenshots/hero_live_harvest.png",
     mobileScreenshotAlt: "Auxin Customer Mobile App",
     linkText: "Shop Fresh Produce →",
     targetRoute: `${APP_URL}/customer/home`
@@ -108,7 +108,7 @@ const PORTAL_TABS = [
       "6-digit cryptographic handshake OTP verification",
       "Immediate trip completion payout & transparent logs"
     ],
-    screenshot: "/screenshots/12_mobile_delivery_mission_hud.png",
+    screenshot: "/screenshots/09_mobile_delivery_mission_hud.png",
     mobileScreenshotAlt: "Auxin Delivery Mission HUD Mobile App",
     linkText: "Open Delivery HUD →",
     targetRoute: `${APP_URL}/delivery/dashboard`
@@ -316,7 +316,7 @@ export default function LandingPage() {
             {/* Screen Viewport with live screenshot */}
             <div className="relative rounded-[36px] overflow-hidden aspect-[9/19] bg-[#FDFBF6] shadow-inner">
               <Image
-                src="/screenshots/03_mobile_customer_home.png"
+                src="/screenshots/hero_live_harvest.png"
                 alt="Auxin Live Mobile Experience"
                 fill
                 className="object-cover object-top"
@@ -564,7 +564,7 @@ export default function LandingPage() {
             <div className="p-4 rounded-3xl bg-[#FAF8F3] border border-[#E8E5DF] space-y-4 hover:shadow-lg transition-all text-center">
               <div className="relative rounded-2xl overflow-hidden aspect-[9/18] bg-black/5 shadow-inner">
                 <Image
-                  src="/screenshots/03_mobile_customer_home.png"
+                  src="/screenshots/hero_live_harvest.png"
                   alt="Customer Discovery Screen"
                   fill
                   className="object-cover object-top"
@@ -596,7 +596,7 @@ export default function LandingPage() {
             <div className="p-4 rounded-3xl bg-[#FAF8F3] border border-[#E8E5DF] space-y-4 hover:shadow-lg transition-all text-center">
               <div className="relative rounded-2xl overflow-hidden aspect-[9/18] bg-black/5 shadow-inner">
                 <Image
-                  src="/screenshots/06_mobile_customer_order_tracking.png"
+                  src="/screenshots/05_mobile_customer_orders.png"
                   alt="Live Order Tracking & OTP"
                   fill
                   className="object-cover object-top"
@@ -612,7 +612,7 @@ export default function LandingPage() {
             <div className="p-4 rounded-3xl bg-[#FAF8F3] border border-[#E8E5DF] space-y-4 hover:shadow-lg transition-all text-center">
               <div className="relative rounded-2xl overflow-hidden aspect-[9/18] bg-black/5 shadow-inner">
                 <Image
-                  src="/screenshots/12_mobile_delivery_mission_hud.png"
+                  src="/screenshots/09_mobile_delivery_mission_hud.png"
                   alt="Delivery Mission HUD"
                   fill
                   className="object-cover object-top"

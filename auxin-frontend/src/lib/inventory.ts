@@ -8,6 +8,7 @@
  */
 
 import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/authStore";
 
 // ─────────────────────────────────────────────────────────────────────────── //
 // Types

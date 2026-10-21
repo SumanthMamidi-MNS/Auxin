@@ -19,6 +19,7 @@ import { Badge, EmptyState, ProgressBar } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { catalogueApi } from "@/lib/catalogue";
 import { inventoryApi, type InventoryEntry } from "@/lib/inventory";
+import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
 import { clsx } from "clsx";
 
@@ -46,7 +47,8 @@ const DEFAULT_FORM: AddFormState = {
 
 export default function FarmerInventoryPage() {
   const qc = useQueryClient();
-  const api = inventoryApi();
+  const token = useAuthStore((s) => s.token);
+  const api = inventoryApi(token);
 
   // UI panel states
   const [showAddForm, setShowAddForm] = useState(false);
@@ -69,8 +71,12 @@ export default function FarmerInventoryPage() {
 
   // Load farmer's own inventory
   const { data: invData, isLoading: invLoading } = useQuery({
-    queryKey: ["my-inventory"],
-    queryFn: () => api.listMy({ page: 1, page_size: 100 }).then((r) => r.data),
+    queryKey: ["my-inventory", token],
+    queryFn: () => {
+      if (!token) return Promise.resolve({ items: [], total: 0 } as any);
+      return inventoryApi(token).listMy({ page: 1, page_size: 100 }).then((r) => r.data).catch(() => ({ items: [], total: 0 }));
+    },
+    enabled: !!token,
     refetchInterval: 10000,
   });
 

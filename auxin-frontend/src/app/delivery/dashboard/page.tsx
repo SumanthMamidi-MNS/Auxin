@@ -71,7 +71,7 @@ const MISSION_STEPS = [
 
 export default function DeliveryDashboardPage() {
   const qc = useQueryClient();
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
 
   // Telemetry & GPS states
   const [geoStatus, setGeoStatus] = useState<"idle" | "tracking" | "denied" | "unavailable" | "unsupported">("idle");
@@ -87,9 +87,10 @@ export default function DeliveryDashboardPage() {
 
   // Partner Profile Query
   const { data: profile } = useQuery({
-    queryKey: ["delivery-profile-detail"],
+    queryKey: ["delivery-profile-detail", token],
     queryFn: () => deliveryApi.getProfile().then((r) => r.data),
-    staleTime: 60000,
+    enabled: !!token,
+    staleTime: 10000,
   });
 
   const partnerLat = profile?.current_latitude;
@@ -178,8 +179,9 @@ export default function DeliveryDashboardPage() {
 
   // Assigned Deliveries query (polls every 8s for live mission updates)
   const { data: deliveriesData, isLoading: isLoadingAssigned } = useQuery({
-    queryKey: ["my-deliveries"],
+    queryKey: ["my-deliveries", token],
     queryFn: () => deliveryApi.myDeliveries().then((r) => r.data),
+    enabled: !!token,
     refetchInterval: 8000,
   });
 

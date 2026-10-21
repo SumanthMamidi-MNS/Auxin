@@ -423,6 +423,7 @@ Auxin/
 │   ├── src/components/         # 4:5 ProductCard, MissionStepper, OTPInput, Skeletons
 │   └── src/store/              # Zustand cartStore & authStore
 ├── auxin-admin/                # Desktop Super-Admin Operations Portal
+├── auxin-landing/              # High-Impact Vercel Landing Page & Live App Showcase
 ├── Milo_AI/                    # Autonomous Agritech Intelligence & RAG
 │   ├── backend/                # RAG engine, memory, embeddings
 │   └── knowledge/              # Validated agricultural domain vectors

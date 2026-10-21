@@ -85,16 +85,10 @@ async def proxy_guided_options(
     role = "super_admin" if current_user.is_super_admin else current_user.role.value
     url = f"{settings.MILO_BACKEND_URL.rstrip('/')}/api/chat/guided-options"
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(timeout=3.0) as client:
             resp = await client.get(url, params={"role": role}, headers=_milo_headers())
-    except httpx.RequestError:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Milo AI service is currently unavailable.",
-        )
-    if resp.status_code == 200:
-        return resp.json()
-    raise HTTPException(
-        status_code=status.HTTP_502_BAD_GATEWAY,
-        detail="Milo AI service returned an error.",
-    )
+            if resp.status_code == 200:
+                return resp.json()
+    except Exception:
+        pass
+    return {"categories": []}
