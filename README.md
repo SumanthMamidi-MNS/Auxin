@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="110">
+  <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="120">
 </p>
 
 <h1 align="center">
   <strong>AUXIN</strong><br>
-  <sub>Hyper-Local Direct-From-Farm Marketplace &bull; Autonomous Agritech Logistics &bull; Milo AI Intelligence</sub>
+  <sub>Hyper-Local Direct-From-Farm Marketplace &bull; Autonomous Agritech Logistics &bull; Milo AI Copilot</sub>
 </h1>
 
 <p align="center">
@@ -40,22 +40,25 @@
 
 1. [Why This Exists](#-why-this-exists)
 2. [Three Role-Adaptive Portals](#-three-role-adaptive-portals)
-3. [Mobile-First Real-Time Experience](#-mobile-first-real-time-experience)
-   - [Customer Mobile Portal (Discovery & Provenance)](#1-customer-mobile-portal-discovery--provenance)
-   - [Farmer Mobile Portal (Business & Operations Radar)](#2-farmer-mobile-portal-business--operations-radar)
-   - [Delivery Partner Mission HUD (GPS & Doorstep OTP)](#3-delivery-partner-mission-hud-gps--doorstep-otp)
-   - [Milo AI (Autonomous Agritech Assistant)](#4-milo-ai-autonomous-agritech-assistant)
-4. [End-to-End System Architecture](#-end-to-end-system-architecture)
-5. [Core Engineering Highlights](#-core-engineering-highlights)
+3. [Real-Time Mobile Experience (Mobile-First UI Showcase)](#-real-time-mobile-experience-mobile-first-ui-showcase)
+   - [Onboarding & Authentication](#1-onboarding--authentication-mobile)
+   - [Customer Marketplace & Ordering](#2-customer-marketplace--ordering-mobile)
+   - [Farmer Operations & Business Suite](#3-farmer-operations--business-suite-mobile)
+   - [Delivery Partner Mission HUD](#4-delivery-partner-mission-hud-mobile)
+4. [Desktop & Super Admin Operations (PC Viewport Showcase)](#-desktop--super-admin-operations-pc-viewport-showcase)
+   - [Customer & Farmer Desktop Experience](#1-customer--farmer-desktop-experience)
+   - [Super Admin Control Room](#2-super-admin-control-room-desktop)
+5. [End-to-End System Architecture](#-end-to-end-system-architecture)
+6. [Core Engineering Highlights](#-core-engineering-highlights)
    - [25 KM Haversine Geofencing Engine](#1-25-km-haversine-geofencing-engine)
    - [Two-Phase Atomic Escrow Commerce](#2-two-phase-atomic-escrow-commerce)
    - [Doorstep Cryptographic OTP Verification](#3-doorstep-cryptographic-otp-verification)
    - [Milo AI 7-Stage RAG Pipeline](#4-milo-ai-7-stage-rag-pipeline)
-6. [Automated Verification & Test Suite](#-automated-verification--test-suite)
-7. [Tech Stack](#-tech-stack)
-8. [Quickstart (Local Run)](#-quickstart-local-run)
-9. [Repository Layout](#-repository-layout)
-10. [Author & License](#-author--license)
+7. [Automated Verification & Test Suite](#-automated-verification--test-suite)
+8. [Tech Stack](#-tech-stack)
+9. [Quickstart (Local Run)](#-quickstart-local-run)
+10. [Repository Structure](#-repository-structure)
+11. [Author & License](#-author--license)
 
 </details>
 
@@ -68,7 +71,7 @@ In traditional agricultural supply chains, harvested crops pass through 4 to 6 t
 ```
 TRADITIONAL CHAIN (BROKEN):
 [Farmer] ──(₹15/kg)──► [Local Agent] ──► [APMC Mandi] ──► [Wholesaler] ──► [Retailer] ──(₹60/kg)──► [Consumer]
-                        ▲ 48–72 hr transit delays &bull; 30% spoilage &bull; 75% margin lost to middlemen ▲
+                        ▲ 48–72 hr transit delays • 30% spoilage • 75% margin lost to middlemen ▲
 
 THE AUXIN PARADIGM:
 [Farmer] ─────────────────────── 25 KM Hyper-Local Delivery ───────────────────────► [Consumer]
@@ -102,173 +105,187 @@ Auxin is **one unified product ecosystem** designed from first principles with *
   │    CUSTOMER PORTAL    │             │     FARMER PORTAL     │             │    DELIVERY PORTAL    │
   │ Discovery & Provenance│             │ Operations & Business │             │  Action & Mission HUD │
   ├───────────────────────┤             ├───────────────────────┤             ├───────────────────────┤
-  │ &bull; Horizontal rails    │             │ &bull; Operations radar   │             │ &bull; Mission HUD focus │
-  │ &bull; 4:5 Crop cards     │             │ &bull; Stock health meters│             │ &bull; Turn-by-turn steps│
-  │ &bull; Multi-farmer select│             │ &bull; 6-Stage pipeline   │             │ &bull; 25km job radar    │
-  │ &bull; Escrow checkout    │             │ &bull; Revenue analytics  │             │ &bull; Doorstep OTP card │
-  │ &bull; Milestone tracking │             │ &bull; Escrow direct bank │             │ &bull; ₹40/drop payout   │
+  │ • Horizontal rails    │             │ • Operations radar    │             │ • Mission HUD focus   │
+  │ • 4:5 Crop cards      │             │ • Stock health meters │             │ • Turn-by-turn steps  │
+  │ • Multi-farmer select │             │ • 6-Stage pipeline    │             │ • 25km job radar      │
+  │ • Escrow checkout     │             │ • Revenue analytics   │             │ • Doorstep OTP card   │
+  │ • Milestone tracking  │             │ • Escrow direct bank  │             │ • ₹40/drop payout     │
   └───────────────────────┘             └───────────────────────┘             └───────────────────────┘
 ```
 
 ---
 
-## 📱 Mobile-First Real-Time Experience
+## 📱 Real-Time Mobile Experience (Mobile-First UI Showcase)
 
-Auxin is built **mobile-first** for the real world — where farmers manage produce in sunlit fields, delivery partners navigate traffic on two-wheelers, and consumers shop on their smartphones.
+Auxin is built **mobile-first** for real-world agricultural conditions — where farmers inspect produce under bright sunlight, couriers navigate traffic on two-wheelers, and consumers shop on smartphones.
 
-### 1. Customer Mobile Portal (Discovery & Provenance)
+### 1. Onboarding & Authentication (Mobile)
 
-Designed for freshness, trust, and zero-confusion ordering. Features editorial category rails, 4:5 portrait crop cards, and real-time delivery timelines.
-
-```
-┌──────────────────────────────────────┐
-│  🌿 Auxin              🔔 (2)  🛒 3  │
-├──────────────────────────────────────┤
-│  GOOD MORNING ☀️                      │
-│  Namaste, Sumanth!                   │
-│  • 100% Farm Direct • 25 KM Radius   │
-├──────────────────────────────────────┤
-│  🔍 Search fresh mangoes, spinach... │
-├──────────────────────────────────────┤
-│  [🌱 All] [🌾 Grains] [🥛 Dairy] [🌿] │
-├──────────────────────────────────────┤
-│  ┌────────────────────────────────┐  │
-│  │ 🥭 SEASON'S BEST               │  │
-│  │ Ratnagiri Alphonso Mangoes     │  │
-│  │ Naturally tree-ripened • ₹180  │  │
-│  │ [ Shop Fresh Harvest ]         │  │
-│  └────────────────────────────────┘  │
-├──────────────────────────────────────┤
-│  POPULAR THIS WEEK                   │
-│  ┌─────────────────┐┌────────────────┐│
-│  │ [4:5 PHOTO]     ││ [4:5 PHOTO]    ││
-│  │ 🌿 Organic      ││ 🌿 Organic     ││
-│  │ Ratnagiri Mango ││ Palak Spinach  ││
-│  │ Green Meadows   ││ Ramesh Farm    ││
-│  │ ₹180 / kg       ││ ₹20 / bunch    ││
-│  │ [   + ADD   ]   ││ [   + ADD   ]  ││
-│  └─────────────────┘└────────────────┘│
-├──────────────────────────────────────┤
-│  [🏠 Home] [🛒 Cart (3)] [❤️] [📦] [👤]│
-└──────────────────────────────────────┘
-```
-
-* **4:5 Vertical Crop Photography**: Eliminates squished images; displays natural soil and farm provenance.
-* **Multi-Farmer Selector**: When viewing an item (e.g., Tomatoes), customers compare neighboring farmers by distance, harvest timestamp, and organic certification.
-* **Segmented 5-Stage Order Timeline**: `Confirmed` $\rightarrow$ `Harvesting & Packing` $\rightarrow$ `Courier Assigned` $\rightarrow$ `On The Road` $\rightarrow$ `Delivered`.
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/01_mobile_auth.png" width="310" alt="Mobile Sign In">
+        <br><sub><b>Figure 1.1: Mobile Sign-In & Verification</b><br>Role-adaptive OTP access with demo sandbox integration</sub>
+      </td>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/02_mobile_complete_profile.png" width="310" alt="Complete Profile Form">
+        <br><sub><b>Figure 1.2: Complete Profile & Farm Registration</b><br>Structured address geocoding & farmer category picker</sub>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-### 2. Farmer Mobile Portal (Business & Operations Radar)
+### 2. Customer Marketplace & Ordering (Mobile)
 
-Empowers rural producers with real-time sales intelligence, inventory health gauges, and packaging alerts.
-
-```
-┌──────────────────────────────────────┐
-│  🚜 Farmer Center       🟢 Online    │
-├──────────────────────────────────────┤
-│  Namaste, Ramesh Patil!              │
-│  🏡 Green Meadows Farm • Bengaluru   │
-├──────────────────────────────────────┤
-│  OPERATIONS RADAR                    │
-│  ┌─────────────────┐┌────────────────┐│
-│  │ TODAY'S REVENUE ││ PENDING PACK   ││
-│  │ ₹4,850          ││ 3 Orders       ││
-│  │ +24% vs y'day   ││ ⏳ 45m SLA     ││
-│  └─────────────────┘└────────────────┘│
-├──────────────────────────────────────┤
-│  CROP INVENTORY HEALTH               │
-│  ┌──────────────────────────────────┐ │
-│  │ 🥦 Broccoli (Organic) • ₹90/kg   │ │
-│  │ Stock: [████████████░░░] 42 kg   │ │
-│  │ Harvest: Today 06:30 AM  • Active│ │
-│  │ [ Edit Price ] [ Quick Restock ] │ │
-│  └──────────────────────────────────┘ │
-│  ┌──────────────────────────────────┐ │
-│  │ 🍅 Country Tomato • ₹35/kg       │ │
-│  │ Stock: [███░░░░░░░░░░░░] 6 kg    │ │
-│  │ ⚠️ LOW STOCK: Needs immediate field│ │
-│  └──────────────────────────────────┘ │
-├──────────────────────────────────────┤
-│  [🏠 Home] [📦 Stock] [📋 Orders] [💰]│
-└──────────────────────────────────────┘
-```
-
-* **Operations Radar**: Instant notification when a customer places an order, triggering a 2-hour packing countdown SLA.
-* **Visual Stock Meters (`ProgressBar`)**: Color-graded capacity bars (Emerald $\ge 50\%$, Amber $< 20\%$, Red = Depleted).
-* **Direct Escrow Payouts**: Daily revenue settlement directly to the verified IFSC bank account.
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/03_mobile_customer_home.png" width="310" alt="Customer Discovery">
+        <br><sub><b>Figure 2.1: Customer Discovery Home</b><br>Category rail, editorial seasonal spotlight & 4:5 crop grid</sub>
+      </td>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/04_mobile_customer_product_detail.png" width="310" alt="Product Detail & Farmers">
+        <br><sub><b>Figure 2.2: Product Detail & Farmer Suppliers</b><br>Multi-farmer price selection, harvest timestamps & quantity stepper</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/05_mobile_customer_cart.png" width="310" alt="Customer Cart">
+        <br><sub><b>Figure 2.3: Escrow Cart & Delivery Address</b><br>Two-phase escrow protection badge & quick address selector</sub>
+      </td>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/06_mobile_customer_order_tracking.png" width="310" alt="Order Tracking & OTP">
+        <br><sub><b>Figure 2.4: 5-Milestone Tracking & Doorstep OTP</b><br>Live ETA countdown & cryptographic 6-digit confirmation card</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2">
+        <img src="docs/screenshots/07_mobile_customer_profile.png" width="310" alt="Customer Profile">
+        <br><sub><b>Figure 2.5: Customer Profile & Saved Locations</b><br>Verified citizen identity badge & address management sheet</sub>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-### 3. Delivery Partner Mission HUD (GPS & Doorstep OTP)
+### 3. Farmer Operations & Business Suite (Mobile)
 
-A high-contrast, distraction-free **Mission Heads-Up Display** built for riders navigating in bright sunlight. When on a run, the mission *is* the entire screen.
-
-```
-┌──────────────────────────────────────┐
-│  🛵 Delivery HUD       Duty: 🟢 ON   │
-├──────────────────────────────────────┤
-│  TODAY: ₹320 (8 Runs) • 4.95 ★       │
-├──────────────────────────────────────┤
-│  CURRENT MISSION: ORDER #1042        │
-│  Reward: ₹40.00 • 25 km Geofenced    │
-├──────────────────────────────────────┤
-│  [ STEP 1: PICKUP ] ──► ( STEP 2: DROP )│
-│                                      │
-│  📍 FARM PICKUP: Green Meadows       │
-│  Distance: 3.4 km • 12 mins          │
-│  [ 📞 Call Farmer ] [ 🗺️ Maps Nav ]   │
-│                                      │
-│  ┌────────────────────────────────┐  │
-│  │   [LEAFLET GPS ROUTE MAP]      │  │
-│  │   Rider 🛵 ────────► Farm 🏡   │  │
-│  └────────────────────────────────┘  │
-│                                      │
-│  CUSTOMER DOORSTEP VERIFICATION:     │
-│  Ask customer for 6-digit OTP code   │
-│  ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ │
-│  │ 4 │ │ 8 │ │ 2 │ │ 1 │ │ 9 │ │ 0 │ │
-│  └───┘ └───┘ └───┘ └───┘ └───┘ └───┘ │
-│  [    CONFIRM & COMPLETE TRIP   ]    │
-├──────────────────────────────────────┤
-│  [🛵 Runs] [📜 History] [💰 Wallet]  │
-└──────────────────────────────────────┘
-```
-
-* **Color-Coded Mission Stages**: **Amber** for Farm Pickup $\rightarrow$ **Emerald** for Customer Dropstep.
-* **Leaflet GPS Map**: Live location tracking with automatic marker interpolation and zero layout thrashing.
-* **Cryptographic 6-Digit Doorstep Handshake**: Delivery is irrevocably confirmed only when the customer's private OTP is verified by the backend API.
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/08_mobile_farmer_dashboard.png" width="310" alt="Farmer Operations Radar">
+        <br><sub><b>Figure 3.1: Farmer Operations Radar</b><br>Sales alerts, pending packing orders & weekly revenue velocity</sub>
+      </td>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/09_mobile_farmer_inventory.png" width="310" alt="Farmer Crop Inventory">
+        <br><sub><b>Figure 3.2: Harvest Inventory & Capacity Gauges</b><br>Visual stock health meters, inline quick editor & master catalogue</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/10_mobile_farmer_orders_pipeline.png" width="310" alt="Farmer Orders Pipeline">
+        <br><sub><b>Figure 3.3: 6-Stage Order Prep Pipeline</b><br>2-hour packing countdown SLA & one-click courier call</sub>
+      </td>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/11_mobile_farmer_earnings.png" width="310" alt="Farmer Earnings Breakdown">
+        <br><sub><b>Figure 3.4: Financial Breakdown & Direct Payouts</b><br>Lifetime gross, 4-stat metrics & verified IFSC escrow deposit</sub>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-### 4. Milo AI (Autonomous Agritech Assistant)
+### 4. Delivery Partner Mission HUD (Mobile)
 
-Available on every portal via the floating emerald badge, **Milo** is a fine-tuned RAG assistant trained on agricultural sciences, crop seasonal charts, and Auxin order logistics.
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/12_mobile_delivery_mission_hud.png" width="310" alt="Delivery Mission HUD">
+        <br><sub><b>Figure 4.1: Turn-by-Turn Mission Heads-Up Display</b><br>Leaflet GPS route map, stage color shift & doorstep OTP verification</sub>
+      </td>
+      <td align="center" width="50%">
+        <img src="docs/screenshots/13_mobile_delivery_earnings.png" width="310" alt="Delivery Earnings">
+        <br><sub><b>Figure 4.2: ₹40 / Drop Earnings Breakdown</b><br>7-day trip velocity area chart & transparent courier pay breakdown</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2">
+        <img src="docs/screenshots/14_mobile_delivery_history.png" width="310" alt="Delivery Route History">
+        <br><sub><b>Figure 4.3: Route History & Completed Node Timeline</b><br>Colored pickup and drop nodes with complete trip telemetry audit</sub>
+      </td>
+    </tr>
+  </table>
+</div>
 
-```
-┌──────────────────────────────────────┐
-│  🤖 Milo Agritech Assistant       ✕  │
-├──────────────────────────────────────┤
-│  [Milo]: Namaste! How can I assist   │
-│  your harvest or order today? 🌱     │
-│                                      │
-│  [You]: How do I store Alphonso      │
-│  mangoes to last 7 days?             │
-│                                      │
-│  [Milo]: Alphonso mangoes from our   │
-│  Ratnagiri farmers are tree-ripened! │
-│  1. Keep at room temp (20-25°C) until│
-│     they release a strong aroma.     │
-│  2. Never refrigerate before ripe.   │
-│  3. Once ripe, chill at 10-12°C for  │
-│     up to 5-7 days. 🥭               │
-│                                      │
-│  Quick Prompts:                      │
-│  [ Track Order #1042 ] [ Crop Tips ] │
-├──────────────────────────────────────┤
-│  💬 Ask Milo about crops or orders...│
-└──────────────────────────────────────┘
-```
+---
+
+## 🖥️ Desktop & Super Admin Operations (PC Viewport Showcase)
+
+### 1. Customer & Farmer Desktop Experience
+
+<div align="center">
+  <p><b>Figure 5.1: Customer Marketplace Desktop Experience</b><br>
+  <sub>Fixed 240px navigation sidebar, live search autocomplete dropdown, and responsive 4-column crop discovery grid</sub></p>
+  <img src="docs/screenshots/15_desktop_customer_home.png" width="94%" alt="Customer Desktop Home">
+</div>
+
+<br>
+
+<div align="center">
+  <p><b>Figure 5.2: Farmer Business Operations Suite (Desktop)</b><br>
+  <sub>Full operations radar, 7-day revenue velocity SVG area chart, and rapid fulfillment workflow cards</sub></p>
+  <img src="docs/screenshots/16_desktop_farmer_dashboard.png" width="94%" alt="Farmer Desktop Dashboard">
+</div>
+
+---
+
+### 2. Super Admin Control Room (Desktop)
+
+<div align="center">
+  <p><b>Figure 6.1: Super Admin Secure Authentication Gateway</b><br>
+  <sub>Role-based multi-admin credential barrier with Supabase JWT authentication</sub></p>
+  <img src="docs/screenshots/17_desktop_admin_auth.png" width="94%" alt="Admin Auth Desktop">
+</div>
+
+<br>
+
+<div align="center">
+  <p><b>Figure 6.2: Super Admin Platform Operations Dashboard</b><br>
+  <sub>Real-time system telemetry, active revenue counters, today's order metrics, and platform component health</sub></p>
+  <img src="docs/screenshots/18_desktop_admin_dashboard.png" width="94%" alt="Admin Operations Dashboard">
+</div>
+
+<br>
+
+<div align="center">
+  <p><b>Figure 6.3: Farmer & Delivery Partner Verification Desk</b><br>
+  <sub>KYC inspection, land registry documentation review, and one-click farmer approval with automated email notice</sub></p>
+  <img src="docs/screenshots/19_desktop_admin_approvals.png" width="94%" alt="Admin Approvals Desk">
+</div>
+
+<br>
+
+<div align="center">
+  <p><b>Figure 6.4: 120-Produce Master Agricultural Catalogue Manager</b><br>
+  <sub>Standardized produce SKUs, seasonal maturity indicators, and regional benchmark pricing controls</sub></p>
+  <img src="docs/screenshots/20_desktop_admin_catalogue.png" width="94%" alt="Master Catalogue Manager">
+</div>
+
+<br>
+
+<div align="center">
+  <p><b>Figure 6.5: 25 KM Hyper-Local Delivery Fleet Dispatch</b><br>
+  <sub>Active courier fleet monitoring, live duty state toggling, and real-time geofenced mission assignment</sub></p>
+  <img src="docs/screenshots/21_desktop_admin_deliveries.png" width="94%" alt="Delivery Partner Fleet">
+</div>
 
 ---
 
@@ -280,7 +297,7 @@ Available on every portal via the floating emerald badge, **Milo** is a fine-tun
                                               ▼
                              ┌─────────────────────────────────┐
                              │    NEXT.JS 16 APPSHELL (SSR)    │
-                             │  Tailwind 4 &bull; React Query v5    │
+                             │  Tailwind 4 • React Query v5    │
                              └────────────────┬────────────────┘
                                               │
                       ┌───────────────────────┼───────────────────────┐
@@ -299,14 +316,14 @@ Available on every portal via the floating emerald badge, **Milo** is a fine-tun
 ## ⚙️ Core Engineering Highlights
 
 ### 1. 25 KM Haversine Geofencing Engine
-To guarantee that produce is delivered fresh without cold-storage additives, Auxin enforces a strict **25-kilometer spherical distance boundary** calculated in PostgreSQL / SQLite:
+To guarantee that produce is delivered fresh without cold-storage preservatives, Auxin enforces a strict **25-kilometer spherical distance boundary** calculated directly in the data access layer:
 
 $$\Delta\sigma = 2 \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\left(\frac{\Delta\lambda}{2}\right)} \right)$$
 
 $$d = R \cdot \Delta\sigma \quad (\text{where } R = 6371.0 \text{ km})$$
 
 * Delivery couriers only see jobs located within 25 km of their active coordinates.
-* Customers can only order from farms whose harvest coordinate falls within 25 km of the delivery pin code.
+* Customers can only order from farms whose harvest coordinates fall within 25 km of the delivery pin code.
 
 ### 2. Two-Phase Atomic Escrow Commerce
 1. **Phase 1 (Order Placement)**: Funds are debited from the customer's card/UPI and held in the Auxin Escrow Reserve account.
@@ -390,7 +407,7 @@ start.bat
 
 ---
 
-## 📂 Repository Layout
+## 📂 Repository Structure
 
 ```
 Auxin/
@@ -410,6 +427,8 @@ Auxin/
 │   ├── backend/                # RAG engine, memory, embeddings
 │   └── knowledge/              # Validated agricultural domain vectors
 ├── docs/                       # Architecture specs, recovery, API references
+│   ├── assets/                 # Brand logos & graphics
+│   └── screenshots/            # 21 Real-time mobile & PC screenshots
 ├── scripts/                    # Migration, database seeding, preflight checks
 ├── tests/                      # 73-test automated regression suite
 └── start.bat                   # Zero-config one-click local launcher
