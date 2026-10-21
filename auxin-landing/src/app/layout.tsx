@@ -1,47 +1,48 @@
-/**
- * auxin-landing/src/app/layout.tsx
- * Root layout for the Auxin marketing site (auxin.com)
- */
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: {
-    default:  "Auxin — Fresh From the Farm",
-    template: "%s | Auxin",
-  },
+  title: "Auxin — Hyper-Local Direct-From-Farm Marketplace & Agritech Intelligence",
   description:
-    "India's first farmer-direct marketplace. Fresh produce harvested daily, delivered to your door. No middlemen, no compromise.",
+    "India's flagship direct-from-farm ecosystem. 100% cultivator margins, 2-hour harvest-to-door deliveries, 25 km geofenced logistics, and Milo AI copilot.",
   keywords: [
-    "farm to table india", "buy from farmers", "fresh vegetables online",
-    "organic produce delivery", "auxin marketplace",
+    "farm to table india",
+    "direct from farmer",
+    "hyperlocal produce delivery",
+    "organic farm marketplace",
+    "auxin",
+    "sumanth mamidi",
+    "agritech ai",
+    "milo ai"
   ],
   metadataBase: new URL("https://auxin.in"),
-  alternates:   { canonical: "/" },
-  robots:       { index: true, follow: true },
+  authors: [{ name: "Sumanth Mamidi", url: "https://github.com/SumanthMamidi-MNS" }],
+  creator: "Sumanth Mamidi",
   openGraph: {
-    type:        "website",
-    siteName:    "Auxin",
-    title:       "Auxin — Fresh From the Farm",
-    description: "India's first farmer-direct marketplace.",
-    url:         "https://auxin.in",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Auxin" }],
+    type: "website",
+    siteName: "Auxin",
+    title: "Auxin — Pure Farm-to-Doorstep Freshness",
+    description: "Zero Brokers. 100% Direct Margins. 25 KM Hyper-Local Delivery in 2 Hours.",
+    url: "https://auxin.in",
+    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Auxin Marketplace" }],
   },
   twitter: {
-    card:  "summary_large_image",
-    title: "Auxin — Fresh From the Farm",
-    images: ["/og.png"],
+    card: "summary_large_image",
+    title: "Auxin — Hyper-Local Direct Farm Marketplace",
+    description: "Zero Brokers. 100% Direct Margins. 25 KM Hyper-Local Delivery in 2 Hours.",
+    images: ["/logo.png"],
+    creator: "@SumanthMamidi",
   },
   icons: {
-    icon:  "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/logo-cropped.png",
+    apple: "/logo-cropped.png",
   },
 };
 
 export const viewport: Viewport = {
-  width:        "device-width",
+  width: "device-width",
   initialScale: 1,
-  themeColor:   "#1B5E20",
+  themeColor: "#22C55E",
 };
 
 export default function LandingLayout({ children }: { children: React.ReactNode }) {
@@ -51,13 +52,11 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body style={{ margin: 0, fontFamily: "'Inter', system-ui, sans-serif", background: "#FAF9F6" }}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
