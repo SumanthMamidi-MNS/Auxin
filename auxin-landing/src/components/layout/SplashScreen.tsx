@@ -37,30 +37,30 @@ export function SplashScreen({ onComplete, forceShow = false }: SplashScreenProp
   const [msgIdx, setMsgIdx] = useState(0);
 
   useEffect(() => {
-    // Smooth status message rotation across 5 stages
+    // Status message rotation across stages
     const msgInterval = setInterval(() => {
       setMsgIdx((prev) => (prev + 1) % STATUS_MESSAGES.length);
-    }, 650);
+    }, 320);
 
-    // Progress counter: smoothly reaches 100% in 3.0 seconds
+    // Progress counter: smoothly reaches 100% in 1.55 seconds (100 * 15.5ms)
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        return Math.min(100, prev + 1); // 100 increments * 30ms = 3000ms
+        return Math.min(100, prev + 1);
       });
-    }, 30);
+    }, 15.5);
 
-    // Fade out trigger after at least 3.2 seconds
+    // Fade out triggers at 1.60s, smooth 400ms fadeout finishes at exactly 2.00s
     const timeout = setTimeout(() => {
       setFadingOut(true);
       setTimeout(() => {
         setVisible(false);
         onComplete?.();
-      }, 700);
-    }, 3200);
+      }, 400);
+    }, 1600);
 
     return () => {
       clearInterval(interval);
@@ -76,12 +76,12 @@ export function SplashScreen({ onComplete, forceShow = false }: SplashScreenProp
     setTimeout(() => {
       setVisible(false);
       onComplete?.();
-    }, 350);
+    }, 200);
   };
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FDFBF6] transition-all duration-700 ease-in-out ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FDFBF6] transition-all duration-400 ease-in-out ${
         fadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       aria-label="Auxin Loading Screen"
@@ -113,7 +113,7 @@ export function SplashScreen({ onComplete, forceShow = false }: SplashScreenProp
         <div className="text-center space-y-1 mb-6">
           <h1
             className="font-extrabold text-3xl tracking-tight text-[#0F172A]"
-            style={{ fontFamily: 'var(--font-heading, "Poppins", sans-serif)' }}
+            style={{ fontFamily: 'var(--font-heading, "Outfit", sans-serif)' }}
           >
             AUXIN
           </h1>

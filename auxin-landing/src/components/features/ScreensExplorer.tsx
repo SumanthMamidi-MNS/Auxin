@@ -1016,7 +1016,7 @@ export function ScreensExplorer() {
                 {/* Prominent Floating Side Navigation Chevrons */}
                 <button
                   onClick={handlePrev}
-                  className="btn-press absolute -left-5 sm:-left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-white text-slate-800 border-2 border-slate-200 shadow-[0_6px_20px_rgba(0,0,0,0.18)] hover:shadow-xl hover:border-emerald-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer group"
+                  className="btn-press absolute -left-10 sm:-left-14 md:-left-16 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-white text-slate-800 border-2 border-slate-200 shadow-[0_6px_20px_rgba(0,0,0,0.18)] hover:shadow-xl hover:border-emerald-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer group"
                   aria-label="Previous Screen"
                   title="Previous Screen"
                 >
@@ -1024,7 +1024,7 @@ export function ScreensExplorer() {
                 </button>
                 <button
                   onClick={handleNext}
-                  className="btn-press absolute -right-5 sm:-right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white shadow-[0_6px_20px_rgba(27,67,50,0.35)] hover:shadow-xl flex items-center justify-center transition-all cursor-pointer group ring-2 ring-emerald-500/20"
+                  className="btn-press absolute -right-10 sm:-right-14 md:-right-16 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white shadow-[0_6px_20px_rgba(27,67,50,0.35)] hover:shadow-xl flex items-center justify-center transition-all cursor-pointer group ring-2 ring-emerald-500/20"
                   aria-label="Next Screen"
                   title="Next Screen"
                 >
