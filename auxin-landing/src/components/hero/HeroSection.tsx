@@ -17,6 +17,7 @@ import React from 'react';
 import { Hero3DRig } from './Hero3DRig';
 import { TopoMeshCanvas } from './TopoMeshCanvas';
 import { ArrowUpRight, Terminal, Sparkles, CheckCircle2 } from 'lucide-react';
+import { showDeployedNotice } from '../layout/DeployedNoticeToast';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
@@ -68,13 +69,13 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
 
             {/* CTAs with Tactile Press Animation */}
             <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <a
-                href={`${APP_URL}/customer/home`}
-                className="btn-press group relative inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm tracking-wide shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200"
+              <button
+                onClick={() => showDeployedNotice()}
+                className="btn-press group relative inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm tracking-wide shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200 cursor-pointer"
               >
                 <span>Launch Live Marketplace</span>
                 <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </a>
+              </button>
 
               <a
                 href="#architecture"

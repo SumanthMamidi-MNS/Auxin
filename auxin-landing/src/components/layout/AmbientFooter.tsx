@@ -17,40 +17,14 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowUpRight, Radio, RotateCcw } from 'lucide-react';
+import { ArrowUpRight, Radio } from 'lucide-react';
+import { showDeployedNotice } from './DeployedNoticeToast';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
+export function AmbientFooter() {
   return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-interface AmbientFooterProps {
-  onReplayIntro?: () => void;
-}
-
-export function AmbientFooter({ onReplayIntro }: AmbientFooterProps) {
-  const handleReplay = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('auxin_splash_seen');
-    }
-    if (onReplayIntro) {
-      onReplayIntro();
-    } else {
-      window.location.reload();
-    }
-  };
-
-  return (
-    <footer className="relative bg-[#FAF7F2] border-t border-black/[0.06] pt-20 pb-12 overflow-hidden text-[#475569]">
+    <footer className="relative bg-[#FAF7F2] border-t border-black/[0.06] pt-16 pb-12 overflow-hidden text-[#475569]">
       {/* Ambient background glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none" />
 
@@ -71,52 +45,44 @@ export function AmbientFooter({ onReplayIntro }: AmbientFooterProps) {
             Zero brokers. 100% direct cultivator settlement. 2-hour harvest-to-kitchen transit. Built from the soil up for India&apos;s agricultural revolution.
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href={`${APP_URL}/customer/home`}
-              className="btn-press w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200"
+          <div className="pt-2 flex items-center justify-center">
+            <button
+              onClick={() => showDeployedNotice()}
+              className="btn-press inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200 cursor-pointer"
             >
               <span>Launch Live Marketplace ↗</span>
               <ArrowUpRight className="w-4 h-4" />
-            </a>
-
-            <a
-              href="https://github.com/SumanthMamidi-MNS/Auxin-Agritech"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-press w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#FAF7F2] hover:bg-black/[0.04] border border-black/[0.08] text-[#0F172A] font-semibold text-sm transition-all duration-200"
-            >
-              <GithubIcon className="w-4 h-4 text-[#1B4332]" />
-              <span>Inspect Source on GitHub</span>
-            </a>
-
-            <button
-              onClick={handleReplay}
-              className="btn-press w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-full bg-white hover:bg-black/[0.03] border border-black/[0.06] text-xs font-semibold text-[#64748B] hover:text-[#0F172A] transition-all cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Replay Sprout Intro</span>
             </button>
           </div>
         </div>
 
         {/* Footer Navigation Columns */}
-        <div className="mt-20 pt-12 border-t border-black/[0.06] grid grid-cols-2 md:grid-cols-5 gap-8 text-xs font-sans">
+        <div className="mt-16 pt-12 border-t border-black/[0.06] grid grid-cols-2 md:grid-cols-5 gap-8 text-xs font-sans">
           {/* Brand Col */}
           <div className="col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-[#1B4332]/30 p-1 flex items-center justify-center shadow-2xs">
+              <div className="relative w-9 h-9 flex items-center justify-center flex-shrink-0">
                 <Image
                   src="/logo-cropped.png"
                   alt="Auxin Logo"
-                  width={22}
-                  height={22}
-                  className="object-contain"
+                  width={36}
+                  height={36}
+                  className="object-contain drop-shadow-[0_2px_8px_rgba(212,175,55,0.25)]"
                 />
               </div>
-              <span className="font-extrabold text-lg text-[#0F172A] tracking-tight font-['Poppins']">
-                AUXIN
-              </span>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-base tracking-tight text-[#0F172A] font-['Poppins']">
+                    AUXIN
+                  </span>
+                  <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-600/20">
+                    v4.0
+                  </span>
+                </div>
+                <span className="text-[11px] text-[#64748B] font-medium leading-tight">
+                  Direct-From-Farm Protocol
+                </span>
+              </div>
             </div>
             <p className="text-xs text-[#64748B] max-w-sm leading-relaxed">
               India&apos;s flagship direct-from-farm protocol. Eliminating middleman exploitation with 25 km geofenced logistics and 2-phase Razorpay escrow.
@@ -197,8 +163,8 @@ export function AmbientFooter({ onReplayIntro }: AmbientFooterProps) {
                 </a>
               </li>
               <li>
-                <a href="https://github.com/SumanthMamidi-MNS/Auxin-Agritech" target="_blank" rel="noreferrer" className="hover:text-[#1B4332] transition-colors">
-                  GitHub Repository
+                <a href="#innovations" className="hover:text-[#1B4332] transition-colors">
+                  Escrow Protocol Specs
                 </a>
               </li>
               <li>

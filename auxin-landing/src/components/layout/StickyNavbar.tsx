@@ -17,6 +17,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Menu, X, Radio, Sparkles } from 'lucide-react';
+import { showDeployedNotice } from './DeployedNoticeToast';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -143,13 +144,13 @@ export function StickyNavbar() {
             Sign In
           </Link>
 
-          <Link
-            href={`${APP_URL}/customer/home`}
-            className="btn-press inline-flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] hover:from-[#143326] hover:to-[#245741] px-4 py-2 rounded-full shadow-[0_4px_14px_rgba(27,67,50,0.25)] transition-all"
+          <button
+            onClick={() => showDeployedNotice()}
+            className="btn-press inline-flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] hover:from-[#143326] hover:to-[#245741] px-4 py-2 rounded-full shadow-[0_4px_14px_rgba(27,67,50,0.25)] transition-all cursor-pointer"
           >
             <span>Launch App</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
+          </button>
 
           {/* Mobile Hamburger Toggle */}
           <button
@@ -186,13 +187,15 @@ export function StickyNavbar() {
             })}
             <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
               <span className="text-xs text-[#64748B]">v4.0 Protocol Active</span>
-              <Link
-                href={`${APP_URL}/customer/home`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-xs font-bold text-white bg-[#1B4332] px-4 py-2 rounded-full"
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  showDeployedNotice();
+                }}
+                className="text-xs font-bold text-white bg-[#1B4332] px-4 py-2 rounded-full cursor-pointer"
               >
                 Launch App →
-              </Link>
+              </button>
             </div>
           </nav>
         </div>

@@ -166,56 +166,56 @@ export function BentoInnovations() {
   const [simDistance, setSimDistance] = useState<number>(14.2);
 
   return (
-    <section id="innovations" className="relative py-28 bg-[#FAF7F2] overflow-hidden scroll-mt-24">
+    <section id="innovations" className="relative py-8 sm:py-10 bg-[#FAF7F2] overflow-hidden scroll-mt-24">
       {/* Background radial atmosphere */}
       <div className="absolute top-1/2 right-1/4 w-[600px] h-[350px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-[#1B4332] text-xs font-semibold shadow-2xs">
+        <div className="text-center max-w-3xl mx-auto space-y-1.5">
+          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white border border-black/[0.08] text-[#1B4332] text-xs font-semibold shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
             Core Agritech Innovations
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
             The Bento Grid of <span className="text-gradient-forest">Architectural Breakthroughs</span>.
           </h2>
-          <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
+          <p className="text-[#475569] text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
             Four foundational engineering milestones power Auxin&apos;s hyper-local zero-rot supply chain.
           </p>
         </div>
 
         {/* 4-Cell Bento Grid */}
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-5 sm:mt-6 grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
           {/* ── Cell 1: 25 KM Strict Haversine Radar (Span 2 cols) ── */}
-          <div className="md:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.08] shadow-[0_15px_40px_rgba(60,45,20,0.05)] relative overflow-hidden flex flex-col justify-between">
-            <div className="space-y-4">
+          <div className="md:col-span-2 bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/15 flex items-center gap-1.5">
-                  <Radar className="w-3.5 h-3.5 text-emerald-700 animate-spin" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-600/15 flex items-center gap-1.5">
+                  <Radar className="w-3 h-3 text-emerald-700 animate-spin" />
                   Innovation 01 • Haversine Geofence
                 </span>
-                <span className="text-xs text-[#64748B] font-medium">
+                <span className="text-[10px] text-[#64748B] font-medium">
                   Strict 25.0 km Boundary
                 </span>
               </div>
 
-              <h3 className="text-2xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
                 Autonomous 25 km Radar Logistics
               </h3>
 
-              <p className="text-[#475569] text-sm max-w-xl leading-relaxed">
+              <p className="text-[#475569] text-xs max-w-xl leading-relaxed">
                 Every customer order is mathematically bounded by real-time GPS coordinate triangulation. If a farm is outside the 25.0 km radius, it does not appear in your feed. This guarantees produce travels under 120 minutes from soil to kitchen.
               </p>
             </div>
 
             {/* Interactive Radar Distance Simulator */}
-            <div className="mt-6 p-4 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-4">
+            <div className="mt-3 p-3 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-[#475569]">
                   Selected Farm Distance:
                 </span>
-                <span className="text-lg font-mono font-extrabold text-[#1B4332]">
+                <span className="text-sm font-mono font-extrabold text-[#1B4332]">
                   {simDistance} km
                 </span>
               </div>
@@ -227,14 +227,14 @@ export function BentoInnovations() {
                 step={0.5}
                 value={simDistance}
                 onChange={(e) => setSimDistance(Number(e.target.value))}
-                className="w-full h-2.5 bg-white rounded-lg appearance-none cursor-pointer accent-[#1B4332]"
+                className="w-full h-1.5 bg-white rounded-lg appearance-none cursor-pointer accent-[#1B4332]"
               />
 
-              <div className="flex items-center justify-between text-xs font-medium">
+              <div className="flex items-center justify-between text-[10px] font-medium">
                 <span className="text-[#64748B]">0 km (Farm Gate)</span>
                 {simDistance <= 25 ? (
                   <span className="text-emerald-800 font-bold flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" /> IN RADAR (Instant 2h Dispatch)
+                    <CheckCircle2 className="w-3 h-3 text-emerald-700" /> IN RADAR (Instant 2h Dispatch)
                   </span>
                 ) : (
                   <span className="text-red-600 font-bold">
@@ -247,27 +247,27 @@ export function BentoInnovations() {
           </div>
 
           {/* ── Cell 2: 3D Cryptographic Escrow Vault OTP Simulator (Span 1 col) ── */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.08] shadow-[0_15px_40px_rgba(60,45,20,0.05)] relative overflow-hidden flex flex-col justify-between">
-            <div className="space-y-4">
+          <div className="bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full border border-amber-600/20 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-600/20 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3 h-3 text-amber-700" />
                   Innovation 02 • Escrow Vault
                 </span>
               </div>
 
-              <h3 className="text-xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+              <h3 className="text-base sm:text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
                 2-Phase Doorstep Escrow
               </h3>
 
-              <p className="text-[#475569] text-xs leading-relaxed">
+              <p className="text-[#475569] text-[11px] leading-relaxed">
                 Funds remain locked in a Razorpay cryptographic escrow vault until you inspect produce at your doorstep and verify the 6-digit OTP.
               </p>
             </div>
 
             {/* OTP Simulator */}
-            <div className="mt-6 p-4 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-4">
-              <div className="flex items-center justify-between text-xs font-medium text-[#64748B]">
+            <div className="mt-3 p-3 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-2.5">
+              <div className="flex items-center justify-between text-[11px] font-medium text-[#64748B]">
                 <span>DELIVERY OTP SIMULATOR:</span>
                 {vaultUnlocked ? (
                   <span className="text-emerald-800 font-bold flex items-center gap-1">
@@ -293,13 +293,13 @@ export function BentoInnovations() {
                     value={digit}
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(idx, e)}
-                    className="w-9 h-11 text-center font-mono text-lg font-bold bg-white border border-black/[0.12] rounded-lg text-[#1B4332] focus:border-[#1B4332] focus:ring-1 focus:ring-[#1B4332] outline-none shadow-2xs"
+                    className="w-7 h-9 text-center font-mono text-sm font-bold bg-white border border-black/[0.12] rounded-lg text-[#1B4332] focus:border-[#1B4332] focus:ring-1 focus:ring-[#1B4332] outline-none shadow-2xs"
                   />
                 ))}
               </div>
 
               {vaultUnlocked ? (
-                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-600/30 text-center space-y-1">
+                <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-600/30 text-center space-y-0.5">
                   <div className="text-xs font-bold text-emerald-900 font-mono">
                     ✅ Escrow Settled Instantly
                   </div>
@@ -308,7 +308,7 @@ export function BentoInnovations() {
                   </div>
                   <button
                     onClick={resetVault}
-                    className="btn-press mt-1 text-[11px] text-[#64748B] hover:text-[#0F172A] underline font-medium cursor-pointer"
+                    className="btn-press text-[10px] text-[#64748B] hover:text-[#0F172A] underline font-medium cursor-pointer"
                   >
                     Reset Simulator
                   </button>
@@ -316,7 +316,7 @@ export function BentoInnovations() {
               ) : (
                 <button
                   onClick={autoFillOtp}
-                  className="btn-press w-full py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-emerald-600/30 text-emerald-900 text-xs font-bold font-mono transition-colors shadow-2xs cursor-pointer"
+                  className="btn-press w-full py-1.5 rounded-xl bg-white hover:bg-emerald-50 border border-emerald-600/30 text-emerald-900 text-xs font-bold font-mono transition-colors shadow-2xs cursor-pointer"
                 >
                   Click to Auto-Fill &apos;482103&apos;
                 </button>
@@ -325,93 +325,93 @@ export function BentoInnovations() {
           </div>
 
           {/* ── Cell 3: Milo AI Autonomous Copilot (Span 1 col) ── */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.08] shadow-[0_15px_40px_rgba(60,45,20,0.05)] relative overflow-hidden flex flex-col justify-between">
-            <div className="space-y-4">
+          <div className="bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/15 flex items-center gap-1.5">
-                  <Bot className="w-3.5 h-3.5 text-emerald-700" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-600/15 flex items-center gap-1.5">
+                  <Bot className="w-3 h-3 text-emerald-700" />
                   Innovation 03 • Milo AI
                 </span>
               </div>
 
-              <h3 className="text-xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+              <h3 className="text-base sm:text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
                 Agronomic Intelligence
               </h3>
 
-              <p className="text-[#475569] text-xs leading-relaxed">
+              <p className="text-[#475569] text-[11px] leading-relaxed">
                 Fine-tuned AI copilot trained on regional Indian soil indices, crop harvest cycles, and real-time wholesale Mandi arbitrage.
               </p>
             </div>
 
-            <div className="mt-6 p-4 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-3 text-xs">
-              <div className="flex items-center justify-between text-[#475569] pb-2 border-b border-black/[0.05]">
-                <span className="flex items-center gap-1.5 font-medium">
-                  <Droplets className="w-3.5 h-3.5 text-blue-600" /> Soil Moisture
+            <div className="mt-3 p-3 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-2 text-xs">
+              <div className="flex items-center justify-between text-[#475569] pb-1 border-b border-black/[0.05]">
+                <span className="flex items-center gap-1.5 font-medium text-[11px]">
+                  <Droplets className="w-3 h-3 text-blue-600" /> Soil Moisture
                 </span>
-                <span className="text-[#0F172A] font-bold font-mono">68% (Optimal)</span>
+                <span className="text-[#0F172A] font-bold font-mono text-[11px]">68% (Optimal)</span>
               </div>
-              <div className="flex items-center justify-between text-[#475569] pb-2 border-b border-black/[0.05]">
-                <span className="flex items-center gap-1.5 font-medium">
-                  <Sun className="w-3.5 h-3.5 text-amber-600" /> Sunlight Index
+              <div className="flex items-center justify-between text-[#475569] pb-1 border-b border-black/[0.05]">
+                <span className="flex items-center gap-1.5 font-medium text-[11px]">
+                  <Sun className="w-3 h-3 text-amber-600" /> Sunlight Index
                 </span>
-                <span className="text-[#0F172A] font-bold font-mono">8.4 hrs / day</span>
+                <span className="text-[#0F172A] font-bold font-mono text-[11px]">8.4 hrs / day</span>
               </div>
               <div className="flex items-center justify-between text-[#475569]">
-                <span className="flex items-center gap-1.5 font-medium">
-                  <Thermometer className="w-3.5 h-3.5 text-[#1B4332]" /> Brix Sweetness
+                <span className="flex items-center gap-1.5 font-medium text-[11px]">
+                  <Thermometer className="w-3 h-3 text-[#1B4332]" /> Brix Sweetness
                 </span>
-                <span className="text-[#1B4332] font-bold font-mono">18.5° Brix</span>
+                <span className="text-[#1B4332] font-bold font-mono text-[11px]">18.5° Brix</span>
               </div>
             </div>
           </div>
 
           {/* ── Cell 4: 4:5 Zero Cold-Storage Specimen Card (Span 2 cols) ── */}
-          <div className="md:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.08] shadow-[0_15px_40px_rgba(60,45,20,0.05)] relative overflow-hidden flex flex-col justify-between">
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-              <div className="sm:col-span-7 space-y-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full border border-amber-600/20 inline-block">
+          <div className="md:col-span-2 bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+              <div className="sm:col-span-7 space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-600/20 inline-block">
                   Innovation 04 • Zero Spoilage Specimen
                 </span>
 
-                <h3 className="text-2xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+                <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
                   Transparent Soil Provenance
                 </h3>
 
-                <p className="text-[#475569] text-sm leading-relaxed">
+                <p className="text-[#475569] text-xs leading-relaxed">
                   Traditional logistics keeps produce in cold chambers for weeks, eroding nutrients and flavor. Auxin harvests only on demand. Every crate displays soil pH, cultivator identity, and exact harvest minute.
                 </p>
 
-                <div className="pt-2 flex flex-wrap gap-2 text-xs font-medium">
-                  <span className="px-3 py-1 rounded-full bg-[#FAF7F2] border border-black/[0.06] text-[#475569]">
+                <div className="pt-1 flex flex-wrap gap-1.5 text-xs font-medium">
+                  <span className="px-2 py-0.5 rounded-full bg-[#FAF7F2] border border-black/[0.06] text-[#475569] text-[10px]">
                     NPOP Organic Certified
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-600/20 text-emerald-800">
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-600/20 text-emerald-800 text-[10px]">
                     Zero Formalin / Carbides
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-amber-50 border border-amber-600/20 text-amber-800">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-600/20 text-amber-800 text-[10px]">
                     Plucked 06:30 AM
                   </span>
                 </div>
               </div>
 
-              <div className="sm:col-span-5 rounded-2xl bg-[#FAF7F2] border border-black/[0.08] p-5 space-y-3 shadow-2xs">
-                <div className="text-[11px] font-bold text-[#1B4332] uppercase tracking-wider">
+              <div className="sm:col-span-5 rounded-2xl bg-[#FAF7F2] border border-black/[0.08] p-3 space-y-2 shadow-2xs">
+                <div className="text-[10px] font-bold text-[#1B4332] uppercase tracking-wider">
                   Cultivator Passport
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-white border border-black/[0.08] flex items-center justify-center font-bold text-[#1B4332] text-base shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-white border border-black/[0.08] flex items-center justify-center font-bold text-[#1B4332] text-xs shadow-2xs">
                     RK
                   </div>
                   <div>
-                    <div className="font-bold text-[#0F172A] text-sm">Ramesh Kumar</div>
-                    <div className="text-xs text-[#64748B]">Sohna Orchards (14.2 km)</div>
+                    <div className="font-bold text-[#0F172A] text-xs">Ramesh Kumar</div>
+                    <div className="text-[10px] text-[#64748B]">Sohna Orchards (14.2 km)</div>
                   </div>
                 </div>
-                <div className="pt-2 border-t border-black/[0.05] flex justify-between text-xs">
+                <div className="pt-1 border-t border-black/[0.05] flex justify-between text-[11px]">
                   <span className="text-[#64748B]">Lifetime Deliveries:</span>
                   <span className="text-[#0F172A] font-bold font-mono">1,420 crates</span>
                 </div>
-                <div className="flex justify-between text-xs">
+                <div className="flex justify-between text-[11px]">
                   <span className="text-[#64748B]">Customer Rating:</span>
                   <span className="text-amber-700 font-bold font-mono">★ 4.96 / 5.0</span>
                 </div>

@@ -18,6 +18,7 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { FloatingBadges } from './FloatingBadges';
 import { Sparkles, MapPin, ShieldCheck, ArrowRight } from 'lucide-react';
+import { showDeployedNotice } from '../layout/DeployedNoticeToast';
 
 interface Hero3DRigProps {
   imageSrc?: string;
@@ -94,8 +95,11 @@ export function Hero3DRig({ imageSrc, onLaunchClick }: Hero3DRigProps) {
 
         {/* Device Glass Bezel & Screen Canvas */}
         <div className="relative rounded-[36px] overflow-hidden bg-[#FAF7F2] border border-black/10 aspect-[9/19.5] shadow-inner">
-          {/* Subtle Flush Top Speaker Line (Non-blocking) */}
-          <div className="absolute top-1.5 left-1/2 -translate-x-1/2 z-40 h-1 w-12 bg-black/25 rounded-full" />
+          {/* Authentic Dynamic Island Hardware Capsule */}
+          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-40 h-4 w-20 bg-black rounded-full flex items-center justify-between px-2 shadow-xs pointer-events-none">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#1c1c1e]" />
+            <div className="w-2 h-2 rounded-full bg-[#0a0a0c] border border-[#222]" />
+          </div>
 
           {/* Gorilla Glass Dynamic Specular Light Flare */}
           <div
@@ -200,13 +204,13 @@ export function Hero3DRig({ imageSrc, onLaunchClick }: Hero3DRigProps) {
                   </div>
                 </div>
 
-                <a
-                  href={process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000/customer/home'}
-                  className="btn-press w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm"
+                <button
+                  onClick={() => showDeployedNotice()}
+                  className="btn-press w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                 >
                   <span>Experience Live App</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </a>
+                </button>
               </div>
             </div>
           )}

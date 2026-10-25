@@ -44,6 +44,7 @@ import {
   Minimize2
 } from 'lucide-react';
 
+import { showDeployedNotice } from '../layout/DeployedNoticeToast';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
 
@@ -158,10 +159,10 @@ const SCREENS_DATABASE: Record<RoleKey, {
       {
         id: 'C-05',
         stepNum: '05',
-        name: 'Adding Batch #1: Alphonso Mangoes',
+        name: 'Viewing Produce & Added to Cart: Ratnagiri Alphonso Mangoes',
         route: '/customer/home',
         imageSrc: '/screenshots/c05_customer_cart_item1_v4.png',
-        actorIntent: 'Customer selects Ratnagiri Alphonso Mangoes (2 kg @ ₹180/kg); cart count updates to 1.',
+        actorIntent: 'Customer views Ratnagiri Alphonso Mangoes and adds 2 kg to cart (@ ₹180/kg); cart count updates to 1.',
         protocolAction: 'Reserves 2 kg allocation in cultivator live batch pool; updates local cart store.',
         telemetry: {
           label1: 'Produce Batch',
@@ -176,10 +177,10 @@ const SCREENS_DATABASE: Record<RoleKey, {
       {
         id: 'C-06',
         stepNum: '06',
-        name: 'Adding Batch #2: Organic Tomatoes',
+        name: 'Viewing Produce & Added to Cart: Organic Country Tomatoes',
         route: '/customer/product/7',
         imageSrc: '/screenshots/c06_customer_cart_item2_v4.png',
-        actorIntent: 'Customer selects Country Organic Tomatoes (3 kg @ ₹40/kg); cart count updates to 2.',
+        actorIntent: 'Customer views Country Organic Tomatoes and adds 3 kg to cart (@ ₹40/kg); cart count updates to 2.',
         protocolAction: 'Reserves 3 kg tomatoes in cultivator inventory lot; computes multi-item total.',
         telemetry: {
           label1: 'Produce Batch',
@@ -419,7 +420,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
       {
         id: 'F-07',
         stepNum: '07',
-        name: 'Publishing Batch 1: Alphonso Mangoes',
+        name: 'Publishing Morning Harvest: Ratnagiri Alphonso Mangoes',
         route: '/farmer/inventory',
         imageSrc: '/screenshots/f07_farmer_add_item_1_v4.png',
         actorIntent: 'Farmer uploads morning harvest batch: Ratnagiri Alphonso Mangoes (38 kg @ ₹180/kg).',
@@ -437,7 +438,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
       {
         id: 'F-08',
         stepNum: '08',
-        name: 'Publishing Batch 2: Country Tomatoes',
+        name: 'Publishing Morning Harvest: Organic Country Tomatoes',
         route: '/farmer/inventory',
         imageSrc: '/screenshots/f08_farmer_add_item_2_v4.png',
         actorIntent: 'Farmer uploads second morning harvest batch: Country Organic Tomatoes (120 kg @ ₹40/kg).',
@@ -1269,15 +1270,13 @@ export function ScreensExplorer() {
 
             {/* Deep Link Launch CTA */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
-              <Link
-                href={currentScreen.deepLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all"
+              <button
+                onClick={() => showDeployedNotice()}
+                className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all cursor-pointer"
               >
                 <span>Launch Live Route in App</span>
                 <ExternalLink className="w-4 h-4" />
-              </Link>
+              </button>
               <span className="text-xs text-slate-500 font-mono">
                 Use Arrow Keys (← / →) to navigate
               </span>

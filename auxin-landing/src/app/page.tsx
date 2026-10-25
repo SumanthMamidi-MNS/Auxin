@@ -24,13 +24,10 @@ import { MiloPlayground } from '@/components/features/MiloPlayground';
 import { TechArchitecture } from '@/components/features/TechArchitecture';
 import { RecruiterDossier } from '@/components/features/RecruiterDossier';
 import { AmbientFooter } from '@/components/layout/AmbientFooter';
+import { DeployedNoticeToast } from '@/components/layout/DeployedNoticeToast';
 
 export default function LandingPage() {
   const [showSplash, setShowSplash] = useState(false);
-
-  const handleReplayIntro = () => {
-    setShowSplash(true);
-  };
 
   return (
     <>
@@ -66,7 +63,10 @@ export default function LandingPage() {
         <RecruiterDossier />
 
         {/* ── 09. Organic Luxury Conversion Footer & Live Platform Telemetry ── */}
-        <AmbientFooter onReplayIntro={handleReplayIntro} />
+        <AmbientFooter />
+
+        {/* ── 10. Deployed Soon Global Feedback Notification ── */}
+        <DeployedNoticeToast />
       </main>
     </>
   );

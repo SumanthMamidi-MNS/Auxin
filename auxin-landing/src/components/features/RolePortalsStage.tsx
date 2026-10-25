@@ -29,6 +29,7 @@ import {
   CheckCircle2, 
   Activity 
 } from 'lucide-react';
+import { showDeployedNotice } from '../layout/DeployedNoticeToast';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
@@ -291,13 +292,13 @@ export function RolePortalsStage() {
                 ))}
 
                 <div className="sm:ml-auto">
-                  <a
-                    href={role.route}
-                    className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200"
+                  <button
+                    onClick={() => showDeployedNotice()}
+                    className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
                   >
                     <span>Launch {role.name} Experience</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -346,13 +347,13 @@ export function RolePortalsStage() {
                   </div>
                 </div>
 
-                <a
-                  href={role.route}
-                  className="btn-press w-full py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-black/[0.08] text-xs font-bold text-[#0F172A] hover:text-[#1B4332] flex items-center justify-center gap-2 transition-all shadow-2xs"
+                <button
+                  onClick={() => showDeployedNotice()}
+                  className="btn-press w-full py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-black/[0.08] text-xs font-bold text-[#0F172A] hover:text-[#1B4332] flex items-center justify-center gap-2 transition-all shadow-2xs cursor-pointer"
                 >
                   <span>Launch Live {role.name} Portal</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-[#1B4332]" />
-                </a>
+                </button>
               </div>
             </div>
           </div>
