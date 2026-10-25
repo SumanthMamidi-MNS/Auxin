@@ -722,3 +722,10 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 }
 
 
+
+/* ── Suppress Next.js dev overlay across all builds ──────────────────── */
+nextjs-portal,
+[data-nextjs-toast],
+#__next-build-watcher {
+  display: none !important;
+}

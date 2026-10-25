@@ -2,44 +2,52 @@
 
 @layer base {
   :root {
-    --bg-cream: #FAF7F2;
-    --bg-cream-warm: #F5F2EB;
-    --bg-cream-tint: #FDFCF9;
-    --bg-card-porcelain: rgba(255, 255, 255, 0.88);
+    /* Alabaster Bio-Vitality Canvas Tokens (Apple + Stripe + Agritech Luxury) */
+    --bg-base: #FFFFFF;
+    --bg-alabaster: #F8FAFC;
+    --bg-alabaster-tint: #F1F5F9;
+    --bg-card-porcelain: rgba(255, 255, 255, 0.92);
     --bg-card-solid: #FFFFFF;
+    --bg-obsidian-chassis: #0B0F19;
 
-    --border-subtle: rgba(15, 23, 42, 0.07);
-    --border-warm: rgba(212, 175, 55, 0.25);
-    --border-forest: rgba(27, 67, 50, 0.2);
+    --border-subtle: rgba(15, 23, 42, 0.08);
+    --border-emerald: rgba(16, 185, 129, 0.25);
+    --border-gold: rgba(245, 158, 11, 0.25);
 
-    --accent-forest: #1B4332;
-    --accent-forest-light: #2D6A4F;
-    --accent-forest-soft: #D8F3DC;
+    /* Bio-Chlorophyll Emerald Vitality */
+    --accent-emerald: #059669;
+    --accent-emerald-vibrant: #10B981;
+    --accent-emerald-soft: #D1FAE5;
+    --accent-emerald-glow: rgba(16, 185, 129, 0.15);
 
-    --accent-gold: #D4AF37;
+    /* Solar Harvest Amber & Escrow */
+    --accent-gold: #D97706;
     --accent-gold-warm: #F59E0B;
     --accent-gold-soft: #FEF3C7;
 
-    --text-graphite: #0F172A;
-    --text-slate: #475569;
+    /* Razor-Sharp Jet Slate Typography */
+    --text-jet: #0B0F19;
+    --text-slate: #334155;
     --text-muted: #64748B;
     --text-subtle: #94A3B8;
 
-    --shadow-luxury: 0 20px 45px -15px rgba(60, 45, 20, 0.07);
-    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+    /* Diffuse Sunlight Shadows */
+    --shadow-luxury: 0 20px 45px -15px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 10px 30px -10px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+    --shadow-chassis: 0 30px 60px -20px rgba(11, 15, 25, 0.35);
   }
 
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #FAF7F2;
+    background-color: #FFFFFF;
     color-scheme: light;
   }
 
   body {
-    background-color: #FAF7F2;
-    color: #0F172A;
+    background-color: #FFFFFF;
+    color: #0B0F19;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
     position: relative;
@@ -52,34 +60,34 @@
   }
 
   ::selection {
-    background: rgba(212, 175, 55, 0.25);
-    color: #1B4332;
+    background: rgba(16, 185, 129, 0.2);
+    color: #065F46;
   }
 }
 
-/* ── Suppress Next.js dev overlay in dev mode ───────────────────────── */
+/* ── Suppress Next.js dev overlay across all builds ──────────────────── */
 nextjs-portal,
 [data-nextjs-toast],
 #__next-build-watcher {
   display: none !important;
 }
 
-/* ── Custom Scrollbar (Warm Cream & Forest Pine) ────────────────────────── */
+/* ── Custom Scrollbar (Alabaster & Emerald) ────────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF7F2;
+  background: #F8FAFC;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(27, 67, 50, 0.2);
+  background: rgba(5, 150, 105, 0.25);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(27, 67, 50, 0.4);
+  background: rgba(5, 150, 105, 0.5);
 }
 
-/* ── Micro-Interactions & Tactile Button Press ─────────────────────────── */
+/* ── Micro-Interactions & Tactile Button Press Physics ───────────────── */
 .btn-press {
   transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.2s ease;
 }
@@ -172,22 +180,22 @@ nextjs-portal,
   animation: sonarWaveLight 3.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
 
-/* ── Porcelain Glassmorphism ─────────────────────────────────────────── */
+/* ── Porcelain & Titanium Glassmorphism ──────────────────────────────── */
 
 .glass-porcelain {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 10px 30px -10px rgba(60, 45, 20, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.04);
 }
 
 .glass-porcelain-elevated {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 20px 45px -15px rgba(60, 45, 20, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .glass-card-interactive {
@@ -195,33 +203,36 @@ nextjs-portal,
 }
 .glass-card-interactive:hover {
   transform: translateY(-4px);
-  box-shadow: 0 25px 50px -15px rgba(60, 45, 20, 0.12), 0 0 20px -5px rgba(212, 175, 55, 0.15);
-  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 25px 50px -15px rgba(15, 23, 42, 0.1), 0 0 20px -5px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.35);
 }
 
-/* ── Text Gradients for Organic Cream Theme ──────────────────────────── */
+/* ── Text Gradients for Alabaster Bio-Vitality Theme ──────────────────── */
 
-.text-gradient-forest {
-  background: linear-gradient(135deg, #0F172A 20%, #1B4332 75%, #2D6A4F 100%);
+.text-gradient-forest,
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #0B0F19 15%, #059669 70%, #10B981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #0F172A 20%, #B45309 75%, #D4AF37 100%);
+  background: linear-gradient(135deg, #0B0F19 20%, #D97706 75%, #F59E0B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.text-gradient-graphite {
-  background: linear-gradient(180deg, #0F172A 0%, #334155 100%);
+.text-gradient-graphite,
+.text-gradient-jet {
+  background: linear-gradient(180deg, #0B0F19 0%, #334155 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* ── Warm Backgrounds ────────────────────────────────────────────────── */
+/* ── Alabaster Architectural Backgrounds ─────────────────────────────── */
 
-.bg-cream-grid {
+.bg-cream-grid,
+.bg-alabaster-grid {
   background-image: 
     linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
@@ -229,11 +240,12 @@ nextjs-portal,
 }
 
 .bg-sunbeam-radial {
-  background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, rgba(250, 247, 242, 0) 70%);
+  background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
 }
 
-.bg-forest-mist {
-  background: radial-gradient(ellipse at 50% 50%, rgba(27, 67, 50, 0.04) 0%, transparent 70%);
+.bg-forest-mist,
+.bg-emerald-mist {
+  background: radial-gradient(ellipse at 50% 50%, rgba(5, 150, 105, 0.04) 0%, transparent 70%);
 }
 
 /* ── Specular Porcelain Sheen ───────────────────────────────────────── */
@@ -250,8 +262,8 @@ nextjs-portal,
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.15) 40%,
     transparent 60%
   );
   pointer-events: none;

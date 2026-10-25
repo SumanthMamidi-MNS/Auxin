@@ -17,6 +17,7 @@ import { SplashScreen } from '@/components/layout/SplashScreen';
 import { StickyNavbar } from '@/components/layout/StickyNavbar';
 import { HeroSection } from '@/components/hero/HeroSection';
 import { ComparisonMatrix } from '@/components/features/ComparisonMatrix';
+import { ScreensExplorer } from '@/components/features/ScreensExplorer';
 import { BentoInnovations } from '@/components/features/BentoInnovations';
 import { RolePortalsStage } from '@/components/features/RolePortalsStage';
 import { MiloPlayground } from '@/components/features/MiloPlayground';
@@ -36,7 +37,7 @@ export default function LandingPage() {
       {/* ── 00. Animated Sprout & Oxygen Splash Screen ── */}
       <SplashScreen forceShow={showSplash} onComplete={() => setShowSplash(false)} />
 
-      <main className="min-h-screen bg-[#FAF7F2] text-[#0F172A] selection:bg-[#D4AF37]/25 selection:text-[#1B4332] relative overflow-x-hidden">
+      <main className="min-h-screen bg-white text-[#0B0F19] selection:bg-emerald-500/20 selection:text-emerald-900 relative overflow-x-hidden">
         {/* ── 01. Floating Island Navigation ── */}
         <StickyNavbar />
 
@@ -46,7 +47,10 @@ export default function LandingPage() {
         {/* ── 03. Mandi vs. Auxin Margin Economics & Household Savings Slider ── */}
         <ComparisonMatrix />
 
-        {/* ── 04. Bento Grid of 4 Core Architectural Breakthroughs ── */}
+        {/* ── 04. 36-Screen Interactive Ecosystem Explorer (9 Screens x 4 Roles) ── */}
+        <ScreensExplorer />
+
+        {/* ── 05. Bento Grid of 4 Core Architectural Breakthroughs ── */}
         <BentoInnovations />
 
         {/* ── 05. 4-Role Unified Portals Morphing Stage ── */}

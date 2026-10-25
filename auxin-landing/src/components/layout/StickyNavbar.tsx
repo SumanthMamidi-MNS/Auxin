@@ -35,6 +35,7 @@ export function StickyNavbar() {
 
   const navLinks = [
     { label: 'Economics', href: '#economics' },
+    { label: 'Screens', href: '#screens' },
     { label: 'Innovations', href: '#innovations' },
     { label: 'Portals', href: '#roles' },
     { label: 'Milo AI', href: '#milo' },
@@ -70,8 +71,8 @@ export function StickyNavbar() {
               <span className="font-extrabold text-base tracking-tight text-[#0F172A] group-hover:text-[#1B4332] transition-colors font-['Poppins']">
                 AUXIN
               </span>
-              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-[#D8F3DC] text-[#1B4332] border border-[#1B4332]/10">
-                v3.5
+              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-600/20">
+                v4.0
               </span>
             </div>
             <span className="text-[11px] text-[#64748B] hidden md:inline-block leading-tight font-medium">

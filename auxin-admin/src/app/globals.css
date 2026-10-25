@@ -441,3 +441,11 @@ a.group:hover svg {
 button:hover svg {
   transform: scale(1.08);
 }
+
+
+/* ── Suppress Next.js dev overlay across all builds ──────────────────── */
+nextjs-portal,
+[data-nextjs-toast],
+#__next-build-watcher {
+  display: none !important;
+}

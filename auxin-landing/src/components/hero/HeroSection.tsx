@@ -26,27 +26,27 @@ interface HeroSectionProps {
 
 export function HeroSection({ heroImage }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[92vh] pt-36 sm:pt-40 pb-20 flex items-center justify-center overflow-hidden bg-[#FAF7F2]">
+    <section className="relative min-h-[92vh] pt-36 sm:pt-40 pb-20 flex items-center justify-center overflow-hidden bg-white">
       {/* ── Organic Cartography Topo Mesh Canvas ── */}
       <TopoMeshCanvas />
 
       {/* ── Soft Sunbeam Atmosphere ── */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[750px] h-[400px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-1/3 right-1/4 w-[500px] h-[350px] bg-radial from-emerald-500/5 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
-      <div className="absolute inset-0 bg-cream-grid opacity-60 pointer-events-none" />
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[750px] h-[400px] bg-radial from-amber-500/10 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/3 right-1/4 w-[500px] h-[350px] bg-radial from-emerald-500/8 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute inset-0 bg-alabaster-grid opacity-60 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Mission Typography & High-Conversion CTAs */}
           <div className="lg:col-span-7 text-left space-y-6">
             {/* Protocol Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white border border-black/[0.08] shadow-[0_2px_10px_rgba(60,45,20,0.04)]">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
               <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-ping" />
-              <span className="font-semibold text-xs text-[#1B4332] tracking-wider uppercase">
+              <span className="font-semibold text-xs text-emerald-800 tracking-wider uppercase">
                 Autonomous Direct-From-Farm Protocol
               </span>
-              <span className="text-[#94A3B8]">|</span>
-              <span className="text-xs font-medium text-[#64748B]">v3.5 Production</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-xs font-medium text-slate-500">v4.0 Production</span>
             </div>
 
             {/* Main Headline with Editorial Elegance */}
