@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#22C55E",
+  themeColor: "#FAF7F2",
 };
 
 export default function LandingLayout({ children }: { children: React.ReactNode }) {

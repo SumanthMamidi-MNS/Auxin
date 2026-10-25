@@ -1,5 +1,19 @@
 'use client';
 
+/**
+ * auxin-landing/src/components/features/RolePortalsStage.tsx
+ * ============================================================================
+ * AUXIN V3.5 — 4-ROLE UNIFIED PORTALS MORPHING STAGE
+ * (ORGANIC CREAM LUXURY EDITION)
+ * 
+ * Synchronized Multi-Actor Architecture:
+ * - Customer: Pluck-to-Plate Gourmet Marketplace
+ * - Farmer: Cultivator Enterprise Hub (100% Margin)
+ * - Courier: Electric Cargo Transit HUD (25 km Polygon)
+ * - Admin: Protocol Overseer & Escrow Telemetry
+ * ============================================================================
+ */
+
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { 
@@ -30,7 +44,6 @@ interface RolePortal {
   screenshot: string;
   features: { title: string; desc: string; icon: React.ElementType }[];
   metrics: { label: string; value: string }[];
-  accentColor: string;
 }
 
 const ROLES: RolePortal[] = [
@@ -44,8 +57,7 @@ const ROLES: RolePortal[] = [
     description:
       'Browse farm-fresh fruits, vegetables, and artisan staples harvested hours ago within your local 25 km radius. Complete transparency with farmer bios and doorstep OTP delivery escrow.',
     route: `${APP_URL}/customer/home`,
-    screenshot: '/screenshots/03_mobile_customer_home.png',
-    accentColor: 'emerald',
+    screenshot: '/screenshots/04_mobile_customer_product_detail.png',
     features: [
       {
         title: 'Strict 25 KM Radar',
@@ -80,7 +92,6 @@ const ROLES: RolePortal[] = [
       'List morning harvest batches, set your own fair prices, receive automated courier pick-ups directly at your farm gate, and enjoy instant bank payouts upon customer OTP confirmation.',
     route: `${APP_URL}/farmer/dashboard`,
     screenshot: '/screenshots/06_mobile_farmer_inventory.png',
-    accentColor: 'amber',
     features: [
       {
         title: 'Autonomous Lot Control',
@@ -115,7 +126,6 @@ const ROLES: RolePortal[] = [
       'Operate within an ultra-efficient 25 km geofenced polygon. Benefit from Leaflet route vectors, turn-by-turn navigation, and automated verification codes at farm gates and doorsteps.',
     route: `${APP_URL}/delivery/dashboard`,
     screenshot: '/screenshots/09_mobile_delivery_mission.png',
-    accentColor: 'emerald',
     features: [
       {
         title: 'Turn-by-Turn Leaflet GPS',
@@ -150,7 +160,6 @@ const ROLES: RolePortal[] = [
       'Manage regional polygon boundaries, approve cultivator organic certifications, monitor Razorpay escrow health, and resolve logistics anomalies in real time.',
     route: `${APP_URL}/auth?role=admin`,
     screenshot: '/screenshots/01_mobile_auth.png',
-    accentColor: 'emerald',
     features: [
       {
         title: 'KYC & Farm Gate Audits',
@@ -181,28 +190,28 @@ export function RolePortalsStage() {
   const role = ROLES.find((r) => r.id === activeRole) || ROLES[0];
 
   return (
-    <section id="roles" className="relative py-28 bg-[#040A07] overflow-hidden scroll-mt-24">
+    <section id="roles" className="relative py-28 bg-[#F5F2EB] overflow-hidden scroll-mt-24 border-y border-black/[0.05]">
       {/* Background radial atmosphere */}
-      <div className="absolute top-1/3 left-1/4 w-[600px] h-[350px] bg-emerald-500/5 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/4 w-[600px] h-[350px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono uppercase tracking-wider">
-            <Cpu className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-[#1B4332] text-xs font-semibold shadow-2xs">
+            <Cpu className="w-3.5 h-3.5 text-[#1B4332]" />
             4 Unified Ecosystem Roles
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Engineered for <span className="text-gradient-chlorophyll">Every Participant</span>.
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+            Engineered for <span className="text-gradient-forest">Every Participant</span>.
           </h2>
-          <p className="text-slate-300 text-base sm:text-lg">
+          <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
             Auxin unifies customers, cultivators, couriers, and administrators into a synchronized, single-platform operating system.
           </p>
         </div>
 
         {/* Morphing Role Tabs */}
         <div className="mt-12 flex justify-center">
-          <div className="inline-flex p-1.5 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xl">
+          <div className="inline-flex p-1.5 rounded-full bg-white border border-black/[0.08] shadow-sm">
             {ROLES.map((r) => {
               const Icon = r.icon;
               const isActive = activeRole === r.id;
@@ -210,13 +219,13 @@ export function RolePortalsStage() {
                 <button
                   key={r.id}
                   onClick={() => setActiveRole(r.id)}
-                  className={`relative px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`btn-press relative px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-500/20 border border-emerald-500/50 text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]'
-                      : 'text-slate-400 hover:text-slate-200 border border-transparent'
+                      ? 'bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white shadow-sm'
+                      : 'text-[#475569] hover:text-[#0F172A] hover:bg-black/[0.03]'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#64748B]'}`} />
                   <span>{r.name}</span>
                 </button>
               );
@@ -225,24 +234,24 @@ export function RolePortalsStage() {
         </div>
 
         {/* Active Role Showcase Display */}
-        <div className="mt-12 glass-obsidian-elevated rounded-3xl p-6 sm:p-10 border border-emerald-500/20 shadow-[0_25px_70px_rgba(0,0,0,0.8)] transition-all duration-300">
+        <div className="mt-12 bg-white rounded-3xl p-6 sm:p-10 border border-black/[0.08] shadow-[0_20px_50px_rgba(60,45,20,0.06)] transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Column: Role Details & Specs */}
             <div className="lg:col-span-7 space-y-6 text-left">
               <div className="flex items-center gap-2.5">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/15">
                   {role.badge}
                 </span>
-                <span className="text-xs font-mono text-slate-400">
+                <span className="text-xs text-[#64748B] font-medium">
                   {role.roleTitle}
                 </span>
               </div>
 
-              <h3 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+              <h3 className="text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
                 {role.heading}
               </h3>
 
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              <p className="text-[#475569] text-sm sm:text-base leading-relaxed">
                 {role.description}
               </p>
 
@@ -253,13 +262,13 @@ export function RolePortalsStage() {
                   return (
                     <div
                       key={idx}
-                      className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5"
+                      className="p-4 rounded-2xl bg-[#FAF7F2] border border-black/[0.05] space-y-1.5"
                     >
-                      <FeatIcon className="w-4 h-4 text-emerald-400" />
-                      <h4 className="text-xs font-bold text-white tracking-tight">
+                      <FeatIcon className="w-4 h-4 text-[#1B4332]" />
+                      <h4 className="text-xs font-bold text-[#0F172A] tracking-tight font-['Poppins']">
                         {feat.title}
                       </h4>
-                      <p className="text-[11px] text-slate-400 leading-snug">
+                      <p className="text-[11px] text-[#64748B] leading-snug">
                         {feat.desc}
                       </p>
                     </div>
@@ -268,13 +277,13 @@ export function RolePortalsStage() {
               </div>
 
               {/* Metrics Bar */}
-              <div className="pt-4 border-t border-white/10 flex flex-wrap items-center gap-6">
+              <div className="pt-4 border-t border-black/[0.06] flex flex-wrap items-center gap-6">
                 {role.metrics.map((m, idx) => (
                   <div key={idx}>
-                    <div className="text-xl font-black text-white font-mono">
+                    <div className="text-2xl font-extrabold text-[#0F172A] font-['Poppins']">
                       {m.value}
                     </div>
-                    <div className="text-[11px] text-slate-400 font-mono">
+                    <div className="text-xs text-[#64748B] font-medium">
                       {m.label}
                     </div>
                   </div>
@@ -283,7 +292,7 @@ export function RolePortalsStage() {
                 <div className="sm:ml-auto">
                   <a
                     href={role.route}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-slate-950 font-bold text-xs tracking-wide shadow-[0_0_20px_rgba(34,197,94,0.35)] hover:brightness-110 active:scale-95 transition-all duration-200"
+                    className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200"
                   >
                     <span>Launch {role.name} Experience</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -292,43 +301,43 @@ export function RolePortalsStage() {
               </div>
             </div>
 
-            {/* Right Column: Interactive Role Mockup Graphic with Certified Screen */}
+            {/* Right Column: High-Fidelity Device Mockup Graphic with Real-Time Screen */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden bg-[#030705] border border-emerald-500/30 p-4 shadow-2xl space-y-3">
+              <div className="relative rounded-3xl overflow-hidden bg-[#FAF7F2] border border-black/[0.08] p-4 shadow-sm space-y-3">
                 {/* Top Bar of Role Device */}
-                <div className="flex items-center justify-between pb-2 border-b border-white/10 text-xs font-mono text-slate-400">
-                  <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] text-xs font-semibold text-[#64748B]">
+                  <span className="flex items-center gap-1.5 text-emerald-800">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
                     LIVE PRODUCTION CLUSTER
                   </span>
                   <span>25 KM GEOFENCE</span>
                 </div>
 
                 {/* Real-time Screen Mockup Window */}
-                <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-white/10 bg-black/60 shadow-inner group">
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-black/[0.08] bg-white shadow-2xs group">
                   <Image
                     src={role.screenshot}
                     alt={`${role.name} live experience`}
                     fill
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-102"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#030705] via-transparent to-transparent opacity-60" />
-                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-[11px] font-mono">
-                    <span className="bg-black/70 backdrop-blur-md px-2 py-0.5 rounded text-emerald-400 border border-emerald-500/30 font-semibold">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-[11px]">
+                    <span className="bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[#1B4332] border border-black/[0.06] font-bold shadow-2xs">
                       Verified 100% Real-Time
                     </span>
-                    <span className="bg-black/70 backdrop-blur-md px-2 py-0.5 rounded text-slate-300">
+                    <span className="bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[#475569] font-medium shadow-2xs">
                       Zero Dummy Residue
                     </span>
                   </div>
                 </div>
 
                 {/* Protocol State Strip */}
-                <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-left">
-                  <div className="text-[10px] font-mono text-emerald-400 uppercase font-semibold">
+                <div className="p-3 rounded-2xl bg-white border border-black/[0.06] text-left shadow-2xs">
+                  <div className="text-[10px] font-bold text-[#1B4332] uppercase tracking-wider">
                     Active State Telemetry
                   </div>
-                  <div className="text-xs font-bold text-white mt-0.5">
+                  <div className="text-xs font-semibold text-[#0F172A] mt-0.5">
                     {role.id === 'customer' && '🛒 Active Cart: Ratnagiri Alphonso Mangoes (₹180)'}
                     {role.id === 'farmer' && '🌾 Active Listings: 23 Harvest Lots Available'}
                     {role.id === 'courier' && '🚴 Active Run #1: Sohna Farm Gate → Palm Grove Enclave'}
@@ -338,10 +347,10 @@ export function RolePortalsStage() {
 
                 <a
                   href={role.route}
-                  className="w-full py-2.5 rounded-xl bg-white/[0.05] hover:bg-emerald-500/20 hover:border-emerald-500/40 border border-white/10 text-xs font-semibold text-white flex items-center justify-center gap-2 transition-all"
+                  className="btn-press w-full py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-black/[0.08] text-xs font-bold text-[#0F172A] hover:text-[#1B4332] flex items-center justify-center gap-2 transition-all shadow-2xs"
                 >
                   <span>Launch Live {role.name} Portal</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#1B4332]" />
                 </a>
               </div>
             </div>

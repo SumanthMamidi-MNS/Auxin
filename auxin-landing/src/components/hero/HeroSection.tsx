@@ -1,60 +1,75 @@
 'use client';
 
+/**
+ * auxin-landing/src/components/hero/HeroSection.tsx
+ * ============================================================================
+ * AUXIN V3.5 — HERO STAGE (ORGANIC CREAM LUXURY EDITION)
+ * 
+ * Editorial Elegance & 3D Spatial Device Frame:
+ * - High-contrast graphite typography on warm organic cream
+ * - Deep botanical forest green accents and solar harvest gold
+ * - Generous top breathing room (pt-36 to pt-40) preventing navbar overlap
+ * - Tactile spring-press actions and live sandbox access links
+ * ============================================================================
+ */
+
 import React from 'react';
-import Link from 'next/link';
 import { Hero3DRig } from './Hero3DRig';
 import { TopoMeshCanvas } from './TopoMeshCanvas';
-import { ArrowUpRight, ShieldCheck, Zap, Sparkles, Sprout, ChevronRight, Terminal } from 'lucide-react';
+import { ArrowUpRight, Terminal, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  heroImage?: string;
+}
+
+export function HeroSection({ heroImage }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[92vh] pt-28 pb-16 flex items-center justify-center overflow-hidden bg-[#030705]">
-      {/* ── 3D Topographic Sonar Mesh Background Canvas ── */}
+    <section className="relative min-h-[92vh] pt-36 sm:pt-40 pb-20 flex items-center justify-center overflow-hidden bg-[#FAF7F2]">
+      {/* ── Organic Cartography Topo Mesh Canvas ── */}
       <TopoMeshCanvas />
 
-      {/* ── Ambient Radial Atmosphere ── */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute top-1/3 right-1/4 w-[400px] h-[350px] bg-amber-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute inset-0 bg-tactical-grid opacity-30 pointer-events-none" />
+      {/* ── Soft Sunbeam Atmosphere ── */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[750px] h-[400px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/3 right-1/4 w-[500px] h-[350px] bg-radial from-emerald-500/5 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute inset-0 bg-cream-grid opacity-60 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Mission Typography & High-Conversion CTAs */}
           <div className="lg:col-span-7 text-left space-y-6">
             {/* Protocol Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-[0_0_20px_rgba(34,197,94,0.15)]">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="font-mono uppercase tracking-wider text-[11px]">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white border border-black/[0.08] shadow-[0_2px_10px_rgba(60,45,20,0.04)]">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-ping" />
+              <span className="font-semibold text-xs text-[#1B4332] tracking-wider uppercase">
                 Autonomous Direct-From-Farm Protocol
               </span>
-              <span className="text-slate-600">|</span>
-              <span className="text-slate-300">v3.0 Production</span>
+              <span className="text-[#94A3B8]">|</span>
+              <span className="text-xs font-medium text-[#64748B]">v3.5 Production</span>
             </div>
 
-            {/* Main Headline with Obsidian Agritech Typography */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.08]">
-              Freshness Engineered with{' '}
-              <span className="text-gradient-chlorophyll block sm:inline">
-                Spatial Precision.
+            {/* Main Headline with Editorial Elegance */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0F172A] leading-[1.1] font-['Poppins']">
+              Fresh from the Earth.{' '}
+              <span className="text-gradient-forest block sm:inline">
+                Delivered in Under 120 Minutes.
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-300 max-w-2xl font-normal leading-relaxed">
-              Auxin eliminates 4 tiers of commission middlemen. Unifying 
-              <span className="text-white font-medium"> 100% cultivator margins</span>, 
-              <span className="text-white font-medium"> 2-hour harvest-to-door deliveries</span>, 
-              and <span className="text-white font-medium">cryptographic Razorpay escrow</span> over 
-              a 25 km geofenced logistics radar.
+            <p className="text-base sm:text-lg text-[#475569] max-w-2xl font-normal leading-relaxed">
+              Auxin eliminates 4 tiers of commission middlemen. Unifying{' '}
+              <strong className="text-[#0F172A] font-semibold">100% cultivator margins</strong>,{' '}
+              <strong className="text-[#0F172A] font-semibold">2-hour harvest-to-door deliveries</strong>, and{' '}
+              <strong className="text-[#0F172A] font-semibold">cryptographic Razorpay escrow</strong> over a strict 25 km geofenced logistics radar.
             </p>
 
-            {/* CTAs */}
+            {/* CTAs with Tactile Press Animation */}
             <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <a
                 href={`${APP_URL}/customer/home`}
-                className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 text-slate-950 font-bold text-sm tracking-wide shadow-[0_0_30px_rgba(34,197,94,0.45)] hover:shadow-[0_0_45px_rgba(34,197,94,0.7)] hover:brightness-105 active:scale-98 transition-all duration-200"
+                className="btn-press group relative inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm tracking-wide shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200"
               >
                 <span>Launch Live Marketplace</span>
                 <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -62,68 +77,79 @@ export function HeroSection() {
 
               <a
                 href="#architecture"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.12] hover:border-emerald-500/40 text-slate-200 font-semibold text-sm transition-all duration-200"
+                className="btn-press inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-[#FAF7F2] border border-black/[0.08] text-[#0F172A] font-semibold text-sm shadow-sm transition-all duration-200"
               >
-                <Terminal className="w-4 h-4 text-emerald-400" />
+                <Terminal className="w-4 h-4 text-[#1B4332]" />
                 <span>Explore Architecture</span>
               </a>
             </div>
 
-            {/* Quick Demo Access Bar */}
-            <div className="pt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-              <span className="font-mono text-[11px] text-slate-500">Fast Sandbox:</span>
+            {/* Fast Sandbox Access Chips */}
+            <div className="pt-2 flex flex-wrap items-center gap-2 text-xs text-[#64748B]">
+              <span className="font-semibold text-[11px] text-[#475569]">One-Click Portals:</span>
               <a
                 href={`${APP_URL}/auth?role=customer`}
-                className="px-2.5 py-1 rounded-md bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 text-slate-300 hover:text-emerald-400 font-mono transition-colors"
+                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
               >
                 Customer Portal
               </a>
               <a
                 href={`${APP_URL}/auth?role=farmer`}
-                className="px-2.5 py-1 rounded-md bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 text-slate-300 hover:text-emerald-400 font-mono transition-colors"
+                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
               >
                 Farmer Dashboard
               </a>
               <a
                 href={`${APP_URL}/auth?role=courier`}
-                className="px-2.5 py-1 rounded-md bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 text-slate-300 hover:text-emerald-400 font-mono transition-colors"
+                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
               >
                 Courier HUD
               </a>
             </div>
 
             {/* Metrics Ribbon */}
-            <div className="pt-6 border-t border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="pt-6 border-t border-black/[0.06] grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div>
-                <div className="text-2xl font-black text-white font-mono tracking-tight">
+                <div className="text-3xl font-extrabold text-[#1B4332] font-['Poppins'] tracking-tight">
                   100%
                 </div>
-                <div className="text-xs text-slate-400">Cultivator Margin</div>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-emerald-400 font-mono tracking-tight">
-                  &lt; 2 hrs
+                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                  Direct Margin to Cultivator
                 </div>
-                <div className="text-xs text-slate-400">Harvest to Door</div>
               </div>
+
               <div>
-                <div className="text-2xl font-black text-amber-400 font-mono tracking-tight">
+                <div className="text-3xl font-extrabold text-[#0F172A] font-['Poppins'] tracking-tight">
+                  &lt; 2h
+                </div>
+                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                  Pluck-to-Plate Window
+                </div>
+              </div>
+
+              <div>
+                <div className="text-3xl font-extrabold text-[#0F172A] font-['Poppins'] tracking-tight">
                   25 km
                 </div>
-                <div className="text-xs text-slate-400">Geofence Radar</div>
+                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                  Haversine Logistics Radar
+                </div>
               </div>
+
               <div>
-                <div className="text-2xl font-black text-white font-mono tracking-tight">
+                <div className="text-3xl font-extrabold text-[#B45309] font-['Poppins'] tracking-tight">
                   ₹0
                 </div>
-                <div className="text-xs text-slate-400">Middleman Cuts</div>
+                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                  Mandi Broker Deductions
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: 3D Spatial Gyro Device Rig */}
-          <div className="lg:col-span-5 flex items-center justify-center">
-            <Hero3DRig imageSrc="/screenshots/06_mobile_customer_order_tracking.png" />
+          {/* Right Column: 3D Champagne Device Canvas */}
+          <div className="lg:col-span-5 relative flex items-center justify-center">
+            <Hero3DRig imageSrc={heroImage} />
           </div>
         </div>
       </div>

@@ -1,7 +1,20 @@
 'use client';
 
+/**
+ * auxin-landing/src/components/features/MiloPlayground.tsx
+ * ============================================================================
+ * AUXIN V3.5 — MILO AI AGRONOMIC COPILOT PARCHMENT CONSOLE
+ * (ORGANIC CREAM LUXURY EDITION)
+ * 
+ * Interactive Agronomic Intelligence:
+ * - 4 Pre-tuned prompts: Harvest timing, dynamic pricing, escrow handshake, geofence curve
+ * - Typewriter text streaming with micro-cursor
+ * - Ivory parchment aesthetic with deep botanical forest syntax
+ * ============================================================================
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, Sparkles, Terminal, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { Bot, Sparkles, Terminal, CornerDownLeft } from 'lucide-react';
 
 interface PromptPreset {
   id: string;
@@ -73,21 +86,21 @@ export function MiloPlayground() {
   }, [selectedPrompt]);
 
   return (
-    <section id="milo" className="relative py-28 bg-[#040A07] overflow-hidden scroll-mt-24">
+    <section id="milo" className="relative py-28 bg-[#FAF7F2] overflow-hidden scroll-mt-24">
       {/* Background glow */}
-      <div className="absolute top-1/2 left-1/3 w-[600px] h-[350px] bg-emerald-500/5 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 w-[600px] h-[350px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono uppercase tracking-wider">
-            <Bot className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-[#1B4332] text-xs font-semibold shadow-2xs">
+            <Bot className="w-3.5 h-3.5 text-[#1B4332]" />
             Milo AI Copilot Engine
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Ask <span className="text-gradient-chlorophyll">Milo AI</span>.
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+            Consult <span className="text-gradient-forest">Milo AI Copilot</span>.
           </h2>
-          <p className="text-slate-300 text-base sm:text-lg">
+          <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
             Fine-tuned on Indian agronomy, weather telemetry, Mandi price indexes, and hyper-local supply routing.
           </p>
         </div>
@@ -100,62 +113,62 @@ export function MiloPlayground() {
               <button
                 key={p.id}
                 onClick={() => setSelectedPrompt(p)}
-                className={`px-4 py-2 rounded-xl text-xs font-mono transition-all text-left flex items-center gap-2 border ${
+                className={`btn-press px-4 py-2 rounded-full text-xs font-semibold transition-all text-left flex items-center gap-2 border cursor-pointer ${
                   isSelected
-                    ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 shadow-[0_0_15px_rgba(34,197,94,0.25)]'
-                    : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06]'
+                    ? 'bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white border-transparent shadow-sm'
+                    : 'bg-white border-black/[0.08] text-[#475569] hover:text-[#0F172A] hover:bg-black/[0.03]'
                 }`}
               >
-                <Sparkles className={`w-3.5 h-3.5 ${isSelected ? 'text-emerald-400' : 'text-slate-500'}`} />
+                <Sparkles className={`w-3.5 h-3.5 ${isSelected ? 'text-[#D4AF37]' : 'text-[#64748B]'}`} />
                 <span>{p.badge}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Interactive Obsidian Terminal */}
-        <div className="mt-8 max-w-4xl mx-auto glass-obsidian-elevated rounded-3xl border border-emerald-500/30 overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.9)]">
-          {/* Terminal Window Header */}
-          <div className="px-5 py-3.5 bg-black/60 border-b border-white/10 flex items-center justify-between text-xs font-mono">
+        {/* Interactive Ivory Parchment Console */}
+        <div className="mt-8 max-w-4xl mx-auto bg-white rounded-3xl border border-black/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(60,45,20,0.06)]">
+          {/* Console Window Header */}
+          <div className="px-6 py-3.5 bg-[#FAF7F2] border-b border-black/[0.06] flex items-center justify-between text-xs font-medium">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-red-500/80 inline-block" />
-              <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
-              <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
-              <span className="ml-2 text-slate-400">milo-agritech-runtime --v3.0.4</span>
+              <span className="w-3 h-3 rounded-full bg-red-400 inline-block" />
+              <span className="w-3 h-3 rounded-full bg-amber-400 inline-block" />
+              <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
+              <span className="ml-2 text-[#475569] font-mono font-semibold">milo-agronomy-copilot --v3.5</span>
             </div>
-            <div className="flex items-center gap-3 text-slate-400">
-              <span className="text-emerald-400 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <div className="flex items-center gap-4 text-[#64748B] text-xs">
+              <span className="text-emerald-800 flex items-center gap-1.5 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping" />
                 LATENCY: 18ms
               </span>
-              <span>TEMPERATURE: 0.2</span>
+              <span className="hidden sm:inline font-mono">TEMPERATURE: 0.2</span>
             </div>
           </div>
 
-          {/* Terminal Body */}
-          <div className="p-6 sm:p-8 space-y-6 text-left font-mono text-sm">
+          {/* Console Body */}
+          <div className="p-6 sm:p-8 space-y-6 text-left text-sm">
             {/* User Input Prompt */}
-            <div className="space-y-1.5">
-              <div className="text-xs text-slate-500 flex items-center gap-1.5">
-                <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                <span>USER PROMPT INVOCATION:</span>
+            <div className="space-y-2">
+              <div className="text-xs text-[#64748B] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Terminal className="w-3.5 h-3.5 text-[#1B4332]" />
+                <span>Selected Inquiry:</span>
               </div>
-              <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-white font-medium flex items-start gap-2">
-                <CornerDownLeft className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                <span>&quot;{selectedPrompt.question}&quot;</span>
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] text-[#0F172A] font-semibold flex items-start gap-2.5">
+                <CornerDownLeft className="w-4 h-4 text-[#1B4332] mt-0.5 shrink-0" />
+                <span className="leading-snug">&quot;{selectedPrompt.question}&quot;</span>
               </div>
             </div>
 
             {/* AI Streaming Response */}
-            <div className="space-y-1.5">
-              <div className="text-xs text-emerald-400 flex items-center gap-1.5">
-                <Bot className="w-3.5 h-3.5" />
-                <span>MILO REASONING OUTPUT:</span>
+            <div className="space-y-2">
+              <div className="text-xs text-[#1B4332] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Bot className="w-3.5 h-3.5 text-[#1B4332]" />
+                <span>Milo Reasoning &amp; Telemetry Recommendation:</span>
               </div>
-              <div className="p-4 sm:p-5 rounded-xl bg-black/50 border border-emerald-500/30 text-slate-200 whitespace-pre-wrap leading-relaxed shadow-inner">
+              <div className="p-5 sm:p-6 rounded-2xl bg-[#FDFCF9] border border-emerald-600/20 text-[#334155] whitespace-pre-wrap leading-relaxed shadow-2xs font-sans">
                 {displayedText}
                 {isTyping && (
-                  <span className="inline-block w-2 h-4 bg-emerald-400 ml-1 animate-pulse" />
+                  <span className="inline-block w-2 h-4 bg-[#1B4332] ml-1 animate-pulse" />
                 )}
               </div>
             </div>

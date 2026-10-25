@@ -1,5 +1,19 @@
 'use client';
 
+/**
+ * auxin-landing/src/components/features/TechArchitecture.tsx
+ * ============================================================================
+ * AUXIN V3.5 — FULL-STACK SYSTEM ARCHITECTURE & INTERACTIVE REST API TERMINAL
+ * (ORGANIC CREAM LUXURY EDITION)
+ * 
+ * 4 Architectural Pillars:
+ * - Next.js 16 App Router & Turbopack
+ * - FastAPI & Async Python Engine
+ * - 2-Phase Escrow Webhook Handshake
+ * - Leaflet 25km Haversine Geofencing
+ * ============================================================================
+ */
+
 import React, { useState } from 'react';
 import { Terminal, Layers, ShieldCheck, Database, MapPin, Cpu, Check, Copy } from 'lucide-react';
 
@@ -94,83 +108,83 @@ export function TechArchitecture() {
   };
 
   return (
-    <section id="architecture" className="relative py-28 bg-[#030705] overflow-hidden scroll-mt-24">
+    <section id="architecture" className="relative py-28 bg-[#F5F2EB] overflow-hidden scroll-mt-24 border-y border-black/[0.05]">
       {/* Background glow */}
-      <div className="absolute top-1/3 right-1/3 w-[600px] h-[350px] bg-emerald-500/5 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/3 right-1/3 w-[600px] h-[350px] bg-radial from-[#D4AF37]/10 via-transparent to-transparent blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono uppercase tracking-wider">
-            <Layers className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-[#1B4332] text-xs font-semibold shadow-2xs">
+            <Layers className="w-3.5 h-3.5 text-[#1B4332]" />
             Engineering Topology
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Full-Stack <span className="text-gradient-chlorophyll">System Architecture</span>.
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+            Full-Stack <span className="text-gradient-forest">System Architecture</span>.
           </h2>
-          <p className="text-slate-300 text-base sm:text-lg">
-            Built for 99.99% uptime, microsecond coordinate math, and deterministic bank-grade security.
+          <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
+            Engineered for 99.99% uptime, microsecond coordinate mathematics, and deterministic bank-grade security.
           </p>
         </div>
 
         {/* 4 Architectural Pillars Grid */}
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="glass-obsidian-elevated rounded-2xl p-6 border border-white/10 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-[#1B4332]">
               <Cpu className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
+            <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               Next.js 16 App Router
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Turbopack compilation, React 19 Server Components, Tailwind CSS v4, hardware-accelerated 3D gyro perspective, Framer Motion springs.
+            <p className="text-xs text-[#64748B] leading-relaxed">
+              Turbopack compilation, React 19 Server Components, Tailwind CSS v4, hardware-accelerated 3D spatial gyro perspective, Framer Motion springs.
             </p>
           </div>
 
-          <div className="glass-obsidian-elevated rounded-2xl p-6 border border-white/10 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-[#1B4332]">
               <Database className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
-              FastAPI &amp; Async Engine
+            <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+              FastAPI Async Engine
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-[#64748B] leading-relaxed">
               Python 3.12 async workers, Pydantic v2 strict models, connection pooling, and sub-15ms response latency under peak batch load.
             </p>
           </div>
 
-          <div className="glass-obsidian-elevated rounded-2xl p-6 border border-white/10 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-600/20 flex items-center justify-center text-amber-800">
               <ShieldCheck className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
+            <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               2-Phase Escrow Webhooks
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-[#64748B] leading-relaxed">
               Razorpay cryptographic escrow hold, dual-signature webhook verification, and automated IMPS instant bank disbursements.
             </p>
           </div>
 
-          <div className="glass-obsidian-elevated rounded-2xl p-6 border border-white/10 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-[#1B4332]">
               <MapPin className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
+            <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               Leaflet 25km Haversine
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-[#64748B] leading-relaxed">
               Real-time geospatial polygon geofencing, OpenStreetMap vector tiles, GPS vehicle telemetry, and zero cross-zone routing leakage.
             </p>
           </div>
         </div>
 
         {/* Interactive API Terminal */}
-        <div className="mt-14 glass-obsidian-elevated rounded-3xl border border-emerald-500/30 overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.9)] max-w-5xl mx-auto">
+        <div className="mt-14 bg-white rounded-3xl border border-black/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(60,45,20,0.06)] max-w-5xl mx-auto">
           {/* Header Bar */}
-          <div className="px-5 py-3.5 bg-black/60 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-emerald-400" />
-              <span className="text-white font-semibold">Auxin REST API Explorer</span>
+          <div className="px-6 py-4 bg-[#FAF7F2] border-b border-black/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs font-medium">
+            <div className="flex items-center gap-2 text-[#0F172A] font-bold">
+              <Terminal className="w-4 h-4 text-[#1B4332]" />
+              <span>Auxin REST API Explorer</span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -178,10 +192,10 @@ export function TechArchitecture() {
                 <button
                   key={idx}
                   onClick={() => setActiveTab(idx)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
+                  className={`btn-press px-3 py-1.5 rounded-full text-xs font-mono font-semibold transition-all cursor-pointer ${
                     activeTab === idx
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                      : 'text-slate-400 hover:text-white bg-white/[0.04]'
+                      ? 'bg-[#1B4332] text-white shadow-2xs'
+                      : 'text-[#475569] hover:text-[#0F172A] bg-white border border-black/[0.06]'
                   }`}
                 >
                   {ep.method} {ep.url.split('?')[0].split('/').pop()}
@@ -191,30 +205,34 @@ export function TechArchitecture() {
           </div>
 
           {/* Endpoint Details Bar */}
-          <div className="px-6 py-3 bg-white/[0.02] border-b border-white/10 flex items-center justify-between text-xs font-mono">
+          <div className="px-6 py-3 bg-[#FDFCF9] border-b border-black/[0.06] flex items-center justify-between text-xs font-mono">
             <div className="flex items-center gap-3">
-              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+              <span className={`px-2.5 py-0.5 rounded-full font-bold text-[11px] ${
+                endpoint.method === 'GET' 
+                  ? 'bg-emerald-100 text-emerald-900 border border-emerald-600/20' 
+                  : 'bg-amber-100 text-amber-900 border border-amber-600/20'
+              }`}>
                 {endpoint.method}
               </span>
-              <span className="text-slate-300 truncate max-w-md sm:max-w-xl">
+              <span className="text-[#334155] truncate max-w-md sm:max-w-xl font-semibold">
                 {endpoint.url}
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-emerald-400 font-bold">STATUS: {endpoint.statusCode} OK</span>
+              <span className="text-emerald-800 font-bold hidden sm:inline">STATUS: {endpoint.statusCode} OK</span>
               <button
                 onClick={handleCopy}
-                className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white"
+                className="btn-press p-1.5 rounded-lg hover:bg-black/[0.05] text-[#64748B] hover:text-[#0F172A] cursor-pointer"
                 title="Copy JSON Payload"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-4 h-4 text-[#1B4332]" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
           {/* JSON Payload Display */}
-          <div className="p-6 bg-[#020503] font-mono text-xs text-left overflow-x-auto max-h-[380px]">
-            <pre className="text-emerald-300/90 leading-relaxed">
+          <div className="p-6 sm:p-8 bg-[#0F172A] font-mono text-xs text-left overflow-x-auto max-h-[380px]">
+            <pre className="text-emerald-300 leading-relaxed">
               {JSON.stringify(endpoint.responseJson, null, 2)}
             </pre>
           </div>
