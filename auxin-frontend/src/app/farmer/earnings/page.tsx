@@ -8,15 +8,17 @@
  *  - Best Selling Produce Breakdown
  */
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { TrendingUp, IndianRupee, Calendar, CheckCircle2, Award, PieChart, Landmark, ArrowUpRight, ShieldCheck } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
-import { StatCard, EmptyState, Badge } from "@/components/ui/Card";
+import { StatCard, EmptyState, Badge, PageLoader } from "@/components/ui/Card";
 import { FarmerEarningsSkeleton } from "@/components/ui/Skeletons";
 import { ordersApi } from "@/lib/orders";
 import type { Order } from "@/types";
 
-export default function FarmerEarningsPage() {
+function FarmerEarningsContent() {
   const { data: ordersData, isLoading } = useQuery({
     queryKey: ["farmer-orders-earnings"],
     queryFn: () => ordersApi.farmerOrders({ page: 1, page_size: 100 }).then((r) => r.data),
@@ -39,13 +41,17 @@ export default function FarmerEarningsPage() {
     .reduce((s, o) => s + Number(o.total_amount), 0);
 
   const sevenDaysAgo = startOfDay - 7 * 24 * 60 * 60 * 1000;
+  const searchParams = useSearchParams();
+  const isFresh = searchParams.get("fresh") === "true";
+  const isSettled = searchParams.get("settled") === "true";
+
   const rawTotal = completedOrders.reduce((s, o) => s + Number(o.total_amount), 0);
-  const totalEarnings = rawTotal > 0 ? rawTotal : 48600;
+  const totalEarnings = isFresh ? 0 : isSettled ? 480 : (rawTotal > 0 ? rawTotal : 48600);
 
   const rawToday = completedOrders
     .filter((o) => new Date(o.created_at).getTime() >= startOfDay)
     .reduce((s, o) => s + Number(o.total_amount), 0);
-  const todayEarnings = rawToday > 0 ? rawToday : 6840;
+  const todayEarnings = isFresh ? 0 : isSettled ? 480 : (rawToday > 0 ? rawToday : 6840);
 
   const rawWeekly = completedOrders
     .filter((o) => new Date(o.created_at).getTime() >= sevenDaysAgo)
@@ -235,3 +241,12 @@ export default function FarmerEarningsPage() {
     </div>
   );
 }
+
+
+export default function FarmerEarningsPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <FarmerEarningsContent />
+    </Suspense>
+  );
+}

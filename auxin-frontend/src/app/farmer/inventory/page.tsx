@@ -9,13 +9,14 @@
  *  - Bulk restock and deactivation toolbar
  */
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Plus, Edit2, Trash2, Package, Leaf, Search, SlidersHorizontal, AlertTriangle, Check, X, ShieldCheck
 } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
-import { Badge, EmptyState, ProgressBar } from "@/components/ui/Card";
+import { Badge, EmptyState, ProgressBar, PageLoader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { catalogueApi } from "@/lib/catalogue";
 import { inventoryApi, type InventoryEntry } from "@/lib/inventory";
@@ -96,14 +97,44 @@ const DEMO_FARMER_INVENTORY: InventoryEntry[] = [
   },
 ];
 
-export default function FarmerInventoryPage() {
+function FarmerInventoryContent() {
   const qc = useQueryClient();
   const token = useAuthStore((s) => s.token);
   const api = inventoryApi(token);
 
+  const searchParams = useSearchParams();
+  const isOpenAddQuery = searchParams.get("openAdd") === "true";
+
   // UI panel states
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [form, setForm] = useState<AddFormState>(DEFAULT_FORM);
+  const [showAddForm, setShowAddForm] = useState(isOpenAddQuery);
+  const [form, setForm] = useState<AddFormState>(
+    isOpenAddQuery
+      ? {
+          master_product_id: 1,
+          price: "180",
+          quantity: "38",
+          unit: "kg",
+          is_organic: true,
+          harvest_date: today(),
+          notes: "GI Tagged Ratnagiri Alphonso Mangoes. Plucked 06:30 AM today from Sector 42 Orchard.",
+        }
+      : DEFAULT_FORM
+  );
+
+  useEffect(() => {
+    if (isOpenAddQuery) {
+      setShowAddForm(true);
+      setForm({
+        master_product_id: 1,
+        price: "180",
+        quantity: "38",
+        unit: "kg",
+        is_organic: true,
+        harvest_date: today(),
+        notes: "GI Tagged Ratnagiri Alphonso Mangoes. Plucked 06:30 AM today from Sector 42 Orchard.",
+      });
+    }
+  }, [isOpenAddQuery]);
   const [productSearch, setProductSearch] = useState("");
   const [showPickerDropdown, setShowPickerDropdown] = useState(false);
 
@@ -313,15 +344,15 @@ export default function FarmerInventoryPage() {
             }}
             icon={<Plus className="w-4 h-4" />}
           >
-            {showAddForm ? "Close Form" : "Add Harvest Stock"}
+            {showAddForm ? "✕ Cancel" : "+ Add Harvest Stock"}
           </Button>
         </div>
 
         {/* Add Stock Modal Form */}
         {showAddForm && (
           <div className="p-5 sm:p-7 rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-lg animate-slide-down space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] pb-2 border-b border-[var(--divider)]">
-              Publish New Crop Listing
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] pb-2 border-b border-[var(--divider)] flex items-center justify-between">
+              <span>➕ Publish Morning Harvest Listing</span><span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">STEP 07 / 12</span>
             </h2>
 
             <form onSubmit={handleAddSubmit} className="space-y-4">
@@ -692,3 +723,12 @@ export default function FarmerInventoryPage() {
     </div>
   );
 }
+
+
+export default function FarmerInventoryPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <FarmerInventoryContent />
+    </Suspense>
+  );
+}

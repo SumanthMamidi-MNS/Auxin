@@ -3,13 +3,12 @@
 /**
  * auxin-landing/src/components/layout/StickyNavbar.tsx
  * ============================================================================
- * AUXIN V3.5 — FLOATING LUXURY ISLAND NAVIGATION (ORGANIC CREAM EDITION)
+ * AUXIN V4.0 — FLOATING LUXURY ISLAND NAVIGATION (CLEAN EMBLEM EDITION)
  * 
  * Master Polish:
- * - Floating centered pill navbar with generous breathing room
+ * - Direct golden logo mark without circular border ring, enlarged for prominence
+ * - Active section scroll spy automatically toggling as user scrolls
  * - Specular porcelain backdrop-blur with warm gold highlights
- * - Animated botanical logo mark with organic pulse
- * - Discreet live network status (no bulky green bubbles)
  * - Tactile spring-pressed "Launch App" CTA button
  * ============================================================================
  */
@@ -24,14 +23,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 export function StickyNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 15);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [activeSection, setActiveSection] = useState<string>('');
 
   const navLinks = [
     { label: 'Economics', href: '#economics' },
@@ -43,6 +35,34 @@ export function StickyNavbar() {
     { label: 'Dossier', href: '#recruiter' },
   ];
 
+  useEffect(() => {
+    const sections = ['economics', 'screens', 'innovations', 'roles', 'milo', 'architecture', 'recruiter'];
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 15);
+
+      const scrollPos = window.scrollY + 140; // navbar offset
+      let current = '';
+
+      for (const sec of sections) {
+        const el = document.getElementById(sec);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            current = sec;
+            break;
+          }
+        }
+      }
+      setActiveSection(current);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pb-2 transition-all duration-300">
       <div
@@ -52,19 +72,17 @@ export function StickyNavbar() {
             : 'bg-white/80 backdrop-blur-xl border border-black/[0.06] shadow-[0_8px_30px_rgba(60,45,20,0.04)]'
         }`}
       >
-        {/* Brand Left */}
+        {/* Brand Left: Clean Enlarged Logo without Circular Ring */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-9 h-9 rounded-full overflow-hidden p-[1.5px] bg-gradient-to-tr from-[#1B4332] via-[#2D6A4F] to-[#D4AF37] transition-transform duration-300 group-hover:scale-105 shadow-sm">
-            <div className="w-full h-full bg-[#FAF7F2] rounded-full flex items-center justify-center overflow-hidden">
-              <Image
-                src="/logo-cropped.png"
-                alt="Auxin Logo"
-                width={26}
-                height={26}
-                className="object-contain"
-                priority
-              />
-            </div>
+          <div className="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 flex-shrink-0">
+            <Image
+              src="/logo-cropped.png"
+              alt="Auxin Logo"
+              width={40}
+              height={40}
+              className="object-contain drop-shadow-[0_2px_8px_rgba(212,175,55,0.25)]"
+              priority
+            />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
@@ -81,17 +99,28 @@ export function StickyNavbar() {
           </div>
         </Link>
 
-        {/* Center Desktop Navigation Links */}
+        {/* Center Desktop Navigation Links with Active Section Highlight */}
         <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-xs font-semibold text-[#475569] hover:text-[#0F172A] px-3 py-1.5 rounded-full hover:bg-black/[0.04] transition-all"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const sectionId = link.href.replace('#', '');
+            const isActive = activeSection === sectionId;
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                className={`relative text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-200 ${
+                  isActive
+                    ? 'text-[#0F172A] bg-black/[0.08] shadow-xs font-bold'
+                    : 'text-[#475569] hover:text-[#0F172A] hover:bg-black/[0.04]'
+                }`}
+              >
+                {link.label}
+                {isActive && (
+                  <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-3.5 h-0.5 rounded-full bg-emerald-700 transition-all duration-300" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Discreet Live Network Radar */}
@@ -122,48 +151,50 @@ export function StickyNavbar() {
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
 
-          {/* Mobile Menu Trigger */}
+          {/* Mobile Hamburger Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="btn-press p-2 rounded-full text-[#0F172A] hover:bg-black/[0.05] lg:hidden transition-colors"
-            aria-label="Toggle navigation menu"
+            className="lg:hidden p-2 rounded-full hover:bg-black/[0.05] text-[#0F172A] transition-colors"
+            aria-label="Toggle mobile navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Dropdown */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-2 max-w-6xl mx-auto rounded-3xl bg-white/95 backdrop-blur-2xl border border-black/[0.08] p-5 shadow-[0_20px_50px_rgba(60,45,20,0.12)] animate-fade-in">
-          <div className="flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-semibold text-[#475569] hover:text-[#0F172A] hover:bg-black/[0.03] px-4 py-2.5 rounded-xl transition-all"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-3 border-t border-black/[0.06] flex flex-col gap-2">
-              <Link
-                href={`${APP_URL}/auth`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-center text-xs font-semibold text-[#475569] py-2 rounded-xl hover:bg-black/[0.03]"
-              >
-                Sign In to Account
-              </Link>
+        <div className="lg:hidden mt-2 max-w-6xl mx-auto rounded-3xl bg-white/95 backdrop-blur-2xl border border-black/[0.08] p-5 shadow-2xl animate-fade-in">
+          <nav className="flex flex-col gap-2">
+            {navLinks.map((link) => {
+              const sectionId = link.href.replace('#', '');
+              const isActive = activeSection === sectionId;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`text-sm font-semibold px-4 py-2.5 rounded-xl transition-all ${
+                    isActive
+                      ? 'bg-emerald-50 text-emerald-900 font-bold border border-emerald-600/20'
+                      : 'text-[#475569] hover:bg-black/[0.04]'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+            <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
+              <span className="text-xs text-[#64748B]">v4.0 Protocol Active</span>
               <Link
                 href={`${APP_URL}/customer/home`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="btn-press text-center text-xs font-bold text-white bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] py-2.5 rounded-xl shadow-sm"
+                className="text-xs font-bold text-white bg-[#1B4332] px-4 py-2 rounded-full"
               >
-                Launch Live Marketplace ↗
+                Launch App →
               </Link>
             </div>
-          </div>
+          </nav>
         </div>
       )}
     </header>

@@ -9,7 +9,8 @@
  *  - Interactive Leaflet Route Map & Zero-Knowledge Doorstep OTP Verification
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Truck, CheckCircle2, Package, KeyRound, Navigation, Clock, ChevronRight, Phone,
@@ -17,7 +18,7 @@ import {
   Compass, AlertTriangle, ShieldAlert, Radio, RefreshCw, Check, ArrowRight, ExternalLink
 } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
-import { EmptyState, Badge, StatCard } from "@/components/ui/Card";
+import { EmptyState, Badge, StatCard, PageLoader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { MissionStepper } from "@/components/features/MissionStepper";
@@ -125,9 +126,10 @@ const DEMO_ACTIVE_MISSION: any = {
   }
 };
 
-export default function DeliveryDashboardPage() {
+function DeliveryDashboardContent() {
   const qc = useQueryClient();
   const { user, token } = useAuthStore();
+  const searchParams = useSearchParams();
 
   // Telemetry & GPS states
   const [geoStatus, setGeoStatus] = useState<"idle" | "tracking" | "denied" | "unavailable" | "unsupported">("idle");
@@ -149,7 +151,16 @@ export default function DeliveryDashboardPage() {
     staleTime: 10000,
   });
 
-  const effectiveProfile = profile || DEMO_COURIER_PROFILE;
+  const isFresh = searchParams.get("fresh") === "true";
+  const queryStep = searchParams.get("step");
+
+  const effectiveProfile = {
+    ...(profile || DEMO_COURIER_PROFILE),
+    rating: isFresh ? 5.0 : ((profile as any)?.rating ?? DEMO_COURIER_PROFILE.rating),
+    total_deliveries: isFresh ? 0 : queryStep === "completed" ? 1 : ((profile as any)?.total_deliveries ?? DEMO_COURIER_PROFILE.total_deliveries),
+    total_earnings: isFresh ? 0 : queryStep === "completed" ? 40 : ((profile as any)?.total_earnings ?? DEMO_COURIER_PROFILE.total_earnings),
+    today_earnings: isFresh ? 0 : queryStep === "completed" ? 40 : ((profile as any)?.today_earnings ?? DEMO_COURIER_PROFILE.today_earnings),
+  };
   const partnerLat = effectiveProfile.current_latitude;
   const partnerLon = effectiveProfile.current_longitude;
 
@@ -974,3 +985,21 @@ export default function DeliveryDashboardPage() {
     </div>
   );
 }
+
+
+
+
+export default function DeliveryDashboardPage() {
+
+  return (
+
+    <Suspense fallback={<PageLoader />}>
+
+      <DeliveryDashboardContent />
+
+    </Suspense>
+
+  );
+
+}
+

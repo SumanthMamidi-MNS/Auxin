@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { User, Phone, Mail, Loader2 } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -9,9 +9,11 @@ import { supabase } from "@/lib/supabase";
 import { profileApi } from "@/lib/profile";
 import { useAuthStore } from "@/store/authStore";
 import { AddressForm } from "@/components/features/AddressForm";
+import { Button } from "@/components/ui/Button";
+import { PageLoader } from "@/components/ui/Card";
 import type { Address } from "@/types";
 
-export default function CreateProfilePage() {
+function CreateProfileContent() {
   const router = useRouter();
   const { setAuth, user } = useAuthStore();
 
@@ -22,7 +24,8 @@ export default function CreateProfilePage() {
   const [fetchingEmail, setFetchingEmail] = useState(true);
   const [role, setRole] = useState("customer");
   const [farmName, setFarmName] = useState("");
-  const [farmCategory, setFarmCategory] = useState("Vegetables & Fruits");
+  const [farmCategory, setFarmCategory] = useState("Organic Fruits");
+  const [step, setStep] = useState("");
 
   useEffect(() => {
     async function loadEmail() {
@@ -34,8 +37,10 @@ export default function CreateProfilePage() {
         // 1. Try reading from supabase auth
         const { data: { user: sbUser } } = await supabase.auth.getUser();
         
+        const queryStep = params.get("step");
         let activeRole = queryRole || currentStoreUser?.role || (sbUser?.user_metadata?.role) || "customer";
         setRole(activeRole);
+        setStep(queryStep || "");
         
         if (sbUser?.email) {
           setEmail(sbUser.email);
@@ -250,7 +255,96 @@ export default function CreateProfilePage() {
           </div>
         </div>
 
-        {/* Account Details form card */}
+                {/* Direct IMPS Bank Settlement Setup Card (Cultivator Step 4) */}
+        {role === "farmer" && step === "bank" ? (
+          <div
+            className="rounded-3xl p-6 shadow-sm space-y-5 animate-fade-in"
+            style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+              <div>
+                <h3 className="text-base font-extrabold text-[var(--text-primary)]">
+                  Direct IMPS Bank Settlement Setup
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  Link your bank account for 100% zero-commission direct escrow payouts
+                </p>
+              </div>
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                STEP 04 / 12
+              </span>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                  Account Beneficiary Name *
+                </label>
+                <input
+                  type="text"
+                  defaultValue="Ramesh Kumar"
+                  className="w-full h-11 px-4 rounded-xl text-sm font-semibold"
+                  style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                  Bank Entity & Branch *
+                </label>
+                <input
+                  type="text"
+                  defaultValue="HDFC Bank (Sohna Valley Branch)"
+                  className="w-full h-11 px-4 rounded-xl text-sm"
+                  style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Account Number *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="50100482103981"
+                    className="w-full h-11 px-4 rounded-xl text-sm font-mono font-bold tracking-wider"
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    IFSC Routing Code *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="HDFC0001824"
+                    className="w-full h-11 px-4 rounded-xl text-sm font-mono font-bold uppercase tracking-wider"
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs text-emerald-900">
+                <span className="font-medium">⚡ Automated Escrow Pipeline:</span>
+                <span className="font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-200">
+                  INSTANT IMPS DIRECT (0% FEE)
+                </span>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full"
+                  onClick={() => router.push("/pending-approval?role=farmer")}
+                >
+                  Save IMPS Settlement Credentials →
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
         <div
           className="rounded-3xl p-6 shadow-sm space-y-4"
           style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
@@ -375,6 +469,69 @@ export default function CreateProfilePage() {
             </div>
           )}
 
+          {/* Delivery Partner Specific Fleet Specs */}
+          {role === "delivery" && (
+            <div className="space-y-4 pt-4 border-t border-[var(--border)] animate-fade-in">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                  EV Cargo Bike & Licensing Specs
+                </h3>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  STEP 03 / 10
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Vehicle Model *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="Hero Electric NYX ER (Heavy Cargo Spec)"
+                    className="w-full h-11 px-4 rounded-xl text-sm"
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Registration Plate *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="HR-26-EV-9821"
+                    className="w-full h-11 px-4 rounded-xl text-sm font-mono font-bold uppercase"
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Commercial Driving License *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="DL-0420210084920"
+                    className="w-full h-11 px-4 rounded-xl text-sm font-mono uppercase"
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Insulated Cargo Box *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="60L Food-Grade Sealed Crate"
+                    className="w-full h-11 px-4 rounded-xl text-sm"
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Reusable Address Form */}
           <div className="pt-2 border-t border-[var(--border)]">
             <AddressForm
@@ -384,7 +541,26 @@ export default function CreateProfilePage() {
             />
           </div>
         </div>
+        )}
       </div>
     </div>
   );
 }
+
+
+
+
+export default function CreateProfilePage() {
+
+  return (
+
+    <Suspense fallback={<PageLoader />}>
+
+      <CreateProfileContent />
+
+    </Suspense>
+
+  );
+
+}
+

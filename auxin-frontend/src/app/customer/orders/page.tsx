@@ -10,8 +10,8 @@
  *  - Polling query for real-time order state updates
  */
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Package, ClipboardList, XCircle, CreditCard,
@@ -21,7 +21,7 @@ import {
 import dynamic from "next/dynamic";
 import { TopBar } from "@/components/layout/TopBar";
 const LeafletMap = dynamic(() => import("@/components/features/LeafletMap"), { ssr: false });
-import { Badge, EmptyState } from "@/components/ui/Card";
+import { Badge, EmptyState, PageLoader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { OrdersSkeleton } from "@/components/ui/Skeletons";
 import { OrderTimeline } from "@/components/features/OrderTimeline";
@@ -166,8 +166,11 @@ const DEMO_COMPLETED_ORDERS: Order[] = [
   },
 ];
 
-export default function CustomerOrdersPage() {
+function CustomerOrdersContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isReviewQuery = searchParams.get("review") === "true";
+  const [showReviewModal, setShowReviewModal] = useState(isReviewQuery);
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const [tab, setTab] = useState<"all" | "active" | "completed">("all");
@@ -210,6 +213,91 @@ export default function CustomerOrdersPage() {
       />
 
       <div className="page-content py-4 sm:py-6 space-y-4 sm:space-y-5">
+        {/* 5-Star Rating & Delivery Review Card */}
+        {(showReviewModal || isReviewQuery) && (
+          <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50 via-white to-amber-50/50 border-2 border-emerald-500/30 shadow-lg space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between pb-3 border-b border-emerald-600/15">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                  ✓
+                </div>
+                <div>
+                  <h3 className="text-sm font-extrabold text-[#0B0F19]">Order Delivered & 5-Star Feedback</h3>
+                  <p className="text-[11px] text-emerald-800 font-semibold">Doorstep Handshake at Villa 14 (1h 48m from Pluck)</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                ORDER #1039
+              </span>
+            </div>
+
+            {/* Courier Review Card */}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200/90 shadow-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xs font-black text-emerald-800">
+                    VS
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#0B0F19]">Vikram Singh</p>
+                    <p className="text-[11px] text-slate-500 font-medium">EV Courier Partner • Hero Electric NYX</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                  <span className="ml-1 text-xs font-black text-slate-800">5.0 ★</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  ⚡ 100% Punctual (1h 48m)
+                </span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
+                  🛡️ Zero Damage Insulated Crate
+                </span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200">
+                  🤝 Polite Courier
+                </span>
+              </div>
+            </div>
+
+            {/* Farm Produce Review */}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200/90 shadow-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-[#0B0F19]">Auxin Green Harvest Orchards</p>
+                  <p className="text-[11px] text-slate-500">Ramesh Kumar • Survey #42, Sohna</p>
+                </div>
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                  <span className="ml-1 text-xs font-black text-slate-800">5.0 ★</span>
+                </div>
+              </div>
+              <p className="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 italic font-medium leading-relaxed">
+                "Plucked this morning at 06:30 AM in Sohna and delivered crisp to my door in Gurugram! The Kinnow Oranges and Vine-Ripened Tomatoes are exceptionally fresh. 10/10 quality!"
+              </p>
+            </div>
+
+            {/* Smart Escrow Payout Confirmation */}
+            <div className="p-3 rounded-xl bg-emerald-900 text-white flex items-center justify-between shadow-sm">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <div>
+                  <p className="text-xs font-bold">Dual Escrow Auto-Executed</p>
+                  <p className="text-[10px] text-emerald-200">₹480 IMPS to Ramesh Kumar • ₹40 to Vikram Singh</p>
+                </div>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-amber-300 bg-black/30 px-2 py-0.5 rounded">
+                IMPS SUCCESS ✓
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Navigation Filter Tabs */}
         <div role="tablist" aria-label="Filter orders" className="flex items-center gap-1 p-1 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] w-full sm:max-w-md">
           <button
@@ -277,7 +365,7 @@ export default function CustomerOrdersPage() {
         ) : (
           <div className="space-y-3 sm:space-y-4 max-w-3xl">
             {filteredOrders.map((order) => (
-              <OrderCard key={order.id} order={order} queryClient={queryClient} user={user} />
+              <OrderCard key={order.id} order={order} queryClient={queryClient} user={user} onWriteReview={() => setShowReviewModal(true)} />
             ))}
           </div>
         )}
@@ -292,10 +380,12 @@ function OrderCard({
   order,
   queryClient,
   user,
+  onWriteReview,
 }: {
   order: Order;
   queryClient: any;
   user: any;
+  onWriteReview?: () => void;
 }) {
   const router = useRouter();
   const [copiedOtp, setCopiedOtp] = useState(false);
@@ -554,7 +644,7 @@ function OrderCard({
             </div>
 
             <button
-              onClick={() => toast.success("Review feature coming soon!")}
+              onClick={() => onWriteReview ? onWriteReview() : toast.success("Feedback submitted!")}
               className="h-8 px-3 rounded-lg text-xs font-semibold flex-shrink-0 bg-[var(--surface)] text-[var(--primary-deep)] border border-[var(--success-border)] hover:bg-[var(--primary)] hover:text-white transition-colors"
             >
               Write Review
@@ -565,3 +655,21 @@ function OrderCard({
     </article>
   );
 }
+
+
+
+
+export default function CustomerOrdersPage() {
+
+  return (
+
+    <Suspense fallback={<PageLoader />}>
+
+      <CustomerOrdersContent />
+
+    </Suspense>
+
+  );
+
+}
+

@@ -39,7 +39,9 @@ import {
   Sparkles,
   ArrowRight,
   Smartphone,
-  Laptop
+  Laptop,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -75,7 +77,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
   screens: ScreenSpec[];
 }> = {
   customer: {
-    roleTitle: 'Consumer Hyper-Local Journey',
+    roleTitle: 'Hyper-Local Consumer Experience',
     roleSubtitle: 'Direct-from-farm procurement, sub-2h delivery, and cryptographic escrow lock',
     badge: '12 Mobile Screens',
     icon: ShoppingBag,
@@ -300,7 +302,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
     ],
   },
   farmer: {
-    roleTitle: 'Cultivator Enterprise Hub',
+    roleTitle: 'Direct Cultivator & Farm Sovereign Protocol',
     roleSubtitle: '100% direct margins, instant morning harvest publishing, and direct bank settlement',
     badge: '12 Mobile Screens',
     icon: Sprout,
@@ -890,6 +892,7 @@ export function ScreensExplorer() {
   const [activeRole, setActiveRole] = useState<RoleKey>('customer');
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
   const [imgError, setImgError] = useState<Record<string, boolean>>({});
+  const [isFullscreenModalOpen, setIsFullscreenModalOpen] = useState(false);
 
   const currentRoleData = SCREENS_DATABASE[activeRole];
   const screens = currentRoleData.screens;
@@ -912,7 +915,9 @@ export function ScreensExplorer() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
+      if (e.key === 'Escape') {
+        setIsFullscreenModalOpen(false);
+      } else if (e.key === 'ArrowLeft') {
         handlePrev();
       } else if (e.key === 'ArrowRight') {
         handleNext();
@@ -969,11 +974,16 @@ export function ScreensExplorer() {
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
-                <span>{data.roleTitle.split(' ')[0]} Flow</span>
+                <span>
+                  {role === 'customer' ? 'Hyper-Local Consumer' :
+                   role === 'farmer' ? 'Direct Cultivator' :
+                   role === 'courier' ? 'Green Fleet Logistics' :
+                   'Central Governance'}
+                </span>
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-mono font-medium ${
                   isActive ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-600'
                 }`}>
-                  9 Screens
+                  {data.screens.length} Screens
                 </span>
               </button>
             );
@@ -1063,7 +1073,11 @@ export function ScreensExplorer() {
               </div>
             ) : (
               /* ── MacBook Pro 16" Aluminum Laptop Chassis ── */
-              <div className="relative w-full max-w-[620px]">
+              <div className="relative w-full max-w-[640px] group cursor-pointer" onClick={() => setIsFullscreenModalOpen(true)}>
+                <div className="absolute top-3 right-4 z-40 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 backdrop-blur-md text-white text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-lg">
+                  <Maximize2 className="w-3 h-3 text-emerald-400" />
+                  <span>Inspect Fullscreen</span>
+                </div>
                 {/* External Glow */}
                 <div className="absolute -inset-4 bg-gradient-to-tr from-blue-500/15 via-transparent to-emerald-500/15 rounded-3xl blur-2xl opacity-60 -z-10" />
 
@@ -1148,7 +1162,7 @@ export function ScreensExplorer() {
             <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-[#0B0F19] text-white">
-                  STEP {currentScreen.stepNum} / 09
+                  STEP {currentScreen.stepNum} / {screens.length.toString().padStart(2, '0')}
                 </span>
                 <span className="text-xs font-semibold text-slate-500">
                   {currentRoleData.roleTitle}
@@ -1337,6 +1351,93 @@ export function ScreensExplorer() {
           </div>
         </div>
       </div>
+
+      {/* ── High-Resolution MacBook Admin Fullscreen Inspection Lightbox ── */}
+      {isFullscreenModalOpen && (
+        <div
+          className="fixed inset-0 z-[120] bg-black/92 backdrop-blur-2xl flex flex-col p-4 sm:p-6 lg:p-8 animate-fade-in"
+          role="dialog"
+          aria-label="Admin Console Fullscreen Inspection Lightbox"
+        >
+          {/* Header Bar */}
+          <div className="flex items-center justify-between pb-4 border-b border-white/10 text-white max-w-7xl mx-auto w-full">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                STEP {currentScreen.stepNum} / {screens.length.toString().padStart(2, '0')}
+              </span>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-white font-['Poppins']">
+                  {currentScreen.name}
+                </h3>
+                <p className="text-xs text-slate-400 font-mono">
+                  {currentScreen.route} • Native 1440 × 900 Retina Capture
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:inline text-xs text-slate-400 font-mono">
+                Press Esc to close
+              </span>
+              <button
+                onClick={() => setIsFullscreenModalOpen(false)}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                title="Close Fullscreen"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          {/* Main Expanded Image Container */}
+          <div className="flex-1 flex items-center justify-center overflow-hidden py-4 max-w-7xl mx-auto w-full">
+            <div className="relative w-full h-full max-h-[75vh] aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-black/60">
+              <Image
+                src={currentScreen.imageSrc}
+                alt={currentScreen.name}
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Stepper Navigation Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-white/10 max-w-7xl mx-auto w-full text-white">
+            <button
+              onClick={handlePrev}
+              disabled={activeStepIndex === 0}
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 text-xs font-bold transition-all cursor-pointer"
+            >
+              ← Previous Screen
+            </button>
+
+            <div className="hidden sm:flex items-center gap-1.5 overflow-x-auto max-w-md">
+              {screens.map((s, idx) => (
+                <button
+                  key={s.id}
+                  onClick={() => setActiveStepIndex(idx)}
+                  className={`w-7 h-7 rounded-full text-xs font-mono font-bold flex items-center justify-center transition-all cursor-pointer ${
+                    idx === activeStepIndex
+                      ? 'bg-emerald-500 text-white ring-2 ring-emerald-300'
+                      : 'bg-white/10 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {s.stepNum}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              disabled={activeStepIndex === screens.length - 1}
+              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-xs font-bold transition-all cursor-pointer shadow-md"
+            >
+              Next Screen →
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

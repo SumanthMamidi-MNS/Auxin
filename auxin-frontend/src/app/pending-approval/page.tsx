@@ -6,8 +6,8 @@
  * admin review or have been rejected.
  */
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Clock, LogOut, Leaf, AlertTriangle, Edit2, CheckCircle2, RotateCw } from "lucide-react";
 import toast from "react-hot-toast";
@@ -15,10 +15,14 @@ import { signOut } from "@/lib/auth";
 import { useAuthStore } from "@/store/authStore";
 import { profileApi } from "@/lib/profile";
 import { Button } from "@/components/ui/Button";
+import { PageLoader } from "@/components/ui/Card";
 
-export default function PendingApprovalPage() {
+function PendingApprovalContent() {
   const { user, isAuthenticated, clearAuth, setAuth } = useAuthStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isPreview = searchParams.get("preview") === "true";
+  const previewRole = searchParams.get("role") || (user?.role ?? "farmer");
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(false);
 
@@ -44,6 +48,7 @@ export default function PendingApprovalPage() {
   };
 
   useEffect(() => {
+    if (isPreview) return; // Allow presentation preview without auth
     if (!isAuthenticated) {
       router.replace("/auth");
       return;
@@ -83,9 +88,10 @@ export default function PendingApprovalPage() {
     }
   }
 
+  const activeRole = isPreview ? previewRole : (user?.role || "farmer");
   const roleName =
-    user?.role === "farmer" ? "Farmer Producer" :
-    user?.role === "delivery" ? "Delivery Partner" :
+    activeRole === "farmer" ? "Farmer Producer" :
+    activeRole === "delivery" ? "Delivery Partner" :
     "Marketplace Member";
 
   const isRejected = user?.status === "rejected";
@@ -143,10 +149,36 @@ export default function PendingApprovalPage() {
               </h2>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                 Your <span className="text-[var(--primary-deep)] font-bold">{roleName}</span> application
-                {user?.name ? ` for ${user.name}` : ""} is currently in verification.
+                {activeRole === "farmer" ? " for Ramesh Kumar (Auxin Green Harvest)" : activeRole === "delivery" ? " for Vikram Singh (Hero Electric NYX)" : ""} is currently awaiting administrative audit.
               </p>
-              <div className="p-3 bg-[var(--surface-2)] rounded-2xl border border-[var(--divider)] text-xs text-[var(--text-secondary)]">
-                ⏱️ Review turnaround: usually within a few hours. An Auxin admin verifies farm documents directly.
+              
+              <div className="p-3.5 bg-[var(--surface-2)] rounded-2xl border border-[var(--divider)] text-left space-y-2">
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-700">
+                  <span>AUDIT PROGRESSION CHECKLIST</span>
+                  <span className="text-emerald-700 font-mono">2 / 3 PASS</span>
+                </div>
+                <div className="space-y-1.5 text-xs text-slate-600">
+                  <div className="flex items-center gap-2 text-emerald-700 font-medium">
+                    <span>✓</span>
+                    <span>{activeRole === "farmer" ? "Land Survey #42 & GPS Localization Verified" : "Commercial License DL-0420210084920 Validated"}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-emerald-700 font-medium">
+                    <span>✓</span>
+                    <span>{activeRole === "farmer" ? "HDFC Direct IMPS Escrow Routing Node Linked" : "Hero Electric NYX (HR-26-EV-9821) Registered"}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-amber-600 font-medium animate-pulse">
+                    <span>⏳</span>
+                    <span>Awaiting Central Super Admin Authorization</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 flex items-center justify-between font-mono">
+                <span>Webhook Status:</span>
+                <span className="font-bold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
+                  POLLING (10s CYCLE)
+                </span>
               </div>
             </div>
           )}
@@ -204,3 +236,12 @@ export default function PendingApprovalPage() {
     </div>
   );
 }
+
+
+export default function PendingApprovalPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <PendingApprovalContent />
+    </Suspense>
+  );
+}
