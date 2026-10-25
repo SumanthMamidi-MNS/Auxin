@@ -177,7 +177,7 @@ export function BentoInnovations() {
             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
             Core Agritech Innovations
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Outfit']">
             The Bento Grid of <span className="text-gradient-forest">Architectural Breakthroughs</span>.
           </h2>
           <p className="text-[#475569] text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
@@ -280,8 +280,8 @@ export function BentoInnovations() {
                 )}
               </div>
 
-              {/* 6 Digit Inputs */}
-              <div className="flex justify-between gap-1">
+              {/* 6 Digit Inputs - Tightly Grouped OTP Simulator */}
+              <div className="flex items-center justify-center gap-2 sm:gap-2.5 py-1">
                 {otpDigits.map((digit, idx) => (
                   <input
                     key={idx}
@@ -293,7 +293,7 @@ export function BentoInnovations() {
                     value={digit}
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(idx, e)}
-                    className="w-7 h-9 text-center font-mono text-sm font-bold bg-white border border-black/[0.12] rounded-lg text-[#1B4332] focus:border-[#1B4332] focus:ring-1 focus:ring-[#1B4332] outline-none shadow-2xs"
+                    className="w-9 sm:w-10 h-11 text-center font-mono text-lg font-bold bg-white border border-black/[0.15] rounded-xl text-[#1B4332] focus:border-[#1B4332] focus:ring-2 focus:ring-[#1B4332]/20 outline-none shadow-2xs transition-all"
                   />
                 ))}
               </div>

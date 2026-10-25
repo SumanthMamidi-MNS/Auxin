@@ -41,10 +41,12 @@ import {
   Smartphone,
   Laptop,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Play,
+  Pause
 } from 'lucide-react';
 
-import { showDeployedNotice } from '../layout/DeployedNoticeToast';
+import { showComingSoonModal } from '../layout/ComingSoonModal';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
 
@@ -159,36 +161,36 @@ const SCREENS_DATABASE: Record<RoleKey, {
       {
         id: 'C-05',
         stepNum: '05',
-        name: 'Viewing Produce & Added to Cart: Ratnagiri Alphonso Mangoes',
+        name: 'Viewing Produce: Ratnagiri Alphonso Mangoes',
         route: '/customer/home',
         imageSrc: '/screenshots/c05_customer_cart_item1_v4.png',
-        actorIntent: 'Customer views Ratnagiri Alphonso Mangoes and adds 2 kg to cart (@ ₹180/kg); cart count updates to 1.',
-        protocolAction: 'Reserves 2 kg allocation in cultivator live batch pool; updates local cart store.',
+        actorIntent: 'Customer views Ratnagiri Alphonso Mangoes morning harvest listing, 18.5° Brix sweetness certification, and cultivator details.',
+        protocolAction: 'Fetches farm lot telemetry and verifies zero cold storage duration.',
         telemetry: {
           label1: 'Produce Batch',
           value1: 'Ratnagiri Alphonso',
-          label2: 'Quantity',
-          value2: '2 kg (GI Tagged)',
-          label3: 'Cart Count',
-          value3: '1 Item Added',
+          label2: 'Sweetness Index',
+          value2: '18.5° Brix Certified',
+          label3: 'Harvest Stamp',
+          value3: '06:15 AM Morning Pluck',
         },
         deepLink: `${APP_URL}/customer/home`,
       },
       {
         id: 'C-06',
         stepNum: '06',
-        name: 'Viewing Produce & Added to Cart: Organic Country Tomatoes',
-        route: '/customer/product/7',
+        name: 'Adding to Cart: Ratnagiri Alphonso Mangoes',
+        route: '/customer/home',
         imageSrc: '/screenshots/c06_customer_cart_item2_v4.png',
-        actorIntent: 'Customer views Country Organic Tomatoes and adds 3 kg to cart (@ ₹40/kg); cart count updates to 2.',
-        protocolAction: 'Reserves 3 kg tomatoes in cultivator inventory lot; computes multi-item total.',
+        actorIntent: 'Customer selects 2 kg batch allocation (@ ₹180/kg) and adds produce to cart; cart count badge updates to 1.',
+        protocolAction: 'Reserves 2 kg allocation in cultivator live batch pool; updates local cart store.',
         telemetry: {
           label1: 'Produce Batch',
-          value1: 'Country Tomatoes',
-          label2: 'Quantity',
-          value2: '3 kg (Vine-Ripened)',
-          label3: 'Cart Total',
-          value3: '₹480 Produce Sum',
+          value1: 'Ratnagiri Alphonso',
+          label2: 'Quantity Added',
+          value2: '2 kg (GI Tagged)',
+          label3: 'Cart Status',
+          value3: '1 Item in Cart',
         },
         deepLink: `${APP_URL}/customer/home`,
       },
@@ -894,6 +896,7 @@ export function ScreensExplorer() {
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
   const [imgError, setImgError] = useState<Record<string, boolean>>({});
   const [isFullscreenModalOpen, setIsFullscreenModalOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const currentRoleData = SCREENS_DATABASE[activeRole];
   const screens = currentRoleData.screens;
@@ -904,6 +907,15 @@ export function ScreensExplorer() {
     setActiveRole(role);
     setActiveStepIndex(0);
   };
+
+  // Auto-Tour interval (4.5s per step)
+  useEffect(() => {
+    if (!isPlaying) return;
+    const timer = setInterval(() => {
+      setActiveStepIndex((prev) => (prev < screens.length - 1 ? prev + 1 : 0));
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isPlaying, screens.length]);
 
   const handlePrev = useCallback(() => {
     setActiveStepIndex((prev) => (prev > 0 ? prev - 1 : screens.length - 1));
@@ -945,7 +957,7 @@ export function ScreensExplorer() {
             <span className="text-slate-500 font-mono">4 Unified Portals Verified</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-['Poppins']">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-['Outfit']">
             Explore Every Screen of Auxin.{' '}
             <span className="text-gradient-emerald block sm:inline">
               Runnable & Verified.
@@ -1000,6 +1012,24 @@ export function ScreensExplorer() {
               <div className="relative w-full max-w-[275px] sm:max-w-[290px] mx-auto">
                 {/* External Glow */}
                 <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-500/20 via-transparent to-amber-500/20 rounded-[48px] blur-2xl opacity-60 -z-10" />
+
+                {/* Prominent Floating Side Navigation Chevrons */}
+                <button
+                  onClick={handlePrev}
+                  className="btn-press absolute -left-5 sm:-left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-white text-slate-800 border-2 border-slate-200 shadow-[0_6px_20px_rgba(0,0,0,0.18)] hover:shadow-xl hover:border-emerald-600 hover:text-emerald-700 flex items-center justify-center transition-all cursor-pointer group"
+                  aria-label="Previous Screen"
+                  title="Previous Screen"
+                >
+                  <ChevronLeft className="w-6 h-6 transition-transform group-hover:-translate-x-0.5" />
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="btn-press absolute -right-5 sm:-right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white shadow-[0_6px_20px_rgba(27,67,50,0.35)] hover:shadow-xl flex items-center justify-center transition-all cursor-pointer group ring-2 ring-emerald-500/20"
+                  aria-label="Next Screen"
+                  title="Next Screen"
+                >
+                  <ChevronRight className="w-6 h-6 transition-transform group-hover:translate-x-0.5" />
+                </button>
 
                 {/* Titanium Outer Rim */}
                 <div className="relative rounded-[42px] p-[8px] bg-gradient-to-b from-[#2E3545] via-[#1E2433] to-[#0E131F] shadow-[0_25px_60px_-15px_rgba(11,15,25,0.45)] border border-slate-700/60">
@@ -1170,28 +1200,54 @@ export function ScreensExplorer() {
                 </span>
               </div>
 
-              {/* Prev / Next Buttons */}
-              <div className="flex items-center gap-2">
+              {/* Prominent Prev / Next Navigation & Auto-Tour Mode */}
+              <div className="flex items-center gap-2.5">
                 <button
-                  onClick={handlePrev}
-                  className="btn-press p-2 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#0B0F19] hover:border-slate-300 shadow-sm"
-                  aria-label="Previous Screen"
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className={`btn-press inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                    isPlaying
+                      ? 'bg-emerald-600 text-white shadow-[0_0_18px_rgba(16,185,129,0.4)] animate-pulse'
+                      : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-emerald-600/40'
+                  }`}
+                  title={isPlaying ? 'Pause Auto-Tour' : 'Start Auto-Tour (4.5s intervals)'}
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  {isPlaying ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5 fill-current" />
+                      <span>Tour Playing</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-current text-emerald-600" />
+                      <span>Auto-Tour</span>
+                    </>
+                  )}
                 </button>
-                <button
-                  onClick={handleNext}
-                  className="btn-press p-2 rounded-full bg-[#0B0F19] text-white hover:bg-slate-800 shadow-sm"
-                  aria-label="Next Screen"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+
+                <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-full border border-slate-200">
+                  <button
+                    onClick={handlePrev}
+                    className="btn-press flex items-center gap-1 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold shadow-2xs border border-slate-200/80 transition-all cursor-pointer"
+                    aria-label="Previous Screen"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Prev</span>
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="btn-press flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-xs font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
+                    aria-label="Next Screen"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Screen Title & Route */}
             <div className="space-y-1">
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0B0F19] font-['Poppins']">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0B0F19] font-['Outfit']">
                 {currentScreen.name}
               </h3>
               <div className="flex items-center gap-2 text-xs font-mono text-emerald-700">
@@ -1271,7 +1327,7 @@ export function ScreensExplorer() {
             {/* Deep Link Launch CTA */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <button
-                onClick={() => showDeployedNotice()}
+                onClick={() => showComingSoonModal()}
                 className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all cursor-pointer"
               >
                 <span>Launch Live Route in App</span>
@@ -1302,7 +1358,7 @@ export function ScreensExplorer() {
                 <button
                   key={step.id}
                   onClick={() => setActiveStepIndex(idx)}
-                  className={`btn-press relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                  className={`btn-press relative z-10 shrink-0 aspect-square w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                     isCurrent
                       ? 'bg-[#0B0F19] text-white scale-110 shadow-md ring-4 ring-emerald-500/20'
                       : isPassed

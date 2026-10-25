@@ -15,7 +15,7 @@
 
 import React, { useState } from 'react';
 import { Key, ArrowUpRight, Copy, Check, ExternalLink, Award } from 'lucide-react';
-import { showDeployedNotice } from '../layout/DeployedNoticeToast';
+import { showComingSoonModal } from '../layout/ComingSoonModal';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -96,8 +96,8 @@ export function RecruiterDossier() {
             <Award className="w-3.5 h-3.5 text-[#D4AF37]" />
             Recruiter Fast-Track &amp; Technical Dossier
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins'] leading-[1.25] sm:leading-[1.2] pb-1">
-            Engineered by <span className="text-gradient-forest inline-block">Sumanth Mamidi</span>.
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Outfit'] leading-[1.25] sm:leading-[1.2] pb-1">
+            Engineered by <span className="text-gradient-forest inline-block">Sumanth Mamidi</span>
           </h2>
           <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
             Complete production sandbox credentials, engineering philosophy, and open-source codebase links for technical evaluators.
@@ -109,13 +109,13 @@ export function RecruiterDossier() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-black/[0.06]">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#1B4332] via-[#2D6A4F] to-[#D4AF37] p-[2px] shadow-sm">
-                <div className="w-full h-full bg-[#FAF7F2] rounded-[14px] flex items-center justify-center font-extrabold text-2xl text-[#1B4332] font-['Poppins']">
+                <div className="w-full h-full bg-[#FAF7F2] rounded-[14px] flex items-center justify-center font-extrabold text-2xl text-[#1B4332] font-['Outfit']">
                   SM
                 </div>
               </div>
               <div>
                 <div className="flex items-center gap-2.5">
-                  <h3 className="text-2xl font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+                  <h3 className="text-2xl font-bold text-[#0F172A] tracking-tight font-['Outfit']">
                     Sumanth Mamidi
                   </h3>
                   <span className="text-[11px] font-bold text-[#1B4332] bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-600/15">
@@ -140,7 +140,7 @@ export function RecruiterDossier() {
                 <ExternalLink className="w-3 h-3 text-[#64748B]" />
               </a>
               <button
-                onClick={() => showDeployedNotice()}
+                onClick={() => showComingSoonModal()}
                 className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-xs font-bold shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
               >
                 <span>Launch Live App</span>

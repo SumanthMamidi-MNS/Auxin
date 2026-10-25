@@ -29,7 +29,7 @@ import {
   CheckCircle2, 
   Activity 
 } from 'lucide-react';
-import { showDeployedNotice } from '../layout/DeployedNoticeToast';
+import { showComingSoonModal } from '../layout/ComingSoonModal';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
@@ -203,7 +203,7 @@ export function RolePortalsStage() {
             <Cpu className="w-3.5 h-3.5 text-[#1B4332]" />
             4 Unified Ecosystem Roles
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Outfit']">
             Engineered for <span className="text-gradient-forest">Every Participant</span>.
           </h2>
           <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
@@ -249,7 +249,7 @@ export function RolePortalsStage() {
                 </span>
               </div>
 
-              <h3 className="text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+              <h3 className="text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight font-['Outfit']">
                 {role.heading}
               </h3>
 
@@ -293,8 +293,8 @@ export function RolePortalsStage() {
 
                 <div className="sm:ml-auto">
                   <button
-                    onClick={() => showDeployedNotice()}
-                    className="btn-press inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
+                    onClick={() => showComingSoonModal()}
+                    className="btn-press shimmer-sheen inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-xs sm:text-sm tracking-wide shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
                   >
                     <span>Launch {role.name} Experience</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -346,14 +346,6 @@ export function RolePortalsStage() {
                     {role.id === 'admin' && '🛡️ System Security: 2-Phase Escrow Authorization Vault'}
                   </div>
                 </div>
-
-                <button
-                  onClick={() => showDeployedNotice()}
-                  className="btn-press w-full py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-black/[0.08] text-xs font-bold text-[#0F172A] hover:text-[#1B4332] flex items-center justify-center gap-2 transition-all shadow-2xs cursor-pointer"
-                >
-                  <span>Launch Live {role.name} Portal</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#1B4332]" />
-                </button>
               </div>
             </div>
           </div>

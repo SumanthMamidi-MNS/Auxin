@@ -12,7 +12,7 @@
  * ============================================================================
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SplashScreen } from '@/components/layout/SplashScreen';
 import { StickyNavbar } from '@/components/layout/StickyNavbar';
 import { HeroSection } from '@/components/hero/HeroSection';
@@ -24,13 +24,50 @@ import { MiloPlayground } from '@/components/features/MiloPlayground';
 import { TechArchitecture } from '@/components/features/TechArchitecture';
 import { RecruiterDossier } from '@/components/features/RecruiterDossier';
 import { AmbientFooter } from '@/components/layout/AmbientFooter';
-import { DeployedNoticeToast } from '@/components/layout/DeployedNoticeToast';
+import { ComingSoonModal } from '@/components/layout/ComingSoonModal';
 
 export default function LandingPage() {
   const [showSplash, setShowSplash] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    // 1. Reading & Scroll Progress Beam
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScroll > 0) {
+        const currentProgress = (window.scrollY / totalScroll) * 100;
+        setScrollProgress(currentProgress);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // 2. Scroll-Triggered Reveal Transitions
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
+      {/* ── Top Reading & Scroll Progress Beam ── */}
+      <div className="top-scroll-progress" style={{ width: `${scrollProgress}%` }} />
+
       {/* ── 00. Animated Sprout & Oxygen Splash Screen ── */}
       <SplashScreen forceShow={showSplash} onComplete={() => setShowSplash(false)} />
 
@@ -42,31 +79,45 @@ export default function LandingPage() {
         <HeroSection heroImage="/screenshots/04_mobile_customer_product_detail.png" />
 
         {/* ── 03. Mandi vs. Auxin Margin Economics & Household Savings Slider ── */}
-        <ComparisonMatrix />
+        <div className="reveal-on-scroll">
+          <ComparisonMatrix />
+        </div>
 
         {/* ── 04. 36-Screen Interactive Ecosystem Explorer (9 Screens x 4 Roles) ── */}
-        <ScreensExplorer />
+        <div className="reveal-on-scroll">
+          <ScreensExplorer />
+        </div>
 
         {/* ── 05. Bento Grid of 4 Core Architectural Breakthroughs ── */}
-        <BentoInnovations />
+        <div className="reveal-on-scroll">
+          <BentoInnovations />
+        </div>
 
         {/* ── 05. 4-Role Unified Portals Morphing Stage ── */}
-        <RolePortalsStage />
+        <div className="reveal-on-scroll">
+          <RolePortalsStage />
+        </div>
 
         {/* ── 06. Milo AI Agronomic Copilot Typewriter Playground ── */}
-        <MiloPlayground />
+        <div className="reveal-on-scroll">
+          <MiloPlayground />
+        </div>
 
         {/* ── 07. Full-Stack System Architecture & Interactive API Terminal ── */}
-        <TechArchitecture />
+        <div className="reveal-on-scroll">
+          <TechArchitecture />
+        </div>
 
         {/* ── 08. Recruiter Fast-Track Dossier & One-Click Sandbox Matrix ── */}
-        <RecruiterDossier />
+        <div className="reveal-on-scroll">
+          <RecruiterDossier />
+        </div>
 
         {/* ── 09. Organic Luxury Conversion Footer & Live Platform Telemetry ── */}
         <AmbientFooter />
 
-        {/* ── 10. Deployed Soon Global Feedback Notification ── */}
-        <DeployedNoticeToast />
+        {/* ── 10. Premier Coming Soon Luxury Announcement Modal ── */}
+        <ComingSoonModal />
       </main>
     </>
   );

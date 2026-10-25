@@ -18,7 +18,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Radio } from 'lucide-react';
-import { showDeployedNotice } from './DeployedNoticeToast';
+import { showComingSoonModal } from './ComingSoonModal';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -36,7 +36,7 @@ export function AmbientFooter() {
             25 km Agro-Logistics Radar Online
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight font-['Poppins']">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight font-['Outfit']">
             Ready to Experience the{' '}
             <span className="text-gradient-forest">Future of Agritech</span>?
           </h2>
@@ -47,7 +47,7 @@ export function AmbientFooter() {
 
           <div className="pt-2 flex items-center justify-center">
             <button
-              onClick={() => showDeployedNotice()}
+              onClick={() => showComingSoonModal()}
               className="btn-press inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200 cursor-pointer"
             >
               <span>Launch Live Marketplace ↗</span>
@@ -72,7 +72,7 @@ export function AmbientFooter() {
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-base tracking-tight text-[#0F172A] font-['Poppins']">
+                  <span className="font-extrabold text-base tracking-tight text-[#0F172A] font-['Outfit']">
                     AUXIN
                   </span>
                   <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-600/20">
@@ -190,7 +190,7 @@ export function AmbientFooter() {
           <div className="flex items-center gap-4">
             <span>MIT License</span>
             <span>•</span>
-            <span>Production v3.5</span>
+            <span>Production v4.0</span>
             <span>•</span>
             <span>Gurugram, India</span>
           </div>

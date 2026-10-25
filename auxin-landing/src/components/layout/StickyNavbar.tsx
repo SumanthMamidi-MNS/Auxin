@@ -17,7 +17,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Menu, X, Radio, Sparkles } from 'lucide-react';
-import { showDeployedNotice } from './DeployedNoticeToast';
+import { showComingSoonModal } from './ComingSoonModal';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -101,7 +101,7 @@ export function StickyNavbar() {
         </Link>
 
         {/* Center Desktop Navigation Links with Active Section Highlight */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 flex-shrink-0">
           {navLinks.map((link) => {
             const sectionId = link.href.replace('#', '');
             const isActive = activeSection === sectionId;
@@ -109,7 +109,7 @@ export function StickyNavbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`relative text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-200 ${
+                className={`relative text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
                   isActive
                     ? 'text-[#0F172A] bg-black/[0.08] shadow-xs font-bold'
                     : 'text-[#475569] hover:text-[#0F172A] hover:bg-black/[0.04]'
@@ -125,28 +125,21 @@ export function StickyNavbar() {
         </nav>
 
         {/* Discreet Live Network Radar */}
-        <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50/80 border border-emerald-600/15">
+        <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50/80 border border-emerald-600/15 flex-shrink-0">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
           </span>
-          <span className="text-[11px] font-medium text-emerald-900">
+          <span className="text-[11px] font-medium text-emerald-900 whitespace-nowrap">
             25 km Radar Online
           </span>
         </div>
 
         {/* Right Action CTAs */}
-        <div className="flex items-center gap-2.5">
-          <Link
-            href={`${APP_URL}/auth`}
-            className="hidden sm:inline-flex text-xs font-semibold text-[#475569] hover:text-[#0F172A] px-3 py-2 rounded-full hover:bg-black/[0.04] transition-all"
-          >
-            Sign In
-          </Link>
-
+        <div className="flex items-center gap-2.5 flex-shrink-0">
           <button
-            onClick={() => showDeployedNotice()}
-            className="btn-press inline-flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] hover:from-[#143326] hover:to-[#245741] px-4 py-2 rounded-full shadow-[0_4px_14px_rgba(27,67,50,0.25)] transition-all cursor-pointer"
+            onClick={() => showComingSoonModal()}
+            className="btn-press shimmer-sheen inline-flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] hover:from-[#143326] hover:to-[#245741] px-4 py-2 rounded-full shadow-[0_4px_14px_rgba(27,67,50,0.25)] transition-all cursor-pointer whitespace-nowrap"
           >
             <span>Launch App</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -190,7 +183,7 @@ export function StickyNavbar() {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  showDeployedNotice();
+                  showComingSoonModal();
                 }}
                 className="text-xs font-bold text-white bg-[#1B4332] px-4 py-2 rounded-full cursor-pointer"
               >

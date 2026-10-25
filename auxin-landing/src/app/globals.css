@@ -48,15 +48,15 @@
   body {
     background-color: #FFFFFF;
     color: #0B0F19;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    letter-spacing: -0.025em;
+    font-family: 'Outfit', 'Poppins', sans-serif;
+    letter-spacing: -0.03em;
   }
 
   ::selection {
@@ -267,4 +267,56 @@ nextjs-portal,
     transparent 60%
   );
   pointer-events: none;
+}
+
+/* ── Top Reading & Scroll Progress Beam ─────────────────────────────── */
+.top-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, #1B4332 0%, #2D6A4F 40%, #D4AF37 80%, #F59E0B 100%);
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6), 0 0 5px rgba(27, 67, 50, 0.4);
+  transition: width 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Scroll-Triggered Reveal Physics ────────────────────────────────── */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Specular Button Shimmer ────────────────────────────────────────── */
+.shimmer-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  transition: all 0.75s ease;
+}
+.shimmer-sheen:hover::after {
+  left: 120%;
 }

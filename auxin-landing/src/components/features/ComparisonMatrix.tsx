@@ -44,7 +44,7 @@ export function ComparisonMatrix() {
             <TrendingUp className="w-3.5 h-3.5 text-[#1B4332]" />
             Zero Commission Mandi Economics
           </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight font-['Poppins']">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight font-['Outfit']">
             The Economics of <span className="text-gradient-forest">Pure Cultivator Margin</span>.
           </h2>
           <p className="text-[#475569] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">

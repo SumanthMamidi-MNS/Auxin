@@ -18,7 +18,7 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { FloatingBadges } from './FloatingBadges';
 import { Sparkles, MapPin, ShieldCheck, ArrowRight } from 'lucide-react';
-import { showDeployedNotice } from '../layout/DeployedNoticeToast';
+import { showComingSoonModal } from '../layout/ComingSoonModal';
 
 interface Hero3DRigProps {
   imageSrc?: string;
@@ -205,7 +205,7 @@ export function Hero3DRig({ imageSrc, onLaunchClick }: Hero3DRigProps) {
                 </div>
 
                 <button
-                  onClick={() => showDeployedNotice()}
+                  onClick={() => showComingSoonModal()}
                   className="btn-press w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                 >
                   <span>Experience Live App</span>

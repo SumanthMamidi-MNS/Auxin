@@ -17,7 +17,7 @@ import React from 'react';
 import { Hero3DRig } from './Hero3DRig';
 import { TopoMeshCanvas } from './TopoMeshCanvas';
 import { ArrowUpRight, Terminal, Sparkles, CheckCircle2 } from 'lucide-react';
-import { showDeployedNotice } from '../layout/DeployedNoticeToast';
+import { showComingSoonModal } from '../layout/ComingSoonModal';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
@@ -52,7 +52,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
             </div>
 
             {/* Main Headline with Editorial Elegance */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0F172A] leading-[1.1] font-['Poppins']">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0F172A] leading-[1.1] font-['Outfit']">
               Fresh from the Earth.{' '}
               <span className="text-gradient-forest block sm:inline">
                 Delivered in Under 120 Minutes.
@@ -70,7 +70,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
             {/* CTAs with Tactile Press Animation */}
             <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <button
-                onClick={() => showDeployedNotice()}
+                onClick={() => showComingSoonModal()}
                 className="btn-press group relative inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white font-bold text-sm tracking-wide shadow-[0_8px_25px_rgba(27,67,50,0.25)] hover:shadow-[0_12px_35px_rgba(27,67,50,0.35)] transition-all duration-200 cursor-pointer"
               >
                 <span>Launch Live Marketplace</span>
@@ -118,7 +118,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
             {/* Metrics Ribbon */}
             <div className="pt-6 border-t border-black/[0.06] grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div>
-                <div className="text-3xl font-extrabold text-[#1B4332] font-['Poppins'] tracking-tight">
+                <div className="text-3xl font-extrabold text-[#1B4332] font-['Outfit'] tracking-tight">
                   100%
                 </div>
                 <div className="text-xs text-[#64748B] font-medium mt-0.5">
@@ -127,7 +127,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
               </div>
 
               <div>
-                <div className="text-3xl font-extrabold text-[#0F172A] font-['Poppins'] tracking-tight">
+                <div className="text-3xl font-extrabold text-[#0F172A] font-['Outfit'] tracking-tight">
                   &lt; 2h
                 </div>
                 <div className="text-xs text-[#64748B] font-medium mt-0.5">
@@ -136,7 +136,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
               </div>
 
               <div>
-                <div className="text-3xl font-extrabold text-[#0F172A] font-['Poppins'] tracking-tight">
+                <div className="text-3xl font-extrabold text-[#0F172A] font-['Outfit'] tracking-tight">
                   25 km
                 </div>
                 <div className="text-xs text-[#64748B] font-medium mt-0.5">
@@ -145,7 +145,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
               </div>
 
               <div>
-                <div className="text-3xl font-extrabold text-[#B45309] font-['Poppins'] tracking-tight">
+                <div className="text-3xl font-extrabold text-[#B45309] font-['Outfit'] tracking-tight">
                   ₹0
                 </div>
                 <div className="text-xs text-[#64748B] font-medium mt-0.5">
