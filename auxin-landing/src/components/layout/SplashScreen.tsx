@@ -37,43 +37,30 @@ export function SplashScreen({ onComplete, forceShow = false }: SplashScreenProp
   const [msgIdx, setMsgIdx] = useState(0);
 
   useEffect(() => {
-    // Check if user already saw the splash screen in this session
-    if (!forceShow) {
-      const hasSeen = typeof window !== 'undefined' ? sessionStorage.getItem('auxin_splash_seen') : null;
-      if (hasSeen === 'true') {
-        setVisible(false);
-        onComplete?.();
-        return;
-      }
-    }
-
-    // Message rotation
+    // Smooth status message rotation across 5 stages
     const msgInterval = setInterval(() => {
       setMsgIdx((prev) => (prev + 1) % STATUS_MESSAGES.length);
-    }, 600);
+    }, 650);
 
-    // Progress timer
+    // Progress counter: smoothly reaches 100% in 3.0 seconds
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        return prev + 2.5; // reaches 100 in ~1.2s
+        return Math.min(100, prev + 1); // 100 increments * 30ms = 3000ms
       });
-    }, 28);
+    }, 30);
 
-    // Fade out trigger
+    // Fade out trigger after at least 3.2 seconds
     const timeout = setTimeout(() => {
       setFadingOut(true);
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('auxin_splash_seen', 'true');
-      }
       setTimeout(() => {
         setVisible(false);
         onComplete?.();
-      }, 650);
-    }, 1500);
+      }, 700);
+    }, 3200);
 
     return () => {
       clearInterval(interval);
@@ -86,9 +73,6 @@ export function SplashScreen({ onComplete, forceShow = false }: SplashScreenProp
 
   const handleSkip = () => {
     setFadingOut(true);
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('auxin_splash_seen', 'true');
-    }
     setTimeout(() => {
       setVisible(false);
       onComplete?.();
@@ -97,14 +81,15 @@ export function SplashScreen({ onComplete, forceShow = false }: SplashScreenProp
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FAF7F2] transition-all duration-700 ease-in-out ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FDFBF6] transition-all duration-700 ease-in-out ${
         fadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       aria-label="Auxin Loading Screen"
       role="dialog"
     >
-      {/* Background Soft Sunbeam / Specular Glow */}
-      <div className="absolute inset-0 bg-radial-[circle_at_50%_45%] from-[#D4AF37]/15 via-transparent to-transparent pointer-events-none" />
+      {/* Background Multi-tier Botanical & Solar Glow matching original app */}
+      <div className="absolute inset-0 bg-radial-[circle_at_50%_40%] from-[#22C55E]/15 via-[#D4AF37]/10 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-radial-[circle_at_50%_75%] from-[#D4AF37]/12 via-transparent to-transparent pointer-events-none" />
 
       {/* Main Luxury Preloader Card */}
       <div className="relative flex flex-col items-center px-6">

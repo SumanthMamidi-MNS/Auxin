@@ -333,8 +333,8 @@ function DeliveryDashboardContent() {
 
   const activeDelivery = stepOverrideStatus === "none" ? null : (rawActive || { ...DEMO_ACTIVE_MISSION, status: stepOverrideStatus });
   const completedToday = deliveries.filter((d) => d.status === "delivered");
-  const todayEarnings = completedToday.length > 0 ? (completedToday.length * 40) : 320;
-  const completedRunsCount = completedToday.length > 0 ? completedToday.length : 8;
+  const todayEarnings = isFresh ? 0 : completedToday.length > 0 ? (completedToday.length * 40) : (queryStep === "completed" ? 40 : 0);
+  const completedRunsCount = isFresh ? 0 : completedToday.length > 0 ? completedToday.length : (queryStep === "completed" ? 1 : 0);
 
   // Active mission coordinates
   const farmLat = (activeDelivery?.farmer as any)?.latitude;
@@ -448,75 +448,9 @@ function DeliveryDashboardContent() {
           </div>
         </div>
 
-        {/* Duty Status Bar */}
-        <div
-          className="rounded-2xl p-4 border flex items-center justify-between transition-all"
-          style={{ background: "var(--surface)", borderColor: "var(--border)" }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
-                profile?.is_available ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400"
-              }`}
-            >
-              <Power className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-[var(--text-primary)]">Duty Status</p>
-              <p className="text-[11px] text-[var(--text-secondary)]">
-                {effectiveProfile.is_available ? "🟢 Active & Online (25 km Discovery Active)" : "⚪ Offline (No jobs matching)"}
-              </p>
-            </div>
-          </div>
 
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={effectiveProfile.is_available ?? false}
-              onChange={(e) => dutyMutation.mutate(e.target.checked)}
-              disabled={dutyMutation.isPending}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
-          </label>
-        </div>
-
-        {/* 4 Stat Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <StatCard
-            icon={<Wallet className="w-4 h-4 text-emerald-600" />}
-            label="Today's Earnings"
-            value={`₹${todayEarnings}`}
-            trendLabel={`${completedRunsCount} completed`}
-            color="green"
-          />
-          <StatCard
-            icon={<CheckCircle2 className="w-4 h-4 text-blue-600" />}
-            label="Completed Runs"
-            value={completedRunsCount}
-            trendLabel="Successful drops"
-            color="blue"
-          />
-          <StatCard
-            icon={<Compass className="w-4 h-4 text-amber-600" />}
-            label="Nearby Jobs (25km)"
-            value={availableJobs.length}
-            trendLabel={effectiveProfile.is_available ? "Eligible to claim" : "Turn on duty"}
-            color="amber"
-          />
-          <StatCard
-            icon={<ShieldCheck className="w-4 h-4 text-indigo-600" />}
-            label="Partner Rating"
-            value="4.95 ★"
-            trendLabel="Top Rated"
-            color="purple"
-          />
-        </div>
-
-        {/* ========================================================================= */}
-        {/* ACTIVE MISSION HUD (Dominates when a delivery is in progress)              */}
-        {/* ========================================================================= */}
-        {activeDelivery ? (
+        {/* ACTIVE MISSION HUD (Top Priority when assigned or in-progress) */}
+        {activeDelivery && (
           <div
             className="rounded-3xl border-2 overflow-hidden shadow-xl transition-all animate-fade-in"
             style={{
@@ -531,10 +465,12 @@ function DeliveryDashboardContent() {
             >
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-white/20">
-                  CURRENT ACTIVE MISSION
+                  {activeDelivery.status === "assigned" ? "⚡ INCOMING DISPATCH ALERT (45s)" : "CURRENT ACTIVE MISSION"}
                 </span>
                 <h2 className="text-xl font-black mt-1">Order #{activeDelivery.order_id}</h2>
-                <p className="text-xs text-white/80">Delivery Run #{activeDelivery.id}</p>
+                <p className="text-xs text-white/80">
+                  {activeDelivery.status === "assigned" ? "Sohna Valley → Palm Grove (14.2 km)" : `Delivery Run #${activeDelivery.id}`}
+                </p>
               </div>
 
               <div className="text-right">
@@ -763,7 +699,76 @@ function DeliveryDashboardContent() {
               </div>
             </div>
           </div>
-        ) : (
+        )}
+
+        {/* Duty Status Bar */}
+        <div
+          className="rounded-2xl p-4 border flex items-center justify-between transition-all"
+          style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
+                profile?.is_available ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400"
+              }`}
+            >
+              <Power className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[var(--text-primary)]">Duty Status</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">
+                {effectiveProfile.is_available ? "🟢 Active & Online (25 km Discovery Active)" : "⚪ Offline (No jobs matching)"}
+              </p>
+            </div>
+          </div>
+
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={effectiveProfile.is_available ?? false}
+              onChange={(e) => dutyMutation.mutate(e.target.checked)}
+              disabled={dutyMutation.isPending}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
+          </label>
+        </div>
+
+        {/* 4 Stat Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <StatCard
+            icon={<Wallet className="w-4 h-4 text-emerald-600" />}
+            label="Today's Earnings"
+            value={`₹${todayEarnings}`}
+            trendLabel={`${completedRunsCount} completed`}
+            color="green"
+          />
+          <StatCard
+            icon={<CheckCircle2 className="w-4 h-4 text-blue-600" />}
+            label="Completed Runs"
+            value={completedRunsCount}
+            trendLabel="Successful drops"
+            color="blue"
+          />
+          <StatCard
+            icon={<Compass className="w-4 h-4 text-amber-600" />}
+            label="Nearby Jobs (25km)"
+            value={availableJobs.length}
+            trendLabel={effectiveProfile.is_available ? "Eligible to claim" : "Turn on duty"}
+            color="amber"
+          />
+          <StatCard
+            icon={<ShieldCheck className="w-4 h-4 text-indigo-600" />}
+            label="Partner Rating"
+            value={isFresh ? "5.0 ★" : "4.98 ★"}
+            trendLabel={isFresh ? "New Partner" : "Top Rated"}
+            color="purple"
+          />
+        </div>
+
+
+        {/* IDLE MODE (When no active mission) */}
+        {!activeDelivery && (
           /* ========================================================================= */
           /* IDLE MODE: Nearby Available Jobs Feed (25 KM)                             */
           /* ========================================================================= */

@@ -17,7 +17,7 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { FloatingBadges } from './FloatingBadges';
-import { Sparkles, MapPin, ShieldCheck, ArrowRight, Battery, Wifi, Signal } from 'lucide-react';
+import { Sparkles, MapPin, ShieldCheck, ArrowRight } from 'lucide-react';
 
 interface Hero3DRigProps {
   imageSrc?: string;
@@ -63,7 +63,7 @@ export function Hero3DRig({ imageSrc, onLaunchClick }: Hero3DRigProps) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-[320px] sm:max-w-[360px] mx-auto py-6 [perspective:1400px] select-none"
+      className="relative w-full max-w-[260px] sm:max-w-[280px] mx-auto py-4 [perspective:1400px] select-none"
     >
       {/* ── Parallax Floating Satellites (Re-anchored) ── */}
       <FloatingBadges
@@ -82,33 +82,20 @@ export function Hero3DRig({ imageSrc, onLaunchClick }: Hero3DRigProps) {
             : 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
           transformStyle: 'preserve-3d',
         }}
-        className="relative mx-auto rounded-[48px] p-2.5 bg-gradient-to-b from-[#E7E0D2] via-[#C8BDAB] to-[#B0A38E] shadow-[0_25px_60px_-10px_rgba(60,45,20,0.18),0_10px_20px_rgba(0,0,0,0.06)] border-[2px] border-[#DDD5C5]"
+        className="relative mx-auto rounded-[44px] p-2 bg-gradient-to-b from-[#E7E0D2] via-[#C8BDAB] to-[#B0A38E] shadow-[0_20px_50px_-10px_rgba(60,45,20,0.18),0_10px_20px_rgba(0,0,0,0.06)] border-[2px] border-[#DDD5C5]"
       >
         {/* Specular Edge Highlight */}
-        <div className="absolute inset-0 rounded-[46px] border border-white/60 pointer-events-none" />
+        <div className="absolute inset-0 rounded-[42px] border border-white/60 pointer-events-none" />
 
         {/* Volume Buttons & Power Mock on Rim */}
-        <div className="absolute -left-[3.5px] top-28 w-[2px] h-10 bg-[#B5A995] rounded-l-md" />
-        <div className="absolute -left-[3.5px] top-42 w-[2px] h-10 bg-[#B5A995] rounded-l-md" />
-        <div className="absolute -right-[3.5px] top-32 w-[2px] h-14 bg-[#B5A995] rounded-r-md" />
+        <div className="absolute -left-[3px] top-24 w-[2px] h-8 bg-[#B5A995] rounded-l-md" />
+        <div className="absolute -left-[3px] top-36 w-[2px] h-8 bg-[#B5A995] rounded-l-md" />
+        <div className="absolute -right-[3px] top-28 w-[2px] h-12 bg-[#B5A995] rounded-r-md" />
 
         {/* Device Glass Bezel & Screen Canvas */}
-        <div className="relative rounded-[40px] overflow-hidden bg-[#FAF7F2] border border-black/10 aspect-[9/19.5] shadow-inner">
-          {/* Dynamic Island Notch */}
-          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-40 h-6 w-24 bg-[#0F172A] rounded-full flex items-center justify-between px-2.5 shadow-md">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <div className="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700" />
-          </div>
-
-          {/* iOS Status Bar */}
-          <div className="absolute top-3 left-6 right-6 z-30 flex items-center justify-between text-[11px] font-semibold text-[#0F172A] font-sans">
-            <span>09:41</span>
-            <div className="flex items-center gap-1.5 text-[#0F172A]">
-              <Signal className="w-3 h-3" />
-              <Wifi className="w-3 h-3" />
-              <Battery className="w-3.5 h-3.5 text-emerald-600" />
-            </div>
-          </div>
+        <div className="relative rounded-[36px] overflow-hidden bg-[#FAF7F2] border border-black/10 aspect-[9/19.5] shadow-inner">
+          {/* Subtle Flush Top Speaker Line (Non-blocking) */}
+          <div className="absolute top-1.5 left-1/2 -translate-x-1/2 z-40 h-1 w-12 bg-black/25 rounded-full" />
 
           {/* Gorilla Glass Dynamic Specular Light Flare */}
           <div
@@ -131,7 +118,7 @@ export function Hero3DRig({ imageSrc, onLaunchClick }: Hero3DRigProps) {
             </div>
           ) : (
             /* High-Fidelity Porcelain Preview inside Phone Screen */
-            <div className="relative w-full h-full pt-12 pb-5 px-4 flex flex-col justify-between text-left overflow-hidden bg-gradient-to-b from-[#FDFCF9] via-[#FAF7F2] to-[#F5F2EB]">
+            <div className="relative w-full h-full pt-4 pb-4 px-3 flex flex-col justify-between text-left overflow-hidden bg-gradient-to-b from-[#FDFCF9] via-[#FAF7F2] to-[#F5F2EB]">
               {/* Top Banner */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">

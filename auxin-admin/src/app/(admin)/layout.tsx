@@ -38,11 +38,38 @@ export default function AdminShellLayout({ children }: { children: React.ReactNo
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isValidating, setIsValidating] = useState(true);
   const [connError, setConnError] = useState(false);
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().user) {
+      setHasHydrated(true);
+      return;
+    }
+    try {
+      const raw = localStorage.getItem("auxin_admin_auth");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.state?.user && parsed?.state?.isAuthenticated) {
+          useAuthStore.getState().setAuth(parsed.state.user);
+          setHasHydrated(true);
+          return;
+        }
+      }
+    } catch {}
+
+    const unsub = useAuthStore.persist.onFinishHydration(() => {
+      setHasHydrated(true);
+    });
+    if (useAuthStore.persist.hasHydrated()) {
+      setHasHydrated(true);
+    }
+    return () => unsub();
+  }, []);
 
   const checkSession = async () => {
     try {
       setConnError(false);
-      if (user?.email === 'admin@auxin.in' && user?.is_super_admin) {
+      if ((user?.is_super_admin || user?.role === 'admin' || user?.role === 'super_admin') && isAuthenticated) {
         setIsValidating(false);
         return;
       }
@@ -77,12 +104,13 @@ export default function AdminShellLayout({ children }: { children: React.ReactNo
   };
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated || !user) {
       router.replace("/auth");
       return;
     }
     checkSession();
-  }, [isAuthenticated]);
+  }, [hasHydrated, isAuthenticated, user]);
 
   if (connError) {
     return (
@@ -108,7 +136,7 @@ export default function AdminShellLayout({ children }: { children: React.ReactNo
     );
   }
 
-  if (isValidating || !isAuthenticated || !user) return <PageLoader />;
+  if (!hasHydrated || isValidating || !isAuthenticated || !user) return <PageLoader />;
   if (!isAdminRole(user.role)) return <PageLoader />;
 
   // Derive page title from pathname

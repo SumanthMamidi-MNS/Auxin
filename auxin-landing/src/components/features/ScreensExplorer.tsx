@@ -45,7 +45,7 @@ import {
 } from 'lucide-react';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3000';
+const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
 
 type RoleKey = 'customer' | 'farmer' | 'courier' | 'admin';
 
@@ -77,7 +77,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
   screens: ScreenSpec[];
 }> = {
   customer: {
-    roleTitle: 'Hyper-Local Consumer Experience',
+    roleTitle: 'Customer Portal',
     roleSubtitle: 'Direct-from-farm procurement, sub-2h delivery, and cryptographic escrow lock',
     badge: '12 Mobile Screens',
     icon: ShoppingBag,
@@ -88,7 +88,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '01',
         name: 'Sign In & Mobile Phone Auth',
         route: '/auth',
-        imageSrc: '/screenshots/c01_customer_auth_email.png',
+        imageSrc: '/screenshots/c01_customer_auth_email_v4.png',
         actorIntent: 'Customer signs in via mobile phone number or selects instant demo credentials.',
         protocolAction: 'Initializes Supabase JWT auth session; queries profiles table for routing state.',
         telemetry: {
@@ -106,7 +106,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '02',
         name: 'Instant 6-Digit OTP Verification',
         route: '/auth',
-        imageSrc: '/screenshots/c02_customer_auth_otp.png',
+        imageSrc: '/screenshots/c02_customer_auth_otp_v4.png',
         actorIntent: 'Customer enters 6-digit numeric verification code received on mobile.',
         protocolAction: 'Cryptographically verifies OTP token; issues authenticated JWT session.',
         telemetry: {
@@ -124,7 +124,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '03',
         name: 'Delivery Profile & Geofence Form',
         route: '/profile/create',
-        imageSrc: '/screenshots/c03_customer_profile_onboarding.png',
+        imageSrc: '/screenshots/c03_customer_profile_onboarding_v4.png',
         actorIntent: 'Customer specifies doorstep address and pinpoints high-precision GPS coordinates.',
         protocolAction: 'Validates coordinates against the active 25km geofence polygon node.',
         telemetry: {
@@ -142,7 +142,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '04',
         name: '25km Morning Harvest Marketplace',
         route: '/customer/home',
-        imageSrc: '/screenshots/c04_customer_catalog_feed.png',
+        imageSrc: '/screenshots/c04_customer_catalog_feed_v4.png',
         actorIntent: 'Customer browses morning harvest items exclusively from farms within 25 km.',
         protocolAction: 'Executes Haversine distance triangulation; strictly filters out distant warehouses.',
         telemetry: {
@@ -160,7 +160,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '05',
         name: 'Adding Batch #1: Alphonso Mangoes',
         route: '/customer/home',
-        imageSrc: '/screenshots/c05_customer_cart_item1.png',
+        imageSrc: '/screenshots/c05_customer_cart_item1_v4.png',
         actorIntent: 'Customer selects Ratnagiri Alphonso Mangoes (2 kg @ ₹180/kg); cart count updates to 1.',
         protocolAction: 'Reserves 2 kg allocation in cultivator live batch pool; updates local cart store.',
         telemetry: {
@@ -178,7 +178,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '06',
         name: 'Adding Batch #2: Organic Tomatoes',
         route: '/customer/product/7',
-        imageSrc: '/screenshots/c06_customer_cart_item2.png',
+        imageSrc: '/screenshots/c06_customer_cart_item2_v4.png',
         actorIntent: 'Customer selects Country Organic Tomatoes (3 kg @ ₹40/kg); cart count updates to 2.',
         protocolAction: 'Reserves 3 kg tomatoes in cultivator inventory lot; computes multi-item total.',
         telemetry: {
@@ -196,7 +196,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '07',
         name: 'Transparent Real-Time Cart Breakdown',
         route: '/customer/cart',
-        imageSrc: '/screenshots/c07_customer_cart_review.png',
+        imageSrc: '/screenshots/c07_customer_cart_review_v4.png',
         actorIntent: 'Customer reviews transparent price: 100% to farmer, EV logistics fare, ₹0 middleman cut.',
         protocolAction: 'Locks 15-minute inventory reservation; calculates EV mileage fare based on distance.',
         telemetry: {
@@ -214,7 +214,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '08',
         name: 'Razorpay 2-Phase Escrow Gateway',
         route: '/customer/cart',
-        imageSrc: '/screenshots/c08_customer_razorpay_modal.png',
+        imageSrc: '/screenshots/c08_customer_razorpay_modal_v4.png',
         actorIntent: 'Customer authorizes payment held safely in cryptographic escrow until doorstep inspection.',
         protocolAction: 'Invokes /api/v1/escrow/authorize; locks ₹520 in smart vault without immediate settlement.',
         telemetry: {
@@ -232,7 +232,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '09',
         name: 'Order Placed & Live Farm Timeline',
         route: '/customer/orders',
-        imageSrc: '/screenshots/c09_customer_order_placed_timeline.png',
+        imageSrc: '/screenshots/c09_customer_order_placed_timeline_v4.png',
         actorIntent: 'Order #1042 confirmed! Visual timeline shows harvest plucking, packing, and courier dispatch.',
         protocolAction: 'Transitions order state to confirmed; initiates real-time WebSockets dispatch telemetry.',
         telemetry: {
@@ -250,7 +250,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '10',
         name: 'Live GPS Radar & Farm Dispatch',
         route: '/customer/orders',
-        imageSrc: '/screenshots/c10_customer_transit_farmer_pickup.png',
+        imageSrc: '/screenshots/c10_customer_transit_farmer_pickup_v4.png',
         actorIntent: 'Customer tracks Courier Vikram Singh live on Leaflet map en route from Sohna farm to Gurugram.',
         protocolAction: 'Streams live GPS telemetry over WebSockets; recomputes dynamic ETA every 3 seconds.',
         telemetry: {
@@ -268,7 +268,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '11',
         name: 'Doorstep OTP Handshake HUD',
         route: '/customer/orders',
-        imageSrc: '/screenshots/c11_customer_doorstep_otp.png',
+        imageSrc: '/screenshots/c11_customer_doorstep_otp_v4.png',
         actorIntent: 'Customer receives high-contrast Doorstep OTP 482103 to verify produce quality before sharing.',
         protocolAction: 'Generates deterministic cryptographic secret; required by courier app to unlock escrow.',
         telemetry: {
@@ -286,7 +286,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '12',
         name: 'Order Delivered & 5-Star Feedback',
         route: '/customer/orders',
-        imageSrc: '/screenshots/c12_customer_rating_review.png',
+        imageSrc: '/screenshots/c12_customer_rating_review_v4.png',
         actorIntent: 'Customer views delivery success receipt (1h 48m from pluck), ratings, and tax invoice.',
         protocolAction: 'Escrow contract executes dual payouts: ₹480 to Ramesh Kumar bank and ₹40 to courier.',
         telemetry: {
@@ -302,7 +302,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
     ],
   },
   farmer: {
-    roleTitle: 'Direct Cultivator & Farm Sovereign Protocol',
+    roleTitle: 'Farmer Portal',
     roleSubtitle: '100% direct margins, instant morning harvest publishing, and direct bank settlement',
     badge: '12 Mobile Screens',
     icon: Sprout,
@@ -313,7 +313,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '01',
         name: 'Cultivator Onboarding & Sign In',
         route: '/auth?role=farmer',
-        imageSrc: '/screenshots/f01_farmer_auth_email.png',
+        imageSrc: '/screenshots/f01_farmer_auth_email_v4.png',
         actorIntent: 'Cultivator enters mobile number to join direct-to-consumer farm network.',
         protocolAction: 'Initiates cultivator onboarding pipeline; checks verification requirements.',
         telemetry: {
@@ -331,7 +331,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '02',
         name: 'Farmer 6-Digit OTP Verification',
         route: '/auth?role=farmer',
-        imageSrc: '/screenshots/f02_farmer_auth_otp.png',
+        imageSrc: '/screenshots/f02_farmer_auth_otp_v4.png',
         actorIntent: 'Farmer verifies SMS OTP to authenticate cultivator account session.',
         protocolAction: 'Cryptographically verifies OTP; assigns pending producer security credentials.',
         telemetry: {
@@ -349,7 +349,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '03',
         name: 'Farm Credentials & Land Survey KYC',
         route: '/profile/create',
-        imageSrc: '/screenshots/f03_farmer_kyc_details.png',
+        imageSrc: '/screenshots/f03_farmer_kyc_details_v4.png',
         actorIntent: 'Ramesh Kumar inputs farm name (Auxin Green Harvest Farms), survey number, and acreage.',
         protocolAction: 'Registers farm entity; uploads NPOP certificate; flags status as pending admin review.',
         telemetry: {
@@ -367,7 +367,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '04',
         name: 'Direct IMPS Bank Settlement Setup',
         route: '/profile/create',
-        imageSrc: '/screenshots/f04_farmer_bank_details.png',
+        imageSrc: '/screenshots/f04_farmer_bank_details_v4.png',
         actorIntent: 'Farmer enters HDFC Bank account and IFSC code for direct zero-commission escrow payouts.',
         protocolAction: 'Validates bank routing credentials; links automated IMPS escrow payout pipeline.',
         telemetry: {
@@ -385,7 +385,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '05',
         name: 'Compliance Audit Under Review',
         route: '/pending-approval',
-        imageSrc: '/screenshots/f05_farmer_kyc_under_review.png',
+        imageSrc: '/screenshots/f05_farmer_kyc_under_review_v4.png',
         actorIntent: 'Farmer views real-time verification radar while admin audits NPOP land credentials.',
         protocolAction: 'Frontend polls profileApi.getProfile() for approval status webhook from Admin Portal.',
         telemetry: {
@@ -403,7 +403,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '06',
         name: 'Clean Approved Cultivator Hub',
         route: '/farmer/dashboard',
-        imageSrc: '/screenshots/f06_farmer_fresh_dashboard.png',
+        imageSrc: '/screenshots/f06_farmer_fresh_dashboard_v4.png',
         actorIntent: 'Approved cultivator dashboard ready to publish first morning harvest batch.',
         protocolAction: 'Profile status approved; unlocks full inventory publishing and escrow ledger privileges.',
         telemetry: {
@@ -421,7 +421,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '07',
         name: 'Publishing Batch 1: Alphonso Mangoes',
         route: '/farmer/inventory',
-        imageSrc: '/screenshots/f07_farmer_add_item_1.png',
+        imageSrc: '/screenshots/f07_farmer_add_item_1_v4.png',
         actorIntent: 'Farmer uploads morning harvest batch: Ratnagiri Alphonso Mangoes (38 kg @ ₹180/kg).',
         protocolAction: 'Inserts batch record into products and inventory; broadcasts availability to 25km feed.',
         telemetry: {
@@ -439,7 +439,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '08',
         name: 'Publishing Batch 2: Country Tomatoes',
         route: '/farmer/inventory',
-        imageSrc: '/screenshots/f08_farmer_add_item_2.png',
+        imageSrc: '/screenshots/f08_farmer_add_item_2_v4.png',
         actorIntent: 'Farmer uploads second morning harvest batch: Country Organic Tomatoes (120 kg @ ₹40/kg).',
         protocolAction: 'Inserts second produce batch into inventory; calculates combined farm valuation.',
         telemetry: {
@@ -457,7 +457,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '09',
         name: 'Active Morning Harvest Inventory',
         route: '/farmer/inventory',
-        imageSrc: '/screenshots/f09_farmer_inventory_active.png',
+        imageSrc: '/screenshots/f09_farmer_inventory_active_v4.png',
         actorIntent: 'Farmer inspects active inventory table showing both batches live in 25km radius.',
         protocolAction: 'Queries farmer_inventory table; tracks reserved crates against active customer carts.',
         telemetry: {
@@ -475,7 +475,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '10',
         name: 'Inbound Order Dispatch Alert',
         route: '/farmer/orders',
-        imageSrc: '/screenshots/f10_farmer_order_received.png',
+        imageSrc: '/screenshots/f10_farmer_order_received_v4.png',
         actorIntent: 'Order #1042 received from Ananya Sharma; farmer taps "Start Packing" for morning dispatch.',
         protocolAction: 'Transitions order state to confirmed; broadcasts pickup alert to nearest EV couriers within 5 km.',
         telemetry: {
@@ -493,7 +493,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '11',
         name: 'Farmgate Courier Handover Proof',
         route: '/farmer/orders',
-        imageSrc: '/screenshots/f11_farmer_courier_handshake.png',
+        imageSrc: '/screenshots/f11_farmer_courier_handshake_v4.png',
         actorIntent: 'Courier Vikram Singh arrives on EV bike; farmer inspects crate seal and hands over goods.',
         protocolAction: 'Order advances from confirmed to picked_up and out_for_delivery on consumer tracking HUD.',
         telemetry: {
@@ -511,7 +511,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '12',
         name: 'Instant Escrow Bank Settlement',
         route: '/farmer/orders',
-        imageSrc: '/screenshots/f12_farmer_instant_payout.png',
+        imageSrc: '/screenshots/f12_farmer_instant_payout_v4.png',
         actorIntent: 'Farmer views instant ₹480 IMPS credit directly from escrow upon customer doorstep verification.',
         protocolAction: 'Smart escrow contract executes dual payout directly to farmer bank account with ₹0 commission.',
         telemetry: {
@@ -527,7 +527,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
     ],
   },
   courier: {
-    roleTitle: 'Zero-Emission Courier Partner',
+    roleTitle: 'Rider Portal',
     roleSubtitle: 'Electric cargo bikes, algorithmic mission dispatch, and instant wallet settlements',
     badge: '10 Mobile Screens',
     icon: Truck,
@@ -538,7 +538,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '01',
         name: 'Rider Onboarding & Sign In',
         route: '/auth?role=delivery',
-        imageSrc: '/screenshots/d01_courier_auth_email.png',
+        imageSrc: '/screenshots/d01_courier_auth_email_v4.png',
         actorIntent: 'Courier selects Delivery Partner role and enters phone number to join EV fleet.',
         protocolAction: 'Creates courier auth session; validates profile onboarding status.',
         telemetry: {
@@ -556,7 +556,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '02',
         name: 'Courier OTP Verification',
         route: '/auth?role=delivery',
-        imageSrc: '/screenshots/d02_courier_auth_otp.png',
+        imageSrc: '/screenshots/d02_courier_auth_otp_v4.png',
         actorIntent: 'Rider verifies 6-digit numeric OTP code received on mobile.',
         protocolAction: 'Cryptographically verifies OTP token; establishes courier session.',
         telemetry: {
@@ -574,7 +574,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '03',
         name: 'EV Cargo Bike & License Registration',
         route: '/profile/create',
-        imageSrc: '/screenshots/d03_courier_vehicle_onboarding.png',
+        imageSrc: '/screenshots/d03_courier_vehicle_onboarding_v4.png',
         actorIntent: 'Vikram Singh enters Electric Cargo Bike details, driving license, and 60L insulated box specs.',
         protocolAction: 'Registers EV transport telemetry; flags courier profile as pending admin approval.',
         telemetry: {
@@ -592,7 +592,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '04',
         name: 'Partner Verification Status',
         route: '/pending-approval',
-        imageSrc: '/screenshots/d04_courier_kyc_status.png',
+        imageSrc: '/screenshots/d04_courier_kyc_status_v4.png',
         actorIntent: 'Courier views verification status while admin reviews driving license and EV fitness.',
         protocolAction: 'Courier profile set to pending; polls for administrative approval event.',
         telemetry: {
@@ -610,7 +610,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '05',
         name: 'Online Duty Command Hub',
         route: '/delivery/dashboard',
-        imageSrc: '/screenshots/d05_courier_dashboard_online.png',
+        imageSrc: '/screenshots/d05_courier_dashboard_online_v4.png',
         actorIntent: 'Courier accesses command hub and switches duty toggle to "ONLINE" to receive dispatches.',
         protocolAction: 'Updates courier availability status in Redis geo-cluster; activates 25km dispatch radar.',
         telemetry: {
@@ -628,7 +628,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '06',
         name: 'Mission Dispatch Alert',
         route: '/delivery/dashboard',
-        imageSrc: '/screenshots/d06_courier_order_assigned.png',
+        imageSrc: '/screenshots/d06_courier_order_assigned_v4.png',
         actorIntent: 'Courier receives real-time mission: Sohna Orchards to Palm Grove Enclave (14.2 km) for ₹40.00 payout.',
         protocolAction: 'Evaluates courier proximity; reserves delivery mission to Vikram Singh upon acceptance.',
         telemetry: {
@@ -646,7 +646,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '07',
         name: 'Farmgate Crate Quality Inspection',
         route: '/delivery/dashboard',
-        imageSrc: '/screenshots/d07_courier_farm_pickup.png',
+        imageSrc: '/screenshots/d07_courier_farm_pickup_v4.png',
         actorIntent: 'Courier arrives at farm gate, verifies temperature < 15°C, and locks produce into insulated crate.',
         protocolAction: 'Confirms crate handover; advances order status to picked_up.',
         telemetry: {
@@ -664,7 +664,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '08',
         name: 'Urban Navigation Radar',
         route: '/delivery/dashboard',
-        imageSrc: '/screenshots/d08_courier_transit_radar.png',
+        imageSrc: '/screenshots/d08_courier_transit_radar_v4.png',
         actorIntent: 'Courier navigates urban transit to customer doorstep; speed 28 km/h, 12 min ETA.',
         protocolAction: 'Broadcasts GPS coordinates every 3s to customer order tracking map and admin radar.',
         telemetry: {
@@ -682,7 +682,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '09',
         name: 'Doorstep OTP Handover & Unlock',
         route: '/delivery/dashboard',
-        imageSrc: '/screenshots/d09_courier_otp_unlock.png',
+        imageSrc: '/screenshots/d09_courier_otp_unlock_v4.png',
         actorIntent: 'Courier arrives at customer Villa 14; enters customer OTP 482103 on high-contrast keypad.',
         protocolAction: 'Validates plain_otp === 482103; triggers smart contract 2-phase escrow release.',
         telemetry: {
@@ -700,7 +700,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '10',
         name: 'Instant Wallet Payout & Daily Earnings',
         route: '/delivery/earnings',
-        imageSrc: '/screenshots/d10_courier_instant_payout.png',
+        imageSrc: '/screenshots/d10_courier_instant_payout_v4.png',
         actorIntent: 'Courier receives ₹40.00 credited instantly to EV wallet; daily summary shows 9 runs (₹360 earned).',
         protocolAction: 'Credits courier internal ledger; marks mission completed; unlocks next dispatch run.',
         telemetry: {
@@ -716,7 +716,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
     ],
   },
   admin: {
-    roleTitle: 'Command & Governance Suite',
+    roleTitle: 'Admin Portal',
     roleSubtitle: 'Macro GMV density, algorithmic KYC approvals, live courier radar, and escrow vaults',
     badge: '9 Laptop Screens',
     icon: ShieldCheck,
@@ -727,7 +727,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '01',
         name: 'Admin Operations & Security Auth',
         route: '/(admin)/auth',
-        imageSrc: '/screenshots/a01_admin_auth.png',
+        imageSrc: '/screenshots/a01_admin_auth_v4.png',
         actorIntent: 'Super Admin enters credentials with role-based access control (RBAC) security.',
         protocolAction: 'Authenticates administrator identity; unlocks global cluster governance privileges.',
         telemetry: {
@@ -745,7 +745,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '02',
         name: 'Operations Command Dashboard',
         route: '/(admin)/dashboard',
-        imageSrc: '/screenshots/a02_admin_command_overview.png',
+        imageSrc: '/screenshots/a02_admin_command_overview_v4.png',
         actorIntent: 'Admin monitors system-wide GMV, 25km cluster density, orders checked out, and healthy nodes.',
         protocolAction: 'Aggregates real-time cluster metrics across distributed PostgreSQL and Redis instances.',
         telemetry: {
@@ -763,7 +763,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '03',
         name: 'Cultivator KYC Verification',
         route: '/(admin)/approvals',
-        imageSrc: '/screenshots/a03_admin_farmer_kyc.png',
+        imageSrc: '/screenshots/a03_admin_farmer_kyc_v4.png',
         actorIntent: 'Admin reviews Ramesh Kumar NPOP Organic Certificate and approves farm gate registration.',
         protocolAction: 'Transitions user status from pending to approved; dispatches approval webhook to cultivator.',
         telemetry: {
@@ -781,7 +781,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '04',
         name: 'EV Courier Fleet Onboarding',
         route: '/(admin)/approvals',
-        imageSrc: '/screenshots/a04_admin_rider_onboarding.png',
+        imageSrc: '/screenshots/a04_admin_rider_onboarding_v4.png',
         actorIntent: 'Admin audits Vikram Singh EV registration and cold-storage compliance before activating dispatch.',
         protocolAction: 'Validates commercial EV fitness; registers courier in active 25km dispatch pool.',
         telemetry: {
@@ -799,7 +799,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '05',
         name: 'Cryptographic Escrow Ledger',
         route: '/(admin)/payments',
-        imageSrc: '/screenshots/a05_admin_escrow_settlement.png',
+        imageSrc: '/screenshots/a05_admin_escrow_settlement_v4.png',
         actorIntent: 'Admin verifies cryptographic escrow holds, zero stuck balances, and automated IMPS transfers.',
         protocolAction: 'Audits 2-phase authorization holds and guarantees zero unauthorized release of funds.',
         telemetry: {
@@ -817,7 +817,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '06',
         name: 'Live Operations & Order Tracking',
         route: '/(admin)/orders',
-        imageSrc: '/screenshots/a06_admin_live_fleet_radar.png',
+        imageSrc: '/screenshots/a06_admin_live_fleet_radar_v4.png',
         actorIntent: 'Admin inspects individual order states, fulfillment timestamps, and delivery verification OTPs.',
         protocolAction: 'Master audit log tracking state transitions: created -> confirmed -> picked_up -> delivered.',
         telemetry: {
@@ -835,7 +835,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '07',
         name: 'Fair-Margin & Price Governance',
         route: '/(admin)/catalogue',
-        imageSrc: '/screenshots/a07_admin_price_governance.png',
+        imageSrc: '/screenshots/a07_admin_price_governance_v4.png',
         actorIntent: 'Admin configures agricultural taxonomy: Orchard Fruits, Soil Greens, NPOP compliance tags.',
         protocolAction: 'Controls system-wide category models, price boundaries, and cold-storage prevention flags.',
         telemetry: {
@@ -853,7 +853,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '08',
         name: 'Immutable Audit Trails',
         route: '/(admin)/logs',
-        imageSrc: '/screenshots/a08_admin_audit_logs.png',
+        imageSrc: '/screenshots/a08_admin_audit_logs_v4.png',
         actorIntent: 'Admin reviews cryptographically timestamped audit log of all system transitions and transactions.',
         protocolAction: 'Streams tamper-evident log records verified by SHA-256 state signatures.',
         telemetry: {
@@ -871,7 +871,7 @@ const SCREENS_DATABASE: Record<RoleKey, {
         stepNum: '09',
         name: 'Regional 25km Settings & Config',
         route: '/(admin)/settings',
-        imageSrc: '/screenshots/a09_admin_platform_settings.png',
+        imageSrc: '/screenshots/a09_admin_platform_settings_v4.png',
         actorIntent: 'Admin manages 25km geofence polygon vertices, notification gateways, and system parameters.',
         protocolAction: 'Configures regional polygon boundaries and immutable audit trail logging.',
         telemetry: {
@@ -939,9 +939,9 @@ export function ScreensExplorer() {
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-semibold text-emerald-800">
             <Layers className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Interactive 36-Screen Ecosystem Explorer</span>
+            <span>Interactive 43-Screen Ecosystem Flow</span>
             <span className="text-slate-300">|</span>
-            <span className="text-slate-500 font-mono">9 Steps × 4 Roles</span>
+            <span className="text-slate-500 font-mono">4 Unified Portals Verified</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-['Poppins']">
@@ -975,10 +975,10 @@ export function ScreensExplorer() {
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
                 <span>
-                  {role === 'customer' ? 'Hyper-Local Consumer' :
-                   role === 'farmer' ? 'Direct Cultivator' :
-                   role === 'courier' ? 'Green Fleet Logistics' :
-                   'Central Governance'}
+                  {role === 'customer' ? 'Customer Portal' :
+                   role === 'farmer' ? 'Farmer Portal' :
+                   role === 'courier' ? 'Rider Portal' :
+                   'Admin Portal'}
                 </span>
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-mono font-medium ${
                   isActive ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-600'

@@ -8,8 +8,8 @@
  * Verifies role is any admin role on our backend before granting access.
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -19,7 +19,7 @@ import { useAuthStore } from "@/store/authStore";
 import { isAdminRole } from "@/types";
 import type { User } from "@/types";
 
-export default function AdminAuthPage() {
+function AdminAuthContent() {
   const router = useRouter();
   const { setAuth, isAuthenticated } = useAuthStore();
 
@@ -50,11 +50,15 @@ export default function AdminAuthPage() {
     return () => { if (el) el.removeEventListener("mousemove", handleMouseMove); };
   }, [handleMouseMove]);
 
-  useEffect(() => {
-    if (isAuthenticated) router.replace("/dashboard");
-  }, [isAuthenticated, router]);
+  const searchParams = useSearchParams();
+  const isPreview = searchParams.get("preview") === "true";
 
   useEffect(() => {
+    if (isAuthenticated && !isPreview) router.replace("/dashboard");
+  }, [isAuthenticated, isPreview, router]);
+
+  useEffect(() => {
+    if (isPreview) return;
     (async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
@@ -65,7 +69,7 @@ export default function AdminAuthPage() {
         }
       }
     })();
-  }, [setAuth, router]);
+  }, [setAuth, router, isPreview]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -581,5 +585,13 @@ export default function AdminAuthPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminAuthPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0E0E12]" />}>
+      <AdminAuthContent />
+    </Suspense>
   );
 }

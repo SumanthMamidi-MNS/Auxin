@@ -19,6 +19,7 @@ import { TopoMeshCanvas } from './TopoMeshCanvas';
 import { ArrowUpRight, Terminal, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
 
 interface HeroSectionProps {
   heroImage?: string;
@@ -26,7 +27,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ heroImage }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[92vh] pt-36 sm:pt-40 pb-20 flex items-center justify-center overflow-hidden bg-white">
+    <section className="relative min-h-[88vh] pt-20 sm:pt-24 pb-16 flex items-center justify-center overflow-hidden bg-white">
       {/* ── Organic Cartography Topo Mesh Canvas ── */}
       <TopoMeshCanvas />
 
@@ -88,7 +89,7 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
             <div className="pt-2 flex flex-wrap items-center gap-2 text-xs text-[#64748B]">
               <span className="font-semibold text-[11px] text-[#475569]">One-Click Portals:</span>
               <a
-                href={`${APP_URL}/auth?role=customer`}
+                href={`${APP_URL}/customer/home`}
                 className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
               >
                 Customer Portal
@@ -97,13 +98,19 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
                 href={`${APP_URL}/auth?role=farmer`}
                 className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
               >
-                Farmer Dashboard
+                Farmer Portal
               </a>
               <a
-                href={`${APP_URL}/auth?role=courier`}
+                href={`${APP_URL}/auth?role=delivery`}
                 className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
               >
-                Courier HUD
+                Rider Portal
+              </a>
+              <a
+                href={`${ADMIN_URL}/auth`}
+                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
+              >
+                Admin Portal
               </a>
             </div>
 

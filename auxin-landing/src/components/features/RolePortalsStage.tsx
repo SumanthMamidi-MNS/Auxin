@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
 
 interface RolePortal {
   id: string;
@@ -49,8 +50,8 @@ interface RolePortal {
 const ROLES: RolePortal[] = [
   {
     id: 'customer',
-    name: 'Customer',
-    roleTitle: 'The Consumer Experience',
+    name: 'Customer Portal',
+    roleTitle: 'Customer Portal',
     badge: 'Hyper-Local Gourmet & Organic',
     icon: ShoppingBag,
     heading: 'Pluck-to-Plate in Under 120 Minutes.',
@@ -83,8 +84,8 @@ const ROLES: RolePortal[] = [
   },
   {
     id: 'farmer',
-    name: 'Farmer',
-    roleTitle: 'Cultivator Enterprise Hub',
+    name: 'Farmer Portal',
+    roleTitle: 'Farmer Portal',
     badge: '100% Direct Settlement',
     icon: Sprout,
     heading: 'Run Your Agritech Business with Zero Commission.',
@@ -117,8 +118,8 @@ const ROLES: RolePortal[] = [
   },
   {
     id: 'courier',
-    name: 'Courier',
-    roleTitle: 'Hyperlocal Logistics HUD',
+    name: 'Rider Portal',
+    roleTitle: 'Rider Portal',
     badge: 'Electric Cargo Transit',
     icon: Truck,
     heading: 'High-Density Missions. Zero Highway Fatigue.',
@@ -151,15 +152,15 @@ const ROLES: RolePortal[] = [
   },
   {
     id: 'admin',
-    name: 'Admin',
-    roleTitle: 'Governance & Telemetry',
+    name: 'Admin Portal',
+    roleTitle: 'Admin Portal',
     badge: 'Protocol Overseer',
     icon: ShieldCheck,
     heading: 'Real-Time Oversight Across the Agritech Grid.',
     description:
       'Manage regional polygon boundaries, approve cultivator organic certifications, monitor Razorpay escrow health, and resolve logistics anomalies in real time.',
-    route: `${APP_URL}/auth?role=admin`,
-    screenshot: '/screenshots/01_mobile_auth.png',
+    route: `${ADMIN_URL}/auth`,
+    screenshot: '/screenshots/a02_admin_command_overview.png',
     features: [
       {
         title: 'KYC & Farm Gate Audits',

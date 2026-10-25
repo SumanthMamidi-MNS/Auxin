@@ -104,37 +104,43 @@ function FarmerInventoryContent() {
 
   const searchParams = useSearchParams();
   const isOpenAddQuery = searchParams.get("openAdd") === "true";
+  const isBatch2 = searchParams.get("batch") === "2";
+
+  const getInitialBatchForm = (): AddFormState => {
+    if (isBatch2) {
+      return {
+        master_product_id: 2,
+        price: "45",
+        quantity: "120",
+        unit: "kg",
+        is_organic: true,
+        harvest_date: today(),
+        notes: "Naturally ripened Desi Country Tomatoes on vines without chemicals. Crisp, high-lycopene harvest.",
+      };
+    }
+    return {
+      master_product_id: 1,
+      price: "180",
+      quantity: "38",
+      unit: "kg",
+      is_organic: true,
+      harvest_date: today(),
+      notes: "GI Tagged Ratnagiri Alphonso Mangoes. Plucked 06:30 AM today from Sector 42 Orchard.",
+    };
+  };
 
   // UI panel states
   const [showAddForm, setShowAddForm] = useState(isOpenAddQuery);
   const [form, setForm] = useState<AddFormState>(
-    isOpenAddQuery
-      ? {
-          master_product_id: 1,
-          price: "180",
-          quantity: "38",
-          unit: "kg",
-          is_organic: true,
-          harvest_date: today(),
-          notes: "GI Tagged Ratnagiri Alphonso Mangoes. Plucked 06:30 AM today from Sector 42 Orchard.",
-        }
-      : DEFAULT_FORM
+    isOpenAddQuery ? getInitialBatchForm() : DEFAULT_FORM
   );
 
   useEffect(() => {
     if (isOpenAddQuery) {
       setShowAddForm(true);
-      setForm({
-        master_product_id: 1,
-        price: "180",
-        quantity: "38",
-        unit: "kg",
-        is_organic: true,
-        harvest_date: today(),
-        notes: "GI Tagged Ratnagiri Alphonso Mangoes. Plucked 06:30 AM today from Sector 42 Orchard.",
-      });
+      setForm(getInitialBatchForm());
     }
-  }, [isOpenAddQuery]);
+  }, [isOpenAddQuery, isBatch2]);
   const [productSearch, setProductSearch] = useState("");
   const [showPickerDropdown, setShowPickerDropdown] = useState(false);
 
@@ -723,12 +729,21 @@ function FarmerInventoryContent() {
     </div>
   );
 }
-
-
-export default function FarmerInventoryPage() {
-  return (
-    <Suspense fallback={<PageLoader />}>
-      <FarmerInventoryContent />
-    </Suspense>
-  );
-}
+
+
+
+
+export default function FarmerInventoryPage() {
+
+  return (
+
+    <Suspense fallback={<PageLoader />}>
+
+      <FarmerInventoryContent />
+
+    </Suspense>
+
+  );
+
+}
+
