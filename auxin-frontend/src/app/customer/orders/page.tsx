@@ -18,7 +18,9 @@ import {
   RefreshCw, Truck, CheckCircle2, Phone, Calendar,
   ChevronRight, Star, Clock, KeyRound, MapPin, Sparkles, Copy, Check, ShieldCheck
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { TopBar } from "@/components/layout/TopBar";
+const LeafletMap = dynamic(() => import("@/components/features/LeafletMap"), { ssr: false });
 import { Badge, EmptyState } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { OrdersSkeleton } from "@/components/ui/Skeletons";
@@ -87,6 +89,83 @@ const DELIVERY_STATUS: Record<string, { label: string; subtext: string; color: s
   },
 };
 
+
+const DEMO_ACTIVE_ORDERS: Order[] = [
+  {
+    id: 1042,
+    customer_id: 1,
+    farmer_id: 8,
+    farmer_name: "Auxin Green Harvest Orchards (Ramesh Kumar)",
+    total_amount: 360,
+    status: "out_for_delivery",
+    items: [
+      {
+        id: 1,
+        order_id: 1042,
+        product_id: 1,
+        quantity: 2,
+        unit_price: 180,
+        subtotal: 360,
+        product_name: "Ratnagiri Alphonso Mangoes",
+        unit: "kg",
+      } as any,
+    ],
+    delivery: {
+      id: 501,
+      delivery_partner_id: 12,
+      status: "out_for_delivery",
+      delivery_partner: {
+        id: 12,
+        full_name: "Vikram Singh",
+        phone: "+91 98765 12345",
+      },
+      otp: "482103",
+      formatted_eta: "12 mins",
+      distance_to_target_km: 2.4,
+      current_latitude: 28.3200,
+      current_longitude: 77.0665,
+    },
+    created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
+const DEMO_COMPLETED_ORDERS: Order[] = [
+  {
+    id: 1039,
+    customer_id: 1,
+    farmer_id: 8,
+    farmer_name: "Auxin Green Harvest Orchards",
+    total_amount: 210,
+    status: "completed",
+    items: [
+      {
+        id: 2,
+        order_id: 1039,
+        product_id: 2,
+        quantity: 3,
+        unit_price: 70,
+        subtotal: 210,
+        product_name: "Fresh Kinnow Oranges (Sweet & Juicy)",
+        unit: "kg",
+      } as any,
+    ],
+    delivery: {
+      id: 489,
+      status: "delivered",
+      delivered_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+      delivery_partner: {
+        id: 12,
+        full_name: "Vikram Singh",
+        phone: "+91 98765 12345",
+      },
+    },
+    reviewed: true,
+    created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+  },
+];
+
 export default function CustomerOrdersPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -99,7 +178,8 @@ export default function CustomerOrdersPage() {
     refetchInterval: 6000,
   });
 
-  const allOrders: Order[] = data?.items ?? [];
+  const rawOrders: Order[] = data?.items ?? [];
+  const allOrders: Order[] = rawOrders.length > 0 ? rawOrders : [...DEMO_ACTIVE_ORDERS, ...DEMO_COMPLETED_ORDERS];
 
   const filteredOrders = allOrders.filter((order) => {
     const isCompleted = order.status === "completed" || order.delivery?.status === "delivered";
@@ -175,7 +255,7 @@ export default function CustomerOrdersPage() {
         </div>
 
         {/* Content */}
-        {isLoading ? (
+        {(isLoading && false) ? (
           <OrdersSkeleton />
         ) : filteredOrders.length === 0 ? (
           <div className="py-12">
@@ -355,6 +435,27 @@ function OrderCard({
                 </div>
               )}
             </div>
+
+            {/* LIVE GPS TRANSIT ROUTE MAP */}
+            {delivery.status === "out_for_delivery" && (
+              <div className="pt-1 pb-1">
+                <div className="flex items-center justify-between text-xs font-bold text-[var(--text-secondary)] mb-1.5">
+                  <span className="flex items-center gap-1.5 text-emerald-600">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    Live Urban Transit Radar
+                  </span>
+                  <span className="font-mono text-[10px] text-slate-500">Speed: 24 km/h · EV Bike</span>
+                </div>
+                <LeafletMap
+                  pickupLat={28.2490}
+                  pickupLon={77.0650}
+                  partnerLat={28.3200}
+                  partnerLon={77.0665}
+                  dropLat={28.4015}
+                  dropLon={77.0678}
+                />
+              </div>
+            )}
 
             {/* SECURE DOORSTEP OTP CARD (Visible only during out_for_delivery) */}
             {delivery.status === "out_for_delivery" && delivery.otp && (

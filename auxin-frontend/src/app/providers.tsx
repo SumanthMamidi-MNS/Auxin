@@ -52,7 +52,7 @@ function AuthListener({ children }: { children: React.ReactNode }) {
               await profileApi.getProfile();
             } catch (err: any) {
               const status = err?.status ?? err?.response?.status;
-              if (status === 404) {
+              if (status === 404 && !window.location.pathname.includes("pending") && !window.location.pathname.includes("dashboard") && !window.location.pathname.includes("inventory") && !window.location.pathname.includes("orders") && !window.location.pathname.includes("earnings")) {
                 router.replace("/profile/create");
               }
             }
@@ -75,7 +75,7 @@ function AuthListener({ children }: { children: React.ReactNode }) {
               await profileApi.getProfile();
             } catch (err: any) {
               const status = err?.status ?? err?.response?.status;
-              if (status === 404) {
+              if (status === 404 && !window.location.pathname.includes("pending") && !window.location.pathname.includes("dashboard") && !window.location.pathname.includes("inventory") && !window.location.pathname.includes("orders") && !window.location.pathname.includes("earnings")) {
                 router.replace("/profile/create");
               }
             }

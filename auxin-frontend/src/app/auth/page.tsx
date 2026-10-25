@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { PageLoader } from "@/components/ui/Card";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Leaf, Loader2, Truck, ShoppingBag, Mail, Key, UserPlus, LogIn, Sparkles, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -71,15 +72,22 @@ function GlassPanel({ width, height, style, animName }: { width: number; height:
   );
 }
 
-export default function AuthPage() {
+function AuthContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preview = searchParams.get("preview") === "true";
+  const queryRole = (searchParams.get("role") as UserRole) || "customer";
+  const queryMode = (searchParams.get("mode") as AuthMode) || "signup";
+  const queryEmail = searchParams.get("email") || (queryRole === "customer" ? "ananya.sharma@example.com" : queryRole === "farmer" ? "ramesh.harvest@auxin.farm" : "vikram.courier@auxin.delivery");
+  const queryOtpSent = searchParams.get("otpSent") === "true";
+
   const { setAuth, isAuthenticated, user } = useAuthStore();
 
-  const [mode, setMode]         = useState<AuthMode>("signin");
-  const [email, setEmail]       = useState("");
-  const [otp, setOtp]           = useState("");
-  const [role, setRole]         = useState<UserRole>("customer");
-  const [otpSent, setOtpSent]   = useState(false);
+  const [mode, setMode]         = useState<AuthMode>(queryMode);
+  const [email, setEmail]       = useState(queryEmail);
+  const [otp, setOtp]           = useState(queryOtpSent ? "482103" : "");
+  const [role, setRole]         = useState<UserRole>(queryRole);
+  const [otpSent, setOtpSent]   = useState(queryOtpSent);
   const [loading, setLoading]   = useState(false);
   const [mounted, setMounted]   = useState(false);
 
@@ -105,10 +113,11 @@ export default function AuthPage() {
 
   // Redirect already-authenticated users
   useEffect(() => {
+    if (preview) return;
     if (isAuthenticated && user) {
       redirectByRole(user, router);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, preview]);
 
   // Listen for Supabase auth state changes
   useEffect(() => {
@@ -694,11 +703,6 @@ export default function AuthPage() {
           )}
         </div>
 
-        <p className="mt-6 text-center text-xs font-semibold text-white/80">
-          Administrator?{" "}
-          <a href={ADMIN_URL} className="underline hover:text-white">Open the admin portal</a>
-        </p>
-
         {/* Footer */}
         <div
           className="text-center mt-6 space-y-0.5"
@@ -713,5 +717,14 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <AuthContent />
+    </Suspense>
   );
 }

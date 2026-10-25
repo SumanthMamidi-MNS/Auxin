@@ -21,7 +21,7 @@ interface LeafletMapProps {
   partnerLon?: number | null;
 }
 
-const DEFAULT_CENTER: L.LatLngExpression = [12.9716, 77.5946]; // Bengaluru
+const DEFAULT_CENTER: L.LatLngExpression = [28.3200, 77.0665]; // Gurugram-Sohna Corridor
 const SHADOW = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png";
 const MARKER = "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-";
 
@@ -111,14 +111,25 @@ export default function LeafletMap({
       points.push([partnerLat, partnerLon]);
     }
 
-    if (isNum(pickupLat) && isNum(pickupLon) && isNum(dropLat) && isNum(dropLon)) {
-      L.polyline(
-        [
-          [pickupLat, pickupLon],
-          [dropLat, dropLon],
-        ],
-        { color: "#22c55e", weight: 3, dashArray: "5, 8", opacity: 0.8 }
-      ).addTo(layer);
+    // Draw polyline strictly terminating at customer doorstep
+    const routeCoordinates: L.LatLngTuple[] = [];
+    if (isNum(pickupLat) && isNum(pickupLon)) {
+      routeCoordinates.push([pickupLat, pickupLon]);
+    }
+    if (isNum(partnerLat) && isNum(partnerLon)) {
+      routeCoordinates.push([partnerLat, partnerLon]);
+    }
+    if (isNum(dropLat) && isNum(dropLon)) {
+      routeCoordinates.push([dropLat, dropLon]);
+    }
+
+    if (routeCoordinates.length >= 2) {
+      L.polyline(routeCoordinates, {
+        color: "#16a34a",
+        weight: 4,
+        dashArray: "6, 6",
+        opacity: 0.9,
+      }).addTo(layer);
     }
 
     try {

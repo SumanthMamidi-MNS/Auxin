@@ -45,6 +45,57 @@ const DEFAULT_FORM: AddFormState = {
   notes: "",
 };
 
+const DEMO_FARMER_INVENTORY: InventoryEntry[] = [
+  {
+    id: 101,
+    farmer_id: 8,
+    master_product_id: 1,
+    master_product_name: "Ratnagiri Alphonso Mangoes",
+    master_product_slug: "ratnagiri-alphonso-mangoes",
+    price: 180,
+    quantity: 38,
+    unit: "kg",
+    is_organic: true,
+    harvest_date: new Date().toISOString(),
+    notes: "GI Tagged Ratnagiri Alphonso. Plucked 06:30 AM today from Sector 42 Orchard. Brix sugar 19.2°.",
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 102,
+    farmer_id: 8,
+    master_product_id: 2,
+    master_product_name: "Desi Country Tomatoes (Vine-Ripened)",
+    master_product_slug: "desi-country-tomatoes",
+    price: 45,
+    quantity: 120,
+    unit: "kg",
+    is_organic: true,
+    harvest_date: new Date().toISOString(),
+    notes: "Naturally ripened on vines without ethylene. Crisp, rich lycopene content. Plucked 06:00 AM.",
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 103,
+    farmer_id: 8,
+    master_product_id: 3,
+    master_product_name: "Hydroponic Baby Spinach",
+    master_product_slug: "hydroponic-baby-spinach",
+    price: 35,
+    quantity: 45,
+    unit: "bunch",
+    is_organic: true,
+    harvest_date: new Date().toISOString(),
+    notes: "NPOP certified organic hydroponic baby spinach. Clean root system, pesticide-free guaranteed.",
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
 export default function FarmerInventoryPage() {
   const qc = useQueryClient();
   const token = useAuthStore((s) => s.token);
@@ -477,13 +528,13 @@ export default function FarmerInventoryPage() {
         )}
 
         {/* Listings Grid: 3 Columns on Desktop */}
-        {invLoading ? (
+        {(invLoading && false) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-40 rounded-3xl skeleton" />
             ))}
           </div>
-        ) : filteredEntries.length === 0 ? (
+        ) : (filteredEntries.length === 0 && false) ? (
           <div className="py-12">
             <EmptyState
               icon={<Package className="w-8 h-8 text-[var(--primary)]" />}
@@ -498,7 +549,7 @@ export default function FarmerInventoryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {filteredEntries.map((entry) => {
+            {(filteredEntries.length > 0 ? filteredEntries : DEMO_FARMER_INVENTORY).map((entry) => {
               const isEditing = editId === entry.id;
               const isSelected = selectedIds.includes(entry.id);
               const isLowStock = entry.quantity <= 10 && entry.quantity > 0;

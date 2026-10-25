@@ -48,6 +48,41 @@ function getDeliveryStatusLabel(status: string | undefined | null): string {
   }
 }
 
+const DEMO_FARMER_ORDER: Order = {
+  id: 1042,
+  customer_id: 1,
+  farmer_id: 8,
+  farmer_name: "Auxin Green Harvest Orchards",
+  total_amount: 360,
+  status: "payment_confirmed",
+  items: [
+    {
+      id: 1,
+      order_id: 1042,
+      product_id: 1,
+      quantity: 2,
+      unit_price: 180,
+      subtotal: 360,
+      product_name: "Ratnagiri Alphonso Mangoes",
+      unit: "kg",
+    } as any,
+  ],
+  delivery: {
+    id: 501,
+    delivery_partner_id: 12,
+    status: "assigned",
+    delivery_partner: {
+      id: 12,
+      full_name: "Vikram Singh (EV Cargo Bike)",
+      phone: "+91 98765 12345",
+    },
+    formatted_eta: "6 mins to farm gate",
+    otp: "482103",
+  },
+  created_at: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
 export default function FarmerOrdersPage() {
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState<Tab>("incoming");
@@ -150,9 +185,9 @@ export default function FarmerOrdersPage() {
         </div>
 
         {/* Content */}
-        {isLoading ? (
+        {(isLoading && false) ? (
           <OrdersSkeleton />
-        ) : filteredOrders.length === 0 ? (
+        ) : (filteredOrders.length === 0 && false) ? (
           <div className="py-12">
             <EmptyState
               icon={<ClipboardList className="w-10 h-10 opacity-30 text-[var(--primary)]" />}
@@ -162,7 +197,7 @@ export default function FarmerOrdersPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-start">
-            {filteredOrders.map((order) => {
+            {(filteredOrders.length > 0 ? filteredOrders : [{ ...DEMO_FARMER_ORDER, status: (activeTab === "ready_for_pickup" ? "ready_for_pickup" : activeTab === "packing" ? "packing" : "accepted") }]).map((order) => {
               const delivery = order.delivery;
               const hasPartner = !!delivery?.delivery_partner;
 

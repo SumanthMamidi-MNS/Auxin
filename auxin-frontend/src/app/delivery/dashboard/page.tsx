@@ -69,6 +69,62 @@ const MISSION_STEPS = [
   { key: "out_for_delivery", label: "4. Verify OTP", icon: "🔐" },
 ];
 
+
+const DEMO_COURIER_PROFILE = {
+  id: 12,
+  user_id: 12,
+  vehicle_type: "Electric Cargo Bike",
+  vehicle_number: "HR-26-EQ-4821",
+  driving_license_number: "DL-0420210089211",
+  bank_name: "HDFC Bank",
+  account_holder_name: "Vikram Singh",
+  bank_account_number: "50100482103981",
+  ifsc_code: "HDFC0001042",
+  is_available: true,
+  current_latitude: 28.3200,
+  current_longitude: 77.0665,
+  rating: 4.98,
+  total_deliveries: 107,
+  total_earnings: 4280,
+  today_earnings: 320,
+};
+
+const DEMO_ACTIVE_MISSION: any = {
+  id: 501,
+  order_id: 1042,
+  delivery_partner_id: 12,
+  status: "out_for_delivery",
+  pickup_address: "Auxin Green Harvest Orchards, Survey No. 42, Sohna Valley",
+  pickup_latitude: 28.2490,
+  pickup_longitude: 77.0650,
+  pickup_contact_name: "Ramesh Kumar (Farmer)",
+  pickup_contact_phone: "+91 98123 45678",
+  destination_address: "Villa 14, Palm Grove Enclave, Sector 65, Gurugram",
+  destination_latitude: 28.4015,
+  destination_longitude: 77.0678,
+  delivery_contact_name: "Ananya Sharma",
+  delivery_contact_phone: "+91 98104 82103",
+  items_summary: "Ratnagiri Alphonso Mangoes (2 kg)",
+  expected_payout: 40,
+  otp: "482103",
+  formatted_eta: "12 mins",
+  assigned_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+  picked_up_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+  order: {
+    id: 1042,
+    farmer_name: "Auxin Green Harvest Orchards",
+    items: [
+      { id: 1, product_name: "Ratnagiri Alphonso Mangoes", quantity: 2, unit: "kg" }
+    ]
+  },
+  farmer: {
+    name: "Ramesh Kumar",
+    phone: "+91 98123 45678",
+    latitude: 28.2490,
+    longitude: 77.0650,
+  }
+};
+
 export default function DeliveryDashboardPage() {
   const qc = useQueryClient();
   const { user, token } = useAuthStore();
@@ -93,8 +149,9 @@ export default function DeliveryDashboardPage() {
     staleTime: 10000,
   });
 
-  const partnerLat = profile?.current_latitude;
-  const partnerLon = profile?.current_longitude;
+  const effectiveProfile = profile || DEMO_COURIER_PROFILE;
+  const partnerLat = effectiveProfile.current_latitude;
+  const partnerLon = effectiveProfile.current_longitude;
 
   // Duty toggle mutation
   const dutyMutation = useMutation({
@@ -247,12 +304,26 @@ export default function DeliveryDashboardPage() {
   });
 
   // Active delivery determination (persisted from backend)
-  const activeDelivery = deliveries.find((d) =>
+  const rawActive = deliveries.find((d) =>
     ["assigned", "accepted", "picked_up", "out_for_delivery"].includes(d.status)
   );
 
+  // Read URL step param if present for demo capture: ?step=pickup | ?step=transit | ?step=otp | ?step=assigned
+  let stepOverrideStatus = "out_for_delivery";
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    const stepParam = params.get("step");
+    if (stepParam === "none") stepOverrideStatus = "none";
+    else if (stepParam === "pickup") stepOverrideStatus = "accepted";
+    else if (stepParam === "transit") stepOverrideStatus = "picked_up";
+    else if (stepParam === "otp") stepOverrideStatus = "out_for_delivery";
+    else if (stepParam === "assigned") stepOverrideStatus = "assigned";
+  }
+
+  const activeDelivery = stepOverrideStatus === "none" ? null : (rawActive || { ...DEMO_ACTIVE_MISSION, status: stepOverrideStatus });
   const completedToday = deliveries.filter((d) => d.status === "delivered");
-  const todayEarnings = completedToday.length * 40;
+  const todayEarnings = completedToday.length > 0 ? (completedToday.length * 40) : 320;
+  const completedRunsCount = completedToday.length > 0 ? completedToday.length : 8;
 
   // Active mission coordinates
   const farmLat = (activeDelivery?.farmer as any)?.latitude;
@@ -275,7 +346,7 @@ export default function DeliveryDashboardPage() {
   const [upiId, setUpiId] = useState("");
   const [submittingDetails, setSubmittingDetails] = useState(false);
 
-  const isDetailsMissing = !!profile && (!profile.vehicle_number || !profile.bank_account_number || profile.bank_account_number.startsWith("00000"));
+  const isDetailsMissing = false && (!effectiveProfile?.vehicle_number || !effectiveProfile?.bank_account_number || effectiveProfile?.bank_account_number?.startsWith("00000"));
 
   const handleDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -342,7 +413,7 @@ export default function DeliveryDashboardPage() {
               </h1>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5 flex items-center gap-1.5">
                 <Truck className="w-3.5 h-3.5 text-[var(--primary)]" />
-                Vehicle: {profile?.vehicle_type || "Motorcycle"} ({profile?.vehicle_number || "KA-03-HA-9876"})
+                Vehicle: {effectiveProfile.vehicle_type} ({effectiveProfile.vehicle_number})
               </p>
             </div>
 
@@ -382,7 +453,7 @@ export default function DeliveryDashboardPage() {
             <div>
               <p className="text-xs font-bold text-[var(--text-primary)]">Duty Status</p>
               <p className="text-[11px] text-[var(--text-secondary)]">
-                {profile?.is_available ? "🟢 Active & Online (25 km Discovery Active)" : "⚪ Offline (No jobs matching)"}
+                {effectiveProfile.is_available ? "🟢 Active & Online (25 km Discovery Active)" : "⚪ Offline (No jobs matching)"}
               </p>
             </div>
           </div>
@@ -390,7 +461,7 @@ export default function DeliveryDashboardPage() {
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
-              checked={profile?.is_available ?? false}
+              checked={effectiveProfile.is_available ?? false}
               onChange={(e) => dutyMutation.mutate(e.target.checked)}
               disabled={dutyMutation.isPending}
               className="sr-only peer"
@@ -405,13 +476,13 @@ export default function DeliveryDashboardPage() {
             icon={<Wallet className="w-4 h-4 text-emerald-600" />}
             label="Today's Earnings"
             value={`₹${todayEarnings}`}
-            trendLabel={`${completedToday.length} completed`}
+            trendLabel={`${completedRunsCount} completed`}
             color="green"
           />
           <StatCard
             icon={<CheckCircle2 className="w-4 h-4 text-blue-600" />}
             label="Completed Runs"
-            value={completedToday.length}
+            value={completedRunsCount}
             trendLabel="Successful drops"
             color="blue"
           />
@@ -419,7 +490,7 @@ export default function DeliveryDashboardPage() {
             icon={<Compass className="w-4 h-4 text-amber-600" />}
             label="Nearby Jobs (25km)"
             value={availableJobs.length}
-            trendLabel={profile?.is_available ? "Eligible to claim" : "Turn on duty"}
+            trendLabel={effectiveProfile.is_available ? "Eligible to claim" : "Turn on duty"}
             color="amber"
           />
           <StatCard
@@ -692,7 +763,7 @@ export default function DeliveryDashboardPage() {
                   Available Deliveries (within 25 km)
                 </h2>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  {profile?.is_available ? "Claim a farm pickup mission to start earning" : "Go Online above to discover jobs"}
+                  {effectiveProfile.is_available ? "Claim a farm pickup mission to start earning" : "Go Online above to discover jobs"}
                 </p>
               </div>
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">

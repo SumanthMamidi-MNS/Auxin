@@ -9,6 +9,7 @@
 import { clsx } from "clsx";
 import { Leaf, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CARD
@@ -190,19 +191,32 @@ export function Spinner({
 
 export function PageLoader() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-5 bg-[var(--bg)]">
-      <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-2xl bg-[var(--primary-subtle)] border border-[var(--primary-glow)] flex items-center justify-center shadow-xs">
-          <Leaf className="w-5 h-5 text-[var(--primary)]" />
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-[var(--bg)]">
+      <div className="relative w-20 h-20 rounded-3xl bg-white shadow-2xl border border-emerald-500/20 p-2.5 flex items-center justify-center animate-pulse">
+        <div className="absolute -inset-2 bg-gradient-to-tr from-emerald-500/20 to-amber-500/20 rounded-3xl blur-lg pointer-events-none" />
+        <Image
+          src="/logo-cropped.png"
+          alt="Auxin Logo"
+          width={64}
+          height={64}
+          className="object-contain relative z-10"
+          priority
+        />
+      </div>
+      <div className="text-center space-y-1">
         <span
-          className="text-[var(--text-primary)] font-bold text-xl tracking-tight"
+          className="font-extrabold text-2xl tracking-tight text-[var(--text-primary)]"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          Auxin
+          AUXIN
         </span>
+        <p className="text-xs font-semibold text-emerald-700 tracking-wider uppercase">
+          Direct-From-Farm Protocol
+        </p>
       </div>
-      <Spinner size="sm" />
+      <div className="w-32 h-1 bg-slate-200/60 rounded-full overflow-hidden">
+        <div className="w-full h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500 animate-shimmer" />
+      </div>
     </div>
   );
 }

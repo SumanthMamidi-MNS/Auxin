@@ -49,7 +49,7 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
         }
       } catch (err: any) {
         const status = err?.status ?? err?.response?.status;
-        if (status === 404) {
+        if (status === 404 && !user?.address) {
           router.replace("/profile/create");
         }
       }

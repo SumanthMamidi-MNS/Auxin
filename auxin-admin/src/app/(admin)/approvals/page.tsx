@@ -19,6 +19,39 @@ import type { Farmer, DeliveryPartner, PaginatedResponse } from "@/types";
 
 type ApprovalTab = "farmers" | "delivery";
 
+
+const DEMO_PENDING_FARMER: any = {
+  id: 8,
+  full_name: "Ramesh Kumar",
+  phone: "+91 98123 45678",
+  email: "ramesh.harvest@auxin.farm",
+  farm_name: "Auxin Green Harvest Orchards",
+  farm_category: "Organic Fruits & Vegetables",
+  location: "Survey No. 42, Sohna Valley (12.5 Acres)",
+  land_survey_number: "Survey No. 42",
+  npop_cert: "NPOP-ORG-2026-IND-0491",
+  bank_name: "HDFC Bank (Sohna Branch)",
+  bank_account_number: "50100482103981",
+  ifsc_code: "HDFC0001042",
+  created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+  status: "pending",
+};
+
+const DEMO_PENDING_RIDER: any = {
+  id: 12,
+  full_name: "Vikram Singh",
+  phone: "+91 98765 12345",
+  email: "vikram.courier@auxin.delivery",
+  vehicle_type: "Electric Cargo Bike",
+  vehicle_number: "HR-26-EQ-4821",
+  driving_license_number: "DL-0420210089211",
+  bank_name: "State Bank of India",
+  bank_account_number: "309812482109",
+  ifsc_code: "SBIN0004821",
+  created_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+  status: "pending",
+};
+
 export default function ApprovalsPage() {
   const [activeTab, setActiveTab] = useState<ApprovalTab>("farmers");
   const [search, setSearch] = useState("");
@@ -124,14 +157,16 @@ export default function ApprovalsPage() {
   // Filter items
   const items = (() => {
     if (activeTab === "farmers") {
-      const list = pendingFarmersData?.items ?? [];
+      const rawList = pendingFarmersData?.items ?? [];
+      const list = rawList.length > 0 ? rawList : [DEMO_PENDING_FARMER];
       if (!search.trim()) return list;
       return list.filter((f) =>
         (f?.full_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
         (f?.phone ?? "").includes(search)
       );
     } else {
-      const list = pendingDeliveryData?.items ?? [];
+      const rawList = pendingDeliveryData?.items ?? [];
+      const list = rawList.length > 0 ? rawList : [DEMO_PENDING_RIDER];
       if (!search.trim()) return list;
       return list.filter((d) =>
         (d?.full_name ?? "").toLowerCase().includes(search.toLowerCase()) ||

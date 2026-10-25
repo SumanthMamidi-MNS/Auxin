@@ -8,6 +8,7 @@
 
 import { clsx } from "clsx";
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CARD
@@ -148,17 +149,31 @@ export function Spinner({
 
 export function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
-      <div className="flex flex-col items-center gap-5">
-        <div className="w-10 h-10 rounded-2xl bg-[var(--primary-subtle)] border border-[var(--primary-glow)] flex items-center justify-center">
-          <span
-            className="text-[var(--primary)] font-black text-lg"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            A
-          </span>
-        </div>
-        <Spinner size="sm" />
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-[var(--bg)]">
+      <div className="relative w-20 h-20 rounded-3xl bg-[#141A29] shadow-2xl border border-emerald-500/30 p-2.5 flex items-center justify-center animate-pulse">
+        <div className="absolute -inset-2 bg-gradient-to-tr from-emerald-500/20 to-amber-500/20 rounded-3xl blur-lg pointer-events-none" />
+        <Image
+          src="/logo-cropped.png"
+          alt="Auxin Logo"
+          width={64}
+          height={64}
+          className="object-contain relative z-10"
+          priority
+        />
+      </div>
+      <div className="text-center space-y-1">
+        <span
+          className="font-extrabold text-2xl tracking-tight text-[var(--text-primary)]"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          AUXIN ADMIN
+        </span>
+        <p className="text-xs font-semibold text-emerald-400 tracking-wider uppercase">
+          Zero-Trust Governance Console
+        </p>
+      </div>
+      <div className="w-32 h-1 bg-slate-800 rounded-full overflow-hidden">
+        <div className="w-full h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500 animate-shimmer" />
       </div>
     </div>
   );
