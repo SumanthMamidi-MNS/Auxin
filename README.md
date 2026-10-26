@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://auxin-landing.vercel.app/">
-    <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="68">
+    <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="66" style="border-radius: 14px; box-shadow: 0 0 24px rgba(212, 175, 55, 0.45); border: 2px solid rgba(212, 175, 55, 0.75);">
   </a>
 </p>
 
@@ -18,28 +18,34 @@
   </a>
 </p>
 
+<!-- Vibrant Multi-Color Brand Badges -->
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12-052E16?style=flat-square&logo=python&logoColor=white" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/FastAPI-Async_REST-1B4332?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12">
+  <img src="https://img.shields.io/badge/FastAPI-Async_REST-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
   <img src="https://img.shields.io/badge/Render-Backend_Cloud-46E3B7?style=flat-square&logo=render&logoColor=black" alt="Render">
-  <img src="https://img.shields.io/badge/Next.js_16-Turbopack-0F172A?style=flat-square&logo=next.js&logoColor=white" alt="Next.js 16">
-  <img src="https://img.shields.io/badge/React-19-1B4332?style=flat-square&logo=react&logoColor=white" alt="React 19">
-  <img src="https://img.shields.io/badge/TypeScript-5.0-1E293B?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-2D6A4F?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4">
+  <img src="https://img.shields.io/badge/Next.js_16-Turbopack-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js 16">
+  <img src="https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React 19">
+  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Supabase-Auth_&_Email-052E16?style=flat-square&logo=supabase&logoColor=white" alt="Supabase Email">
-  <img src="https://img.shields.io/badge/SQLAlchemy-2.0_Async-1B4332?style=flat-square&logo=python&logoColor=white" alt="SQLAlchemy 2.0">
-  <img src="https://img.shields.io/badge/Razorpay-Escrow_Engine-0F172A?style=flat-square&logo=razorpay&logoColor=0088FF" alt="Razorpay">
-  <img src="https://img.shields.io/badge/Leaflet-GPS_Maps-2D6A4F?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet">
-  <img src="https://img.shields.io/badge/Pytest-73_Passed_100%25-1B4332?style=flat-square&logo=pytest&logoColor=white" alt="Pytest 73 Passed">
-  <img src="https://img.shields.io/badge/Milo_AI-7--Stage_RAG-D4AF37?style=flat-square&logo=google&logoColor=black" alt="Milo AI">
+  <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase">
+  <img src="https://img.shields.io/badge/Transactional-Email-EA4335?style=flat-square&logo=gmail&logoColor=white" alt="Transactional Email">
+  <img src="https://img.shields.io/badge/SQLAlchemy-2.0_Async-D43D31?style=flat-square&logo=python&logoColor=white" alt="SQLAlchemy 2.0">
+  <img src="https://img.shields.io/badge/Razorpay-Escrow_Engine-02042B?style=flat-square&logo=razorpay&logoColor=0088FF" alt="Razorpay">
+  <img src="https://img.shields.io/badge/Leaflet-GPS_Maps-199900?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet">
+  <img src="https://img.shields.io/badge/Pytest-73_Passed_100%25-22C55E?style=flat-square&logo=pytest&logoColor=white" alt="Pytest 73 Passed">
+  <img src="https://img.shields.io/badge/Milo_AI-7--Stage_RAG-7C3AED?style=flat-square&logo=google&logoColor=D4AF37" alt="Milo AI">
 </p>
 
 <p align="center">
   <strong>Auxin</strong> eliminates predatory multi-tiered broker syndicates by connecting regional farmers directly with consumers within a strict <strong>25 km hyper-local radius</strong>. Built with an atomic escrow commerce engine, turn-by-turn mobile delivery HUD, cryptographic doorstep OTP proof, and <strong>Milo</strong> — a domain-specialized agricultural AI copilot.
 </p>
+
+> [!TIP]
+> 🎨 **Interactive 4-Look Visual Showcase**:
+> Open [`docs/readme_designs_showcase.html`](docs/readme_designs_showcase.html) in your browser to inspect 4 innovative visual styles, animated logo effects, custom badge designs, and live layout themes!
 
 ---
 
@@ -76,7 +82,8 @@
    - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
 9. [Automated Verification & Test Suite](#9-automated-verification-test-suite)
    - [73/73 Test Suite Breakdown](#7373-test-suite-breakdown)
-10. [Quickstart & Local Orchestration](#10-quickstart-local-orchestration)
+10. [Comprehensive Tech Stack & Quickstart](#10-comprehensive-tech-stack-quickstart)
+    - [Technical Architecture Matrix](#technical-architecture-matrix)
     - [One-Click Windows Launcher](#one-click-windows-launcher)
     - [Manual CLI Setup](#manual-cli-setup)
 
@@ -87,8 +94,8 @@
 ## 1. Executive Summary & The Broken Mandi Chain
 
 ### The Multi-Tier Broker Problem
-<details open>
-<summary><b>View Supply Chain Breakdown & Spoilage Metrics</b></summary>
+<details>
+<summary><b>View Traditional Supply Chain Flow</b></summary>
 <br>
 
 In traditional regional agricultural distribution, freshly harvested crops pass through 4 to 6 tiers of commission agents (*arhtiyas*), village loaders, and wholesale mandis before reaching urban consumers.
@@ -101,7 +108,7 @@ TRADITIONAL CHAIN (PREDATORY & SLOW):
 </details>
 
 ### The Auxin Direct Paradigm
-<details open>
+<details>
 <summary><b>View The Direct Hyper-Local Route</b></summary>
 <br>
 
@@ -115,9 +122,7 @@ THE AUXIN PARADIGM (DIRECT & INSTANT):
 </details>
 
 ### Key Economic Impact Metrics
-<details>
-<summary><b>View Economic Advantage Matrix</b></summary>
-<br>
+*Direct financial and operational gains delivered by eliminating intermediaries:*
 
 | Metric | Traditional Supply Chain | Auxin Platform Paradigm | Direct Advantage |
 |---|---|---|---|
@@ -126,8 +131,6 @@ THE AUXIN PARADIGM (DIRECT & INSTANT):
 | **Harvest-to-Door SLA** | 48 to 72 hours via mandis | **Under 2 Hours** | Zero chemical ripening, peak vitamins and crunch |
 | **Transit Loss** | 30% to 40% post-harvest spoilage | **< 2%** | Elimination of multi-day warehousing and re-handling |
 | **Payment Delay** | 30 to 90 days delayed credit slips | **Instant Atomic Settlement** | Funds credited immediately upon doorstep OTP handshake |
-
-</details>
 
 ---
 
@@ -138,22 +141,18 @@ Auxin is deployed live on Vercel at:
 👉 **[https://auxin-landing.vercel.app/](https://auxin-landing.vercel.app/)**
 
 ### Interactive Screen Explorer
-<details open>
-<summary><b>View Ecosystem Showcase Preview & Screen Explorer Link</b></summary>
-<br>
+*Compact preview of production application &mdash; test all 50+ user flows on the live showcase:*
 
 <div align="center">
   <a href="https://auxin-landing.vercel.app/">
-    <img src="docs/screenshots/hero_live_harvest.png" alt="Auxin Production Ecosystem" width="92%">
+    <img src="docs/screenshots/hero_live_harvest.png" alt="Auxin Production Ecosystem" width="480" style="border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.4); border: 1px solid #30363D;">
   </a>
   <p><sub><b>Figure 2.1: The Auxin Ecosystem</b> &mdash; Customer Discovery, Cultivator Enterprise Radar, and Courier Mission HUD</sub></p>
 </div>
 
 > [!TIP]
 > **Explore All 50+ Live Screen Mockups**:
-> To inspect all user interfaces across **Customer, Farmer, Courier, and Super Admin** interactively, visit the [**Live Screens Explorer &rarr;**](https://auxin-landing.vercel.app/)
-
-</details>
+> To inspect all user interfaces across **Customer, Farmer, Courier, and Super Admin** interactively without cluttering this document, visit the [**Live Screens Explorer &rarr;**](https://auxin-landing.vercel.app/)
 
 ---
 
@@ -162,60 +161,35 @@ Auxin is deployed live on Vercel at:
 Auxin provides a unified codebase powering four role-tailored operational surfaces:
 
 ### Customer Marketplace
-<details>
-<summary><b>View Customer Marketplace Capabilities</b></summary>
-<br>
-
 * **Hyper-Local Discovery**: Dynamic 4:5 crop cards displaying produce harvested within 25 km.
 * **Farmer Provenance**: Multi-farmer price comparison per SKU, harvest timestamps, and organic certificates.
 * **Escrow Cart**: Two-phase funds lock and real-time delivery fee calculation.
 * **Live GPS Tracking**: Real-time Leaflet delivery tracking with a 6-digit cryptographic doorstep OTP card.
-</details>
 
 ### Farmer Operations Suite
-<details>
-<summary><b>View Farmer Operations Capabilities</b></summary>
-<br>
-
 * **Operations Radar**: Morning orders incoming, active revenue velocity, and packing alerts.
 * **Stock Health Meters**: Real-time harvest lot inventory, price-per-kg editor, and batch publishing.
 * **6-Stage Packing Pipeline**: 2-hour packing countdown SLA and one-click courier dispatch.
 * **Instant Wallet & Bank Settlement**: Direct escrow payouts to verified bank accounts.
-</details>
 
 ### Courier HUD & Super Admin
-<details>
-<summary><b>View Courier HUD & Admin Control Room Capabilities</b></summary>
-<br>
-
 * **Courier Mission HUD**: Turn-by-turn Leaflet route navigation, farm pickup quality inspection, and doorstep OTP verification with ₹40/drop instant payout.
 * **Super Admin Control Room**: Platform health telemetry, cultivator/courier KYC document inspection desk, 120-SKU master agricultural catalogue, price governance, and escrow vault audit.
-</details>
 
 ---
 
 ## 4. Milo AI — Domain Agricultural Copilot
 
 ### Curated Agronomic Vectors
-<details open>
-<summary><b>View Knowledge Store Details</b></summary>
-<br>
-
 Milo is an agricultural AI copilot integrated across client apps. It operates over a specialized knowledge store of **120+ agronomic vectors** covering non-cold-storage shelf lives, soil moisture thresholds, organic certifications, and regional mandi prices.
-</details>
 
 ### 7-Stage Semantic RAG Pipeline
-<details open>
-<summary><b>View RAG Architecture Flowchart</b></summary>
-<br>
-
 ```
 [ User Query ] ──► [ Intent & Role Classifier ] ──► [ Hybrid Vector Retrieval (BM25 + Cosine) ]
                                                                    │
                                                                    ▼
 [ Structured UI Cards ] ◄── [ Gemini 2.5 Flash ] ◄── [ Agricultural Guardrail & Context Ranking ]
 ```
-</details>
 
 ### Zero-Hallucination Rejection Shield
 <details>
@@ -230,16 +204,11 @@ When queries fall outside verified agricultural data, Milo enforces an automated
 ## 5. 25 KM Haversine Spatial Geofencing
 
 ### Mathematical Formulation
-<details open>
-<summary><b>View Spherical Trigonometry Formula</b></summary>
-<br>
-
 Auxin enforces a strict **25-kilometer spherical distance boundary** computed directly in the spatial data access layer:
 
 $$\Delta\sigma = 2 \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\left(\frac{\Delta\lambda}{2}\right)} \right)$$
 
 $$d = R \cdot \Delta\sigma \quad (\text{where } R = 6371.0088 \text{ km})$$
-</details>
 
 ### Spatial Filtering Implementation
 <details>
@@ -267,18 +236,9 @@ def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) ->
 ## 6. Two-Phase Atomic Escrow Commerce Engine
 
 ### Escrow Vault Lock
-<details>
-<summary><b>View Vault Locking Protocol</b></summary>
-<br>
-
 When an order is authorized, 100% of customer funds are locked in the Auxin Escrow Reserve account. Neither the farmer nor the courier receives funds prior to verified physical delivery.
-</details>
 
 ### Doorstep Inspection Handshake
-<details open>
-<summary><b>View Atomic Sequence Diagram</b></summary>
-<br>
-
 Upon arrival, the customer inspects produce freshness. If acceptable, the customer reveals their 6-digit OTP to the courier. If rejected, the OTP is withheld and funds are automatically refunded with zero merchant chargeback delay.
 
 ```mermaid
@@ -308,7 +268,6 @@ sequenceDiagram
     end
     P->>C: Delivery Receipt Confirmed
 ```
-</details>
 
 ### Atomic Multi-Party Settlement
 <details>
@@ -323,31 +282,17 @@ Upon OTP verification, a single database transaction simultaneously marks the or
 ## 7. Cryptographic Doorstep OTP Handshake
 
 ### CSPRNG 6-Digit Generation
-<details>
-<summary><b>View CSPRNG Generation Specs</b></summary>
-<br>
-
 OTPs are generated on order placement via Python's `secrets` module using a **Cryptographically Secure Pseudo-Random Number Generator (CSPRNG)**.
-</details>
 
 ### Salted SHA-256 Storage & Bounded Retries
-<details open>
-<summary><b>View Security & Rate Limiting Guardrails</b></summary>
-<br>
-
 * OTPs are stored exclusively as **salted SHA-256 hashes**; plaintext OTPs are never accessible to couriers or exposed in administrative telemetry.
 * Verification is strictly rate-limited to **3 failed attempts** before the order is automatically escalated for security review.
-</details>
 
 ---
 
 ## 8. End-to-End System Architecture
 
 ### Full System Topology
-<details open>
-<summary><b>View Architecture Topology Diagram</b></summary>
-<br>
-
 Auxin coordinates an asynchronous micro-monorepo orchestrated across edge client apps, high-throughput REST APIs, and external infrastructure:
 
 ```mermaid
@@ -395,7 +340,6 @@ flowchart TB
     CAT --> DB
     MILO --> VEC
 ```
-</details>
 
 ### Role-Based Access Control (RBAC)
 <details>
@@ -410,11 +354,11 @@ Role authorization is validated at the API gateway layer via Supabase JWT claims
 ## 9. Automated Verification & Test Suite
 
 ### 73/73 Test Suite Breakdown
-<details open>
-<summary><b>View Full Pytest Terminal Test Execution Log</b></summary>
-<br>
-
 Auxin enforces continuous reliability through 73 automated integration and unit tests covering authentication, spatial bounds, escrow transactions, and security hardening:
+
+<details>
+<summary><b>View 73-Item Pytest Terminal Verification Session</b></summary>
+<br>
 
 ```bash
 $ pytest tests/ -v
@@ -441,24 +385,33 @@ tests/test_super_admin.py .............................. PASSED [100%]
 
 ---
 
-## 10. Quickstart & Local Orchestration
+## 10. Comprehensive Tech Stack & Quickstart
+
+### Technical Architecture Matrix
+
+| Architectural Layer | Core Technologies | Implementation & Purpose |
+|---|---|---|
+| **Landing & Showcase** | Next.js 16, Turbopack | Sub-second edge rendering, interactive screen explorer, hosted on Vercel |
+| **Consumer Frontend** | Next.js 16, React 19, TypeScript | Unified role-adaptive interface for Customer, Farmer, and Delivery Courier |
+| **Super Admin Suite** | Next.js 16, Recharts, Lucide | Desktop command room for platform telemetry, KYC approvals & catalogue |
+| **Backend API Engine** | FastAPI, Uvicorn, Python 3.12 | High-throughput asynchronous REST endpoints hosted on **Render Cloud** |
+| **Database & ORM** | PostgreSQL / SQLite, SQLAlchemy 2.0 | Async connection pooling, typed entity models, and Alembic migrations |
+| **Auth & Messaging** | Supabase Auth, JWT Bearer | Cryptographic signature validation & **Transactional Email Notifications** |
+| **Payments & Escrow** | Razorpay SDK, Webhooks | Two-phase funds authorization, escrow vault lock & automated payouts |
+| **Geofencing & Maps** | Leaflet, OpenStreetMap, Haversine | Zero-cost mapping with 25 km spherical spatial distance enforcement |
+| **Agritech AI Copilot** | Gemini 2.5 Flash, ChromaDB, RAG | 7-Stage domain agricultural intelligence engine with 120+ agronomy vectors |
 
 ### One-Click Windows Launcher
-<details open>
-<summary><b>View start.bat Local Launch Commands</b></summary>
-<br>
-
 ```bat
 git clone https://github.com/SumanthMamidi-MNS/Auxin.git
 cd Auxin
 start.bat
 ```
 `start.bat` provisions virtual environments, runs Alembic schema migrations, seeds the 120-produce catalogue, and boots all four micro-frontends and backend services concurrently.
-</details>
 
 ### Manual CLI Setup
 <details>
-<summary><b>View Step-by-Step CLI Execution</b></summary>
+<summary><b>View Step-by-Step Manual CLI Commands</b></summary>
 <br>
 
 1. **Backend API (Hosted on Render in production)**:
