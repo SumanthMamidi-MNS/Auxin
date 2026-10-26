@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://auxin-landing.vercel.app/">
-    <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="66" style="border-radius: 14px; box-shadow: 0 0 24px rgba(212, 175, 55, 0.45); border: 2px solid rgba(212, 175, 55, 0.75);">
+    <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="66" style="border-radius: 18px; padding: 7px; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(212, 175, 55, 0.65); box-shadow: 0 0 28px rgba(212, 175, 55, 0.45), 0 8px 24px rgba(0,0,0,0.5);">
   </a>
 </p>
 
@@ -12,31 +12,35 @@
   <em>Autonomous Agritech Logistics &bull; Hyper-Local Direct-From-Farm Marketplace &bull; Milo AI Copilot</em>
 </p>
 
+<!-- Live Showcase Pill (Violet Capsule from Look 3) -->
 <p align="center">
   <a href="https://auxin-landing.vercel.app/">
-    <img src="https://img.shields.io/badge/🚀_Live_Production_Showcase-auxin--landing.vercel.app-052E16?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+    <img src="https://img.shields.io/badge/Open_Live_Deployment_→-auxin--landing.vercel.app-1E1B4B?style=for-the-badge&logo=vercel&logoColor=818CF8" alt="Open Live Deployment">
   </a>
 </p>
 
-<!-- Vibrant Multi-Color Brand Badges -->
+<!-- Glass Capsule Badges with Glowing Colored Pins (From Look 1) -->
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/FastAPI-Async_REST-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Render-Backend_Cloud-46E3B7?style=flat-square&logo=render&logoColor=black" alt="Render">
-  <img src="https://img.shields.io/badge/Next.js_16-Turbopack-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js 16">
-  <img src="https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React 19">
-  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4">
+  <img src="https://img.shields.io/badge/●_Python-3.12-161B22?style=flat-square&color=3776AB&labelColor=161B22" alt="Python 3.12">
+  <img src="https://img.shields.io/badge/●_FastAPI-Async-161B22?style=flat-square&color=009688&labelColor=161B22" alt="FastAPI">
+  <img src="https://img.shields.io/badge/●_Render-Cloud_Host-161B22?style=flat-square&color=46E3B7&labelColor=161B22" alt="Render">
+  <img src="https://img.shields.io/badge/●_Next.js-16_Turbopack-161B22?style=flat-square&color=FFFFFF&labelColor=161B22" alt="Next.js 16">
+  <img src="https://img.shields.io/badge/●_React-19-161B22?style=flat-square&color=61DAFB&labelColor=161B22" alt="React 19">
+  <img src="https://img.shields.io/badge/●_TypeScript-5.0-161B22?style=flat-square&color=3178C6&labelColor=161B22" alt="TypeScript">
+  <img src="https://img.shields.io/badge/●_Tailwind-v4_Tokens-161B22?style=flat-square&color=38BDF8&labelColor=161B22" alt="Tailwind">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase">
-  <img src="https://img.shields.io/badge/Transactional-Email-EA4335?style=flat-square&logo=gmail&logoColor=white" alt="Transactional Email">
-  <img src="https://img.shields.io/badge/SQLAlchemy-2.0_Async-D43D31?style=flat-square&logo=python&logoColor=white" alt="SQLAlchemy 2.0">
-  <img src="https://img.shields.io/badge/Razorpay-Escrow_Engine-02042B?style=flat-square&logo=razorpay&logoColor=0088FF" alt="Razorpay">
-  <img src="https://img.shields.io/badge/Leaflet-GPS_Maps-199900?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet">
-  <img src="https://img.shields.io/badge/Pytest-73_Passed_100%25-22C55E?style=flat-square&logo=pytest&logoColor=white" alt="Pytest 73 Passed">
-  <img src="https://img.shields.io/badge/Milo_AI-7--Stage_RAG-7C3AED?style=flat-square&logo=google&logoColor=D4AF37" alt="Milo AI">
+  <img src="https://img.shields.io/badge/●_Supabase-Auth-161B22?style=flat-square&color=3ECF8E&labelColor=161B22" alt="Supabase">
+  <img src="https://img.shields.io/badge/●_Transactional-Email-161B22?style=flat-square&color=EA4335&labelColor=161B22" alt="Email">
+  <img src="https://img.shields.io/badge/●_SQLAlchemy-2.0_Async-161B22?style=flat-square&color=D43D31&labelColor=161B22" alt="SQLAlchemy">
+  <img src="https://img.shields.io/badge/●_Razorpay-Escrow_Engine-161B22?style=flat-square&color=0088FF&labelColor=161B22" alt="Razorpay">
+  <img src="https://img.shields.io/badge/●_Leaflet-GPS_Maps-161B22?style=flat-square&color=199900&labelColor=161B22" alt="Leaflet">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/●_Pytest-73_Passed_100%25-161B22?style=flat-square&color=22C55E&labelColor=161B22" alt="Pytest">
+  <img src="https://img.shields.io/badge/●_Milo_AI-7--Stage_RAG-161B22?style=flat-square&color=D4AF37&labelColor=161B22" alt="Milo AI">
 </p>
 
 <p align="center">
@@ -44,8 +48,8 @@
 </p>
 
 > [!TIP]
-> 🎨 **Interactive 4-Look Visual Showcase**:
-> Open [`docs/readme_designs_showcase.html`](docs/readme_designs_showcase.html) in your browser to inspect 4 innovative visual styles, animated logo effects, custom badge designs, and live layout themes!
+> 🎨 **Interactive Design Showcase**:
+> Open [`docs/readme_designs_showcase.html`](docs/readme_designs_showcase.html) in your browser to inspect the **Master Fusion** in real-time with CSS animated aura halos, glowing capsule pins, and interactive layout toggles!
 
 ---
 
