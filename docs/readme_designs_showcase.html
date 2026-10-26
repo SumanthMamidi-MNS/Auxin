@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auxin README — 5 Premium Design Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0D1117;
+      --card-dark: #161B22;
+      --border-dark: #30363D;
+      --text-main: #E6EDF3;
+      --text-muted: #8B949E;
+      --accent-green: #22C55E;
+      --forest-dark: #052E16;
+      --harvest-gold: #D4AF37;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* Top Control Banner */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(22, 27, 34, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .top-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #FFF;
+    }
+
+    .top-title span {
+      background: linear-gradient(135deg, #22C55E, #D4AF37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tab-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      background: #21262D;
+      border: 1px solid #363B42;
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      background: #30363D;
+      color: #FFF;
+    }
+
+    .tab-btn.active {
+      background: #1B4332;
+      border-color: #22C55E;
+      color: #4ADE80;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.25);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 940px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .design-card {
+      display: none;
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 40px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.4);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .design-card.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* GitHub Preview Styles */
+    .preview-header {
+      border-bottom: 1px solid #21262D;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preview-badge-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #238636;
+      color: #FFF;
+    }
+
+    .gh-center {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo-img {
+      transition: transform 0.2s;
+    }
+    .logo-img:hover {
+      transform: scale(1.04);
+    }
+
+    .gh-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 12px 0 6px;
+      color: #FFF;
+    }
+
+    .gh-subtitle {
+      font-size: 0.95rem;
+      color: #8B949E;
+      margin-bottom: 18px;
+    }
+
+    .live-showcase-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .live-showcase-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .badge-rack {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+      overflow: hidden;
+      line-height: 1;
+      height: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .badge-left {
+      background: #21262D;
+      color: #C9D1D9;
+      padding: 0 8px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .badge-right {
+      padding: 0 8px;
+      height: 100%;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .gh-divider {
+      height: 1px;
+      background: #30363D;
+      margin: 28px 0;
+    }
+
+    /* Collapsible Subparts Styles */
+    details.gh-details {
+      background: #0D1117;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    details.gh-details[open] {
+      border-color: #3FB950;
+    }
+
+    summary.gh-summary {
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #E6EDF3;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #161B22;
+      transition: background 0.2s;
+    }
+
+    summary.gh-summary:hover {
+      background: #1F242C;
+      color: #58A6FF;
+    }
+
+    .details-body {
+      padding: 16px;
+      font-size: 0.88rem;
+      color: #8B949E;
+      border-top: 1px solid #21262D;
+      line-height: 1.6;
+    }
+
+    .code-block {
+      background: #090D13;
+      border: 1px solid #21262D;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #7EE787;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .footer-section {
+      margin-top: 36px;
+      text-align: center;
+    }
+
+    .footer-author {
+      color: #8B949E;
+      font-size: 0.92rem;
+      margin-top: 14px;
+    }
+
+    .footer-author a {
+      color: #58A6FF;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .footer-author a:hover {
+      text-decoration: underline;
+    }
+
+    /* Action Callout */
+    .action-box {
+      margin-top: 24px;
+      background: rgba(35, 134, 54, 0.15);
+      border: 1px solid rgba(46, 160, 67, 0.4);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .action-btn {
+      background: #238636;
+      border: none;
+      color: #FFF;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .action-btn:hover {
+      background: #2EA043;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-bar">
+    <div class="top-title">
+      <img src="assets/logo-cropped.png" alt="Auxin" height="28" style="border-radius: 6px;">
+      <span>AUXIN</span> &mdash; 5 Premium README Varieties
+    </div>
+    <div class="tab-pills">
+      <button class="tab-btn active" onclick="switchDesign(1)">
+        🌿 1. Agritech Sovereign
+      </button>
+      <button class="tab-btn" onclick="switchDesign(2)">
+        ⚡ 2. Silicon Terminal
+      </button>
+      <button class="tab-btn" onclick="switchDesign(3)">
+        🏛️ 3. Enterprise Stack Matrix
+      </button>
+      <button class="tab-btn" onclick="switchDesign(4)">
+        💎 4. Minimalist Cupertino
+      </button>
+      <button class="tab-btn" onclick="switchDesign(5)">
+        📊 5. Executive Recruiter
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ==================== DESIGN 1 ==================== -->
+    <div id="design-1" class="design-card active">
+      <div class="preview-header">
+        <span class="preview-badge-label">Design 1 &bull; Recommended</span>
+        <span style="color: #8B949E; font-size: 0.85rem;">Curated Forest &amp; Earth Palette with Render &amp; Email Badges</span>
+      </div>
+
+      <div class="gh-center">
+        <img src="assets/logo-cropped.png" alt="Auxin Logo" height="68" class="logo-img">
+        <h1 class="gh-title" style="font-size: 2.2rem; margin-top: 10px;">AUXIN</h1>
+        <p class="gh-subtitle"><em>Autonomous Agritech Logistics &bull; Hyper-Local Direct-From-Farm Marketplace &bull; Milo AI Copilot</em></p>
+
+        <a href="https://auxin-landing.vercel.app/" target="_blank" class="live-showcase-btn">
+          <img src="https://img.shields.io/badge/🚀_Live_Production_Showcase-auxin--landing.vercel.app-052E16?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+        </a>
+
+        <!-- Forest & Earth Badges (With Render & Email) -->
+        <div class="badge-rack">
+          <img src="https://img.shields.io/badge/Python-3.12-052E16?style=flat-square&logo=python&logoColor=white" alt="Python">
+          <img src="https://img.shields.io/badge/FastAPI-Async_REST-1B4332?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+          <img src="https://img.shields.io/badge/Next.js_16-Turbopack-0F172A?style=flat-square&logo=next.js&logoColor=white" alt="Next.js">
+          <img src="https://img.shields.io/badge/React-19-1B4332?style=flat-square&logo=react&logoColor=white" alt="React 19">
+          <img src="https://img.shields.io/badge/TypeScript-5.0-1E293B?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+          <img src="https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-2D6A4F?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind">
+        </div>
+        <div class="badge-rack">
+          <img src="https://img.shields.io/badge/Render-Backend_Cloud-46E3B7?style=flat-square&logo=render&logoColor=black" alt="Render">
+          <img src="https://img.shields.io/badge/Supabase-Auth_&_Email-052E16?style=flat-square&logo=supabase&logoColor=white" alt="Supabase Email">
+          <img src="https://img.shields.io/badge/SQLAlchemy-2.0_Async-1B4332?style=flat-square&logo=python&logoColor=white" alt="SQLAlchemy">
+          <img src="https://img.shields.io/badge/Razorpay-Escrow_Engine-0F172A?style=flat-square&logo=razorpay&logoColor=0088FF" alt="Razorpay">
+          <img src="https://img.shields.io/badge/Leaflet-GPS_Maps-2D6A4F?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet">
+          <img src="https://img.shields.io/badge/Pytest-73_Passed_100%25-1B4332?style=flat-square&logo=pytest&logoColor=white" alt="Pytest">
+          <img src="https://img.shields.io/badge/Milo_AI-7--Stage_RAG-D4AF37?style=flat-square&logo=google&logoColor=black" alt="Milo AI">
+        </div>
+      </div>
+
+      <div class="gh-divider"></div>
+
+      <!-- Collapsible Subparts Demo -->
+      <h3 style="font-family: 'Outfit'; margin-bottom: 12px; color: #FFF;">Interactive Collapsible Subparts Example</h3>
+      
+      <details class="gh-details" open>
+        <summary class="gh-summary">
+          <span>1.1 The Multi-Tier Broker Problem (Click to collapse)</span>
+          <span style="font-size: 0.8rem; color: #3FB950;">[Toggle]</span>
+        </summary>
+        <div class="details-body">
+          In traditional regional supply chains, freshly harvested crops pass through 4 to 6 tiers of commission agents (arhtiyas), wholesale mandis, and brokers before reaching consumers.
+          <div class="code-block">
+TRADITIONAL CHAIN (BROKEN & PREDATORY):
+[Farmer] ──(₹15/kg)──► [Village Agent] ──► [APMC Mandi] ──► [Retailer] ──(₹60/kg)──► [Consumer]
+                        ▲ 48–72h delay • 30% spoilage • 75% margin lost to middlemen ▲
+          </div>
+        </div>
+      </details>
+
+      <details class="gh-details">
+        <summary class="gh-summary">
+          <span>5.1 25 KM Haversine Mathematical Distance Formulation</span>
+          <span style="font-size: 0.8rem; color: #8B949E;">[Expand]</span>
+        </summary>
+        <div class="details-body">
+          Auxin enforces a strict 25-kilometer spherical distance boundary calculated directly in the data access layer using great-circle trigonometry.
+          <div class="code-block">
+def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+    a = math.sin(dphi / 2.0) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2.0) ** 2
+    return 6371.0088 * (2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a)))
+          </div>
+        </div>
+      </details>
+
+      <div class="gh-divider"></div>
+
+      <div class="footer-section">
+        <h4 style="color: #FFF; font-size: 1.1rem; margin-bottom: 6px;">License</h4>
+        <p style="color: #8B949E; font-size: 0.9rem;">Distributed under the <strong>MIT License</strong>. See <code style="color: #79C0FF;">LICENSE</code> for details.</p>
+        <div class="gh-divider" style="margin: 18px auto; width: 60%;"></div>
+        <p class="footer-author">Designed &amp; Developed by <a href="https://github.com/SumanthMamidi-MNS" target="_blank">Sumanth Mamidi</a></p>
+      </div>
+    </div>
+
+
+    <!-- ==================== DESIGN 2 ==================== -->
+    <div id="design-2" class="design-card">
+      <div class="preview-header">
+        <span class="preview-badge-label" style="background: #00E676; color: #000;">Design 2 &bull; Cyberpunk Terminal</span>
+        <span style="color: #8B949E; font-size: 0.85rem;">High-contrast obsidian base, neon accents, and developer terminal tags</span>
+      </div>
+
+      <div class="gh-center">
+        <div style="display: inline-block; padding: 10px; background: #0D1117; border: 1px solid #30363D; border-radius: 16px; margin-bottom: 12px;">
+          <img src="assets/logo-cropped.png" alt="Auxin Logo" height="60" class="logo-img">
+        </div>
+        <h1 class="gh-title" style="font-family: 'JetBrains Mono', monospace; font-size: 2rem; color: #00E676;">&gt; AUXIN.EXE</h1>
+        <p class="gh-subtitle" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">[Autonomous Agritech Logistics Engine &bull; Hyper-Local 25km Mesh &bull; Milo AI RAG]</p>
+
+        <a href="https://auxin-landing.vercel.app/" target="_blank" class="live-showcase-btn">
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: #0D1117; border: 1px solid #00E676; padding: 8px 18px; border-radius: 8px; color: #FFF; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #00E676; box-shadow: 0 0 10px #00E676;"></span>
+            <span>https://auxin-landing.vercel.app</span>
+          </div>
+        </a>
+
+        <!-- Cyberpunk Monolith Pills -->
+        <div class="badge-rack">
+          <img src="https://img.shields.io/badge/RUNTIME-PYTHON_3.12-black?style=for-the-badge&logo=python&logoColor=00E676" alt="Python">
+          <img src="https://img.shields.io/badge/SERVER-FASTAPI_ASYNC-black?style=for-the-badge&logo=fastapi&logoColor=00E676" alt="FastAPI">
+          <img src="https://img.shields.io/badge/CLIENT-NEXT.JS_16-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next">
+          <img src="https://img.shields.io/badge/CLOUD-RENDER_API-black?style=for-the-badge&logo=render&logoColor=46E3B7" alt="Render">
+        </div>
+        <div class="badge-rack">
+          <img src="https://img.shields.io/badge/AUTH-SUPABASE_EMAIL-black?style=for-the-badge&logo=supabase&logoColor=3ECF8E" alt="Supabase">
+          <img src="https://img.shields.io/badge/ESCROW-RAZORPAY_HOLD-black?style=for-the-badge&logo=razorpay&logoColor=0088FF" alt="Razorpay">
+          <img src="https://img.shields.io/badge/COPILOT-MILO_AGRO_RAG-black?style=for-the-badge&logo=google&logoColor=D4AF37" alt="Milo">
+          <img src="https://img.shields.io/badge/VERIFY-73_TESTS_PASS-black?style=for-the-badge&logo=pytest&logoColor=00E676" alt="Pytest">
+        </div>
+      </div>
+
+      <div class="gh-divider"></div>
+
+      <!-- Collapsible Terminal Subpart -->
+      <details class="gh-details" open style="border-color: #00E676;">
+        <summary class="gh-summary" style="font-family: 'JetBrains Mono', monospace; color: #00E676;">
+          <span>[+] EXEC_STAGE_06: TWO-PHASE ATOMIC ESCROW COMMERCE</span>
+        </summary>
+        <div class="details-body" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+          &gt; Step 1: Customer authorizes cart funds -&gt; Locked in Razorpay Escrow Vault.<br>
+          &gt; Step 2: Courier delivers produce within 25km boundary.<br>
+          &gt; Step 3: Customer validates freshness and inputs single-use 6-digit OTP.<br>
+          &gt; Step 4: Atomic DB transaction releases ₹40 to Courier Wallet + Net Balance to Farmer Bank.
+        </div>
+      </details>
+
+      <div class="gh-divider"></div>
+      <div class="footer-section">
+        <p class="footer-author" style="font-family: 'JetBrains Mono', monospace;">Architected &amp; Engineered by <a href="https://github.com/SumanthMamidi-MNS" target="_blank">Sumanth Mamidi</a></p>
+      </div>
+    </div>
+
+
+    <!-- ==================== DESIGN 3 ==================== -->
+    <div id="design-3" class="design-card">
+      <div class="preview-header">
+        <span class="preview-badge-label" style="background: #1F6FEB;">Design 3 &bull; Enterprise Stack Matrix</span>
+        <span style="color: #8B949E; font-size: 0.85rem;">Layered 4-quadrant architectural breakdown with clean category chips</span>
+      </div>
+
+      <div class="gh-center">
+        <img src="assets/logo-cropped.png" alt="Auxin Logo" height="64" class="logo-img">
+        <h1 class="gh-title" style="font-size: 2.1rem;">AUXIN</h1>
+        <p class="gh-subtitle">Enterprise Autonomous Agritech Platform &bull; Hyper-Local Commerce Mesh</p>
+
+        <a href="https://auxin-landing.vercel.app/" target="_blank" class="live-showcase-btn">
+          <img src="https://img.shields.io/badge/⚡_Live_Vercel_Production-auxin--landing.vercel.app-0F172A?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+        </a>
+
+        <!-- Categorized Stack Matrix -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 18px 0; text-align: left;">
+          <div style="background: #0D1117; border: 1px solid #30363D; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #58A6FF; text-transform: uppercase; margin-bottom: 6px;">1. Backend &amp; Cloud Host</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <span class="badge-tag"><span class="badge-left">Core</span><span class="badge-right" style="background: #052E16;">Python 3.12</span></span>
+              <span class="badge-tag"><span class="badge-left">API</span><span class="badge-right" style="background: #1B4332;">FastAPI</span></span>
+              <span class="badge-tag"><span class="badge-left">Host</span><span class="badge-right" style="background: #46E3B7; color: #000;">Render</span></span>
+            </div>
+          </div>
+
+          <div style="background: #0D1117; border: 1px solid #30363D; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #3FB950; text-transform: uppercase; margin-bottom: 6px;">2. Frontend &amp; State</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <span class="badge-tag"><span class="badge-left">SSR</span><span class="badge-right" style="background: #0F172A;">Next.js 16</span></span>
+              <span class="badge-tag"><span class="badge-left">UI</span><span class="badge-right" style="background: #2D6A4F;">Tailwind v4</span></span>
+              <span class="badge-tag"><span class="badge-left">State</span><span class="badge-right" style="background: #1E293B;">Zustand</span></span>
+            </div>
+          </div>
+
+          <div style="background: #0D1117; border: 1px solid #30363D; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #D29922; text-transform: uppercase; margin-bottom: 6px;">3. Data, Auth &amp; Emails</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <span class="badge-tag"><span class="badge-left">Auth</span><span class="badge-right" style="background: #052E16;">Supabase</span></span>
+              <span class="badge-tag"><span class="badge-left">Email</span><span class="badge-right" style="background: #3ECF8E; color: #000;">Transactional</span></span>
+              <span class="badge-tag"><span class="badge-left">ORM</span><span class="badge-right" style="background: #1B4332;">SQLAlchemy</span></span>
+            </div>
+          </div>
+
+          <div style="background: #0D1117; border: 1px solid #30363D; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #A371F7; text-transform: uppercase; margin-bottom: 6px;">4. AI Copilot &amp; Quality</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <span class="badge-tag"><span class="badge-left">Copilot</span><span class="badge-right" style="background: #D4AF37; color: #000;">Milo RAG</span></span>
+              <span class="badge-tag"><span class="badge-left">LLM</span><span class="badge-right" style="background: #5243AA;">Gemini 2.5</span></span>
+              <span class="badge-tag"><span class="badge-left">QA</span><span class="badge-right" style="background: #238636;">73/73 Pytest</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gh-divider"></div>
+
+      <details class="gh-details" open>
+        <summary class="gh-summary">
+          <span>8.1 Full System Architecture Topology</span>
+          <span style="font-size: 0.8rem; color: #58A6FF;">[View Architecture]</span>
+        </summary>
+        <div class="details-body">
+          Next.js App Router clients communicate through Supabase JWT RBAC to the asynchronous FastAPI gateway hosted on Render, connecting to PostgreSQL and Razorpay Escrow webhooks.
+        </div>
+      </details>
+
+      <div class="gh-divider"></div>
+      <div class="footer-section">
+        <p class="footer-author">Designed &amp; Developed by <a href="https://github.com/SumanthMamidi-MNS" target="_blank">Sumanth Mamidi</a></p>
+      </div>
+    </div>
+
+
+    <!-- ==================== DESIGN 4 ==================== -->
+    <div id="design-4" class="design-card">
+      <div class="preview-header">
+        <span class="preview-badge-label" style="background: #8957E5;">Design 4 &bull; Minimalist Cupertino</span>
+        <span style="color: #8B949E; font-size: 0.85rem;">Distraction-free Apple/Stripe micro-pills with minimal vertical height</span>
+      </div>
+
+      <div class="gh-center">
+        <img src="assets/logo-cropped.png" alt="Auxin Logo" height="52" class="logo-img" style="border-radius: 12px;">
+        <h1 class="gh-title" style="font-size: 1.9rem; letter-spacing: -0.01em;">AUXIN</h1>
+        <p class="gh-subtitle" style="font-size: 0.88rem;">Autonomous Agritech Logistics &bull; Hyper-Local Marketplace</p>
+
+        <a href="https://auxin-landing.vercel.app/" target="_blank" class="live-showcase-btn">
+          <img src="https://img.shields.io/badge/Live_App-auxin--landing.vercel.app-238636?style=flat&logo=vercel&logoColor=white" alt="Live Demo">
+        </a>
+
+        <!-- Clean Micro-Pills -->
+        <div class="badge-rack">
+          <img src="https://img.shields.io/badge/Python_3.12-21262D?style=flat&logo=python&logoColor=3776AB" alt="Python">
+          <img src="https://img.shields.io/badge/FastAPI-21262D?style=flat&logo=fastapi&logoColor=009688" alt="FastAPI">
+          <img src="https://img.shields.io/badge/Render-21262D?style=flat&logo=render&logoColor=46E3B7" alt="Render">
+          <img src="https://img.shields.io/badge/Next.js_16-21262D?style=flat&logo=next.js&logoColor=white" alt="Next">
+          <img src="https://img.shields.io/badge/Supabase-21262D?style=flat&logo=supabase&logoColor=3ECF8E" alt="Supabase">
+          <img src="https://img.shields.io/badge/Emails-21262D?style=flat&logo=gmail&logoColor=EA4335" alt="Email">
+          <img src="https://img.shields.io/badge/Razorpay-21262D?style=flat&logo=razorpay&logoColor=0088FF" alt="Razorpay">
+          <img src="https://img.shields.io/badge/Milo_AI-21262D?style=flat&logo=google&logoColor=D4AF37" alt="Milo">
+          <img src="https://img.shields.io/badge/Pytest_100%25-21262D?style=flat&logo=pytest&logoColor=22C55E" alt="Pytest">
+        </div>
+      </div>
+
+      <div class="gh-divider"></div>
+
+      <details class="gh-details" open>
+        <summary class="gh-summary">
+          <span>7.1 Cryptographic Doorstep OTP Verification</span>
+        </summary>
+        <div class="details-body">
+          Generated via Python secrets CSPRNG. Stored as salted SHA-256 hash with 3-attempt bounded retries.
+        </div>
+      </details>
+
+      <div class="gh-divider"></div>
+      <div class="footer-section">
+        <p class="footer-author">Designed &amp; Developed by <a href="https://github.com/SumanthMamidi-MNS" target="_blank">Sumanth Mamidi</a></p>
+      </div>
+    </div>
+
+
+    <!-- ==================== DESIGN 5 ==================== -->
+    <div id="design-5" class="design-card">
+      <div class="preview-header">
+        <span class="preview-badge-label" style="background: #DA3633;">Design 5 &bull; Executive Recruiter Dashboard</span>
+        <span style="color: #8B949E; font-size: 0.85rem;">KPI metrics-driven layout tailored for hiring managers, recruiters, and investors</span>
+      </div>
+
+      <div class="gh-center">
+        <img src="assets/logo-cropped.png" alt="Auxin Logo" height="66" class="logo-img">
+        <h1 class="gh-title" style="font-size: 2.3rem;">AUXIN</h1>
+        <p class="gh-subtitle">Direct-From-Farm Autonomous Agritech Logistics &bull; Escrow Commerce</p>
+
+        <!-- KPI Metrics Ribbon (Directly in Header) -->
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 16px 0;">
+          <span style="background: #052E16; border: 1px solid #22C55E; color: #4ADE80; font-size: 0.78rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">
+            🌾 +300% Cultivator Margin
+          </span>
+          <span style="background: #0F172A; border: 1px solid #38BDF8; color: #7DD3FC; font-size: 0.78rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">
+            ⏱️ &lt; 2-Hour Harvest-to-Door SLA
+          </span>
+          <span style="background: #2D1A05; border: 1px solid #D4AF37; color: #FDE047; font-size: 0.78rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">
+            📍 25 KM Strict Geofence
+          </span>
+          <span style="background: #1E1B4B; border: 1px solid #818CF8; color: #C7D2FE; font-size: 0.78rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">
+            ✅ 73/73 Automated Tests Passing
+          </span>
+        </div>
+
+        <a href="https://auxin-landing.vercel.app/" target="_blank" class="live-showcase-btn">
+          <img src="https://img.shields.io/badge/Explore_Live_Ecosystem-auxin--landing.vercel.app-238636?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+        </a>
+
+        <!-- Badges with Render & Email -->
+        <div class="badge-rack">
+          <img src="https://img.shields.io/badge/Python_3.12-FastAPI-1B4332?style=flat-square&logo=python&logoColor=white" alt="Python">
+          <img src="https://img.shields.io/badge/Backend_Host-Render_Cloud-46E3B7?style=flat-square&logo=render&logoColor=black" alt="Render">
+          <img src="https://img.shields.io/badge/Frontend-Next.js_16-0F172A?style=flat-square&logo=next.js&logoColor=white" alt="Next">
+          <img src="https://img.shields.io/badge/Database-PostgreSQL_Async-052E16?style=flat-square&logo=postgresql&logoColor=white" alt="Postgres">
+          <img src="https://img.shields.io/badge/Auth_&_Email-Supabase_Cloud-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase Email">
+          <img src="https://img.shields.io/badge/Escrow-Razorpay_2_Phase-0F172A?style=flat-square&logo=razorpay&logoColor=0088FF" alt="Razorpay">
+          <img src="https://img.shields.io/badge/AI_Engine-Gemini_2.5_Flash-D4AF37?style=flat-square&logo=google&logoColor=black" alt="Gemini">
+        </div>
+      </div>
+
+      <div class="gh-divider"></div>
+
+      <details class="gh-details" open>
+        <summary class="gh-summary">
+          <span>Executive Summary &bull; The Problem &amp; The Auxin Breakthrough</span>
+        </summary>
+        <div class="details-body">
+          Traditional supply chains trap farmers in predatory 4–6 tier broker networks where 75% of profit is siphoned away and 30% of produce spoils in transit. Auxin eliminates intermediaries through an atomic two-phase escrow commerce engine and turn-by-turn mobile delivery HUD.
+        </div>
+      </details>
+
+      <div class="gh-divider"></div>
+      <div class="footer-section">
+        <p class="footer-author">Designed &amp; Developed by <a href="https://github.com/SumanthMamidi-MNS" target="_blank">Sumanth Mamidi</a></p>
+      </div>
+    </div>
+
+    <!-- Live Choice Selector Box -->
+    <div class="action-box">
+      <div>
+        <h4 style="color: #FFF; font-size: 1rem; margin-bottom: 4px;">Choose Your Preferred Design</h4>
+        <p style="color: #8B949E; font-size: 0.85rem;">Click any tab above to inspect. Let me know which variety (1, 2, 3, 4, or 5) you would like applied to the main README!</p>
+      </div>
+      <button class="action-btn" onclick="alert('Great choice! Tell the assistant which number (1-5) you prefer to deploy it to the root README.')">
+        Select Design
+      </button>
+    </div>
+
+  </main>
+
+  <script>
+    function switchDesign(num) {
+      // Update buttons
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        if (idx === num - 1) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Update cards
+      document.querySelectorAll('.design-card').forEach((card, idx) => {
+        if (idx === num - 1) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
