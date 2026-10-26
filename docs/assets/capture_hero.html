@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auxin README Assets Capture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #0D1117;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      gap: 50px;
+    }
+
+    /* ========================================================
+       1. HERO LOGO SECTION
+       ======================================================== */
+    #section-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px 40px;
+      background: transparent;
+      width: 860px;
+    }
+
+    .logo-aura-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      padding: 9px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.8px solid rgba(212, 175, 55, 0.65);
+      border-radius: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .logo-aura-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -18px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.55) 0%, rgba(234, 179, 8, 0.3) 35%, rgba(34, 197, 94, 0.18) 60%, transparent 75%);
+      border-radius: 32px;
+      filter: blur(18px);
+      z-index: -1;
+    }
+
+    .logo-img {
+      width: 66px;
+      height: 66px;
+      border-radius: 14px;
+      display: block;
+    }
+
+    .title-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 42px;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    .tagline-text {
+      color: #94A3B8;
+      font-size: 15.5px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    /* ========================================================
+       2. LIVE DEPLOYMENT PILL
+       ======================================================== */
+    #section-pill {
+      padding: 10px;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+    }
+
+    .live-fusion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #181938;
+      border: 1.5px solid #6366F1;
+      color: #FFFFFF;
+      padding: 11px 28px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.15px;
+      text-decoration: none;
+      box-shadow: 0 6px 26px rgba(99, 102, 241, 0.4);
+    }
+
+    .fusion-dot {
+      width: 10px;
+      height: 10px;
+      background: #818CF8;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #818CF8, 0 0 4px #818CF8;
+    }
+
+    /* ========================================================
+       3. GLASS CAPSULES BADGE RACK (3 TIERS)
+       ======================================================== */
+    #section-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      padding: 16px 24px;
+      background: transparent;
+      width: 920px;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      flex-wrap: nowrap;
+    }
+
+    .badge-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 7.5px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 9999px;
+      padding: 5.5px 14px 5.5px 10px;
+      font-size: 12.8px;
+      font-weight: 600;
+      color: #E2E8F0;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .badge-pin {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Pin Glows */
+    .pin-python { background: #3776AB; box-shadow: 0 0 7px #3776AB; }
+    .pin-fastapi { background: #009688; box-shadow: 0 0 7px #009688; }
+    .pin-render { background: #46E3B7; box-shadow: 0 0 7px #46E3B7; }
+    .pin-next { background: #FFFFFF; box-shadow: 0 0 7px #FFFFFF; }
+    .pin-react { background: #61DAFB; box-shadow: 0 0 7px #61DAFB; }
+    .pin-ts { background: #3178C6; box-shadow: 0 0 7px #3178C6; }
+    .pin-tailwind { background: #38BDF8; box-shadow: 0 0 7px #38BDF8; }
+    .pin-supabase { background: #3ECF8E; box-shadow: 0 0 7px #3ECF8E; }
+    .pin-email { background: #EA4335; box-shadow: 0 0 7px #EA4335; }
+    .pin-sql { background: #D43D31; box-shadow: 0 0 7px #D43D31; }
+    .pin-razorpay { background: #0088FF; box-shadow: 0 0 7px #0088FF; }
+    .pin-leaflet { background: #199900; box-shadow: 0 0 7px #199900; }
+    .pin-pytest { background: #22C55E; box-shadow: 0 0 7px #22C55E; }
+    .pin-milo { background: #D4AF37; box-shadow: 0 0 7px #D4AF37; }
+  </style>
+</head>
+<body>
+
+  <!-- Section 1: Hero Logo -->
+  <div id="section-logo">
+    <div class="logo-aura-wrap">
+      <img src="logo-cropped.png" alt="Auxin Logo" class="logo-img">
+    </div>
+    <div class="title-text">AUXIN</div>
+    <div class="tagline-text">Autonomous Agritech Logistics • Hyper-Local Direct-From-Farm Marketplace • Milo AI Copilot</div>
+  </div>
+
+  <!-- Section 2: Live Deployment Pill -->
+  <div id="section-pill">
+    <div class="live-fusion-pill">
+      <span class="fusion-dot"></span>
+      <span>Open Live Deployment →</span>
+    </div>
+  </div>
+
+  <!-- Section 3: 3-Tier Badges Rack -->
+  <div id="section-badges">
+    <!-- Row 1: Core Web & Backend Stack (7) -->
+    <div class="badge-row">
+      <span class="badge-capsule"><span class="badge-pin pin-python"></span>Python 3.12</span>
+      <span class="badge-capsule"><span class="badge-pin pin-fastapi"></span>FastAPI Async</span>
+      <span class="badge-capsule"><span class="badge-pin pin-render"></span>Render Cloud</span>
+      <span class="badge-capsule"><span class="badge-pin pin-next"></span>Next.js 16</span>
+      <span class="badge-capsule"><span class="badge-pin pin-react"></span>React 19</span>
+      <span class="badge-capsule"><span class="badge-pin pin-ts"></span>TypeScript 5</span>
+      <span class="badge-capsule"><span class="badge-pin pin-tailwind"></span>Tailwind v4</span>
+    </div>
+
+    <!-- Row 2: Persistence, Auth & Integrations (5) -->
+    <div class="badge-row">
+      <span class="badge-capsule"><span class="badge-pin pin-supabase"></span>Supabase Auth</span>
+      <span class="badge-capsule"><span class="badge-pin pin-email"></span>Transactional Email</span>
+      <span class="badge-capsule"><span class="badge-pin pin-sql"></span>SQLAlchemy 2.0</span>
+      <span class="badge-capsule"><span class="badge-pin pin-razorpay"></span>Razorpay Escrow</span>
+      <span class="badge-capsule"><span class="badge-pin pin-leaflet"></span>Leaflet GPS</span>
+    </div>
+
+    <!-- Row 3: Verification & AI (2) -->
+    <div class="badge-row">
+      <span class="badge-capsule"><span class="badge-pin pin-pytest"></span>73/73 Pytest (100%)</span>
+      <span class="badge-capsule"><span class="badge-pin pin-milo"></span>Milo AI RAG</span>
+    </div>
+  </div>
+
+</body>
+</html>

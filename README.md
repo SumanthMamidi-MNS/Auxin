@@ -1,55 +1,22 @@
 <p align="center">
-  <a href="https://auxin-landing.vercel.app/">
-    <img src="docs/assets/logo-cropped.png" alt="Auxin Logo" height="66" style="border-radius: 18px; padding: 7px; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(212, 175, 55, 0.65); box-shadow: 0 0 28px rgba(212, 175, 55, 0.45), 0 8px 24px rgba(0,0,0,0.5);">
-  </a>
+  <img src="docs/assets/readme_hero_logo.png" alt="Auxin" width="760">
 </p>
 
-<h1 align="center">
-  <strong>AUXIN</strong>
-</h1>
-
+<!-- Live Showcase Pill (Clickable Capsule from Look 3) -->
 <p align="center">
-  <em>Autonomous Agritech Logistics &bull; Hyper-Local Direct-From-Farm Marketplace &bull; Milo AI Copilot</em>
-</p>
-
-<!-- Live Showcase Pill (Violet Capsule from Look 3) -->
-<p align="center">
-  <a href="https://auxin-landing.vercel.app/">
-    <img src="https://img.shields.io/badge/Open_Live_Deployment_→-auxin--landing.vercel.app-1E1B4B?style=for-the-badge&logo=vercel&logoColor=818CF8" alt="Open Live Deployment">
+  <a href="https://auxin-landing.vercel.app/" target="_blank">
+    <img src="docs/assets/live_deployment_pill.png" alt="Open Live Deployment →" width="280">
   </a>
 </p>
 
 <!-- Glass Capsule Badges with Glowing Colored Pins (From Look 1) -->
 <p align="center">
-  <img src="https://img.shields.io/badge/●_Python-3.12-161B22?style=flat-square&color=3776AB&labelColor=161B22" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/●_FastAPI-Async-161B22?style=flat-square&color=009688&labelColor=161B22" alt="FastAPI">
-  <img src="https://img.shields.io/badge/●_Render-Cloud_Host-161B22?style=flat-square&color=46E3B7&labelColor=161B22" alt="Render">
-  <img src="https://img.shields.io/badge/●_Next.js-16_Turbopack-161B22?style=flat-square&color=FFFFFF&labelColor=161B22" alt="Next.js 16">
-  <img src="https://img.shields.io/badge/●_React-19-161B22?style=flat-square&color=61DAFB&labelColor=161B22" alt="React 19">
-  <img src="https://img.shields.io/badge/●_TypeScript-5.0-161B22?style=flat-square&color=3178C6&labelColor=161B22" alt="TypeScript">
-  <img src="https://img.shields.io/badge/●_Tailwind-v4_Tokens-161B22?style=flat-square&color=38BDF8&labelColor=161B22" alt="Tailwind">
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/●_Supabase-Auth-161B22?style=flat-square&color=3ECF8E&labelColor=161B22" alt="Supabase">
-  <img src="https://img.shields.io/badge/●_Transactional-Email-161B22?style=flat-square&color=EA4335&labelColor=161B22" alt="Email">
-  <img src="https://img.shields.io/badge/●_SQLAlchemy-2.0_Async-161B22?style=flat-square&color=D43D31&labelColor=161B22" alt="SQLAlchemy">
-  <img src="https://img.shields.io/badge/●_Razorpay-Escrow_Engine-161B22?style=flat-square&color=0088FF&labelColor=161B22" alt="Razorpay">
-  <img src="https://img.shields.io/badge/●_Leaflet-GPS_Maps-161B22?style=flat-square&color=199900&labelColor=161B22" alt="Leaflet">
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/●_Pytest-73_Passed_100%25-161B22?style=flat-square&color=22C55E&labelColor=161B22" alt="Pytest">
-  <img src="https://img.shields.io/badge/●_Milo_AI-7--Stage_RAG-161B22?style=flat-square&color=D4AF37&labelColor=161B22" alt="Milo AI">
+  <img src="docs/assets/badges_rack.png" alt="Auxin Technology Stack" width="820">
 </p>
 
 <p align="center">
   <strong>Auxin</strong> eliminates predatory multi-tiered broker syndicates by connecting regional farmers directly with consumers within a strict <strong>25 km hyper-local radius</strong>. Built with an atomic escrow commerce engine, turn-by-turn mobile delivery HUD, cryptographic doorstep OTP proof, and <strong>Milo</strong> — a domain-specialized agricultural AI copilot.
 </p>
-
-> [!TIP]
-> 🎨 **Interactive Design Showcase**:
-> Open [`docs/readme_designs_showcase.html`](docs/readme_designs_showcase.html) in your browser to inspect the **Master Fusion** in real-time with CSS animated aura halos, glowing capsule pins, and interactive layout toggles!
 
 ---
 
