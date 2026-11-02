@@ -1,117 +1,131 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="185" height="32" viewBox="0 0 185 32" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="209" height="38" viewBox="0 0 209 38" fill="none">
   <defs>
-    <!-- Background Gradient -->
+    <!-- Background Linear Gradient -->
     <linearGradient id="bg_email" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#181E29" stop-opacity="0.96"/>
-      <stop offset="100%" stop-color="#0E131C" stop-opacity="0.98"/>
+      <stop offset="0%" stop-color="#19202C" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#0D121B" stop-opacity="0.98"/>
     </linearGradient>
 
-    <!-- Specular Sheen Gradient -->
-    <linearGradient id="sheen_email" x1="0%" y1="0%" x2="100%" y2="0%">
+    <!-- Top-to-Bottom Specular Sheen Gradient (Vertical sweep) -->
+    <linearGradient id="sheen_v_email" x1="0%" y1="0%" x2="40%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
       <stop offset="25%" stop-color="#FFFFFF" stop-opacity="0.08"/>
-      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.65"/>
       <stop offset="75%" stop-color="#FFFFFF" stop-opacity="0.08"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
 
     <!-- Ambient Aura Glow Filter -->
     <filter id="aura_email" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feGaussianBlur stdDeviation="3.2" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
 
-    <!-- Clip Path inside Capsule -->
+    <!-- Capsule Clip Path -->
     <clipPath id="clip_email">
-      <rect x="3" y="2" width="179" height="28" rx="14" />
+      <rect x="4" y="2" width="201" height="34" rx="17" />
     </clipPath>
 
-    <!-- Dual Engine Animations: CSS Keyframes + SMIL -->
+    <!-- Keyframe Animations (Top-to-Bottom Sweep + Glow Pulse) -->
     <style>
-      @keyframes sweep_email {
-        0% { transform: translateX(-70px); opacity: 0; }
-        12% { opacity: 1; }
-        48% { transform: translateX(235px); opacity: 1; }
-        52%, 100% { transform: translateX(235px); opacity: 0; }
+      @keyframes sweep_down_email {
+        0% {
+          transform: translateY(-45px) rotate(15deg);
+          opacity: 0;
+        }
+        12% {
+          opacity: 1;
+        }
+        45% {
+          transform: translateY(69px) rotate(15deg);
+          opacity: 1;
+        }
+        50%, 100% {
+          transform: translateY(69px) rotate(15deg);
+          opacity: 0;
+        }
       }
-      @keyframes border_email {
+      @keyframes aura_pulse_email {
         0%, 100% { stroke: rgba(255, 255, 255, 0.16); stroke-width: 1.2px; }
-        50% { stroke: #F87171; stroke-width: 1.6px; }
+        50% { stroke: #F87171; stroke-width: 1.8px; }
       }
-      @keyframes gem_email {
-        0%, 100% { transform: scale(0.92); transform-origin: 17px 16px; }
-        50% { transform: scale(1.18); transform-origin: 17px 16px; }
+      @keyframes gem_pulse_email {
+        0%, 100% { transform: scale(0.92); transform-origin: 20px 19px; }
+        50% { transform: scale(1.18); transform-origin: 20px 19px; }
       }
-      @keyframes spec_email {
+      @keyframes spec_glow_email {
         0%, 100% { fill: #94A3B8; }
         50% { fill: #F87171; }
       }
 
-      .sheen-beam {
-        animation: sweep_email 3.2s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      .sheen-down {
+        animation: sweep_down_email 3.8s infinite cubic-bezier(0.22, 1, 0.36, 1);
+        animation-delay: 1.95s;
       }
       .capsule-border {
-        animation: border_email 3.2s infinite ease-in-out;
+        animation: aura_pulse_email 3.8s infinite ease-in-out;
+        animation-delay: 1.95s;
       }
       .gem-pulse {
-        animation: gem_email 2.2s infinite ease-in-out;
+        animation: gem_pulse_email 2.2s infinite ease-in-out;
       }
-      .spec-glow {
-        animation: spec_email 3.2s infinite ease-in-out;
+      .spec-text {
+        animation: spec_glow_email 3.8s infinite ease-in-out;
+        animation-delay: 1.95s;
       }
     </style>
   </defs>
 
   <!-- Ambient Outer Glow Aura (Continuous Breathing) -->
-  <rect x="3" y="2" width="179" height="28" rx="14" fill="none" stroke="#F87171" opacity="0.35" filter="url(#aura_email)">
-    <animate attributeName="opacity" values="0.15;0.7;0.15" dur="3.2s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1;2.4;1" dur="3.2s" repeatCount="indefinite" />
+  <rect x="4" y="2" width="201" height="34" rx="17" fill="none" stroke="#F87171" opacity="0.38" filter="url(#aura_email)">
+    <animate attributeName="opacity" values="0.15;0.7;0.15" dur="3.8s" begin="1.95s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1;2.6;1" dur="3.8s" begin="1.95s" repeatCount="indefinite" />
   </rect>
 
   <!-- Dark Obsidian Base Capsule -->
-  <rect x="3" y="2" width="179" height="28" rx="14" fill="url(#bg_email)" />
+  <rect x="4" y="2" width="201" height="34" rx="17" fill="url(#bg_email)" />
 
   <!-- Animated Sharp Border with Living Glow -->
-  <rect class="capsule-border" x="3" y="2" width="179" height="28" rx="14" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.2">
-    <animate attributeName="stroke" values="rgba(255,255,255,0.16);#F87171;rgba(255,255,255,0.16)" dur="3.2s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.2;1.6;1.2" dur="3.2s" repeatCount="indefinite" />
+  <rect class="capsule-border" x="4" y="2" width="201" height="34" rx="17" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.3">
+    <animate attributeName="stroke" values="rgba(255,255,255,0.16);#F87171;rgba(255,255,255,0.16)" dur="3.8s" begin="1.95s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.2;1.8;1.2" dur="3.8s" begin="1.95s" repeatCount="indefinite" />
   </rect>
 
   <!-- Specular Top Rim Reflection -->
-  <path d="M 17 3 L 168 3" stroke="rgba(255, 255, 255, 0.28)" stroke-width="1" stroke-linecap="round" />
+  <path d="M 20 3.2 L 189 3.2" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1.1" stroke-linecap="round" />
 
-  <!-- CONTINUOUS SHINY GLASS SWEEP (Slanted Specular Sheen Beam) -->
+  <!-- CONTINUOUS TOP-TO-BOTTOM SHINY GLASS SWEEP -->
   <g clip-path="url(#clip_email)">
-    <polygon class="sheen-beam" points="0,0 38,0 16,28 -22,28" fill="url(#sheen_email)">
-      <animateTransform attributeName="transform" type="translate" from="-70 0" to="235 0" dur="3.2s" repeatCount="indefinite" />
-    </polygon>
+    <rect class="sheen-down" x="-20" y="-35" width="269" height="28" fill="url(#sheen_v_email)" transform="rotate(15)">
+      <animateTransform attributeName="transform" type="translate" from="0 -50" to="0 79" dur="3.8s" begin="1.95s" repeatCount="indefinite" />
+    </rect>
   </g>
 
   <!-- Pulsing Radar Beacon Ring from Gem -->
-  <circle cx="17" cy="16" r="3.8" fill="none" stroke="#F87171">
-    <animate attributeName="r" values="3.8;8.5;11.5" dur="2.2s" repeatCount="indefinite" />
-    <animate attributeName="opacity" values="0.85;0.3;0" dur="2.2s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.5;1;0.2" dur="2.2s" repeatCount="indefinite" />
+  <circle cx="20" cy="19" r="4.2" fill="none" stroke="#F87171">
+    <animate attributeName="r" values="4.2;9.5;13" dur="2.2s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.85;0.25;0" dur="2.2s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.6;1;0.2" dur="2.2s" repeatCount="indefinite" />
   </circle>
 
   <!-- Glowing Gem Core -->
-  <circle class="gem-pulse" cx="17" cy="16" r="3.8" fill="#F87171">
-    <animate attributeName="r" values="3.5;4.3;3.5" dur="2.2s" repeatCount="indefinite" />
+  <circle class="gem-pulse" cx="20" cy="19" r="4.2" fill="#F87171">
+    <animate attributeName="r" values="3.8;4.8;3.8" dur="2.2s" repeatCount="indefinite" />
   </circle>
-  <circle cx="17" cy="16" r="1.5" fill="#FFFFFF" opacity="0.95" />
+  <circle cx="20" cy="19" r="1.6" fill="#FFFFFF" opacity="0.95" />
 
-  <!-- Title Text -->
-  <text x="29" y="18.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="11.8" font-weight="700" fill="#F8FAFC" letter-spacing="0.2px">Transactional</text>
+  <!-- Title Text (Enlarged to 12.8px) -->
+  <text x="34" y="22.8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="12.8" font-weight="700" fill="#F8FAFC" letter-spacing="0.25px">Transactional</text>
 
   <!-- Micro Divider Line -->
-  <line x1="131" y1="9.5" x2="131" y2="20.5" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1" />
+  <line x1="146" y1="11" x2="146" y2="25" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.1" />
 
-  <!-- Spec / Version Text (Subtle continuous brand color pulse) -->
-  <text class="spec-glow" x="138" y="18.2" font-family="'JetBrains Mono', Consolas, Monaco, monospace" font-size="10.5" font-weight="700" fill="#94A3B8" letter-spacing="0.3px">
+  <!-- Spec / Version Text (Enlarged to 11.5px) -->
+  <text class="spec-text" x="155" y="22.5" font-family="'JetBrains Mono', Consolas, Monaco, monospace" font-size="11.5" font-weight="700" fill="#94A3B8" letter-spacing="0.3px">
     Email
-    <animate attributeName="fill" values="#94A3B8;#F87171;#94A3B8" dur="3.2s" repeatCount="indefinite" />
+    <animate attributeName="fill" values="#94A3B8;#F87171;#94A3B8" dur="3.8s" begin="1.95s" repeatCount="indefinite" />
   </text>
 </svg>

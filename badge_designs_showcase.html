@@ -281,27 +281,27 @@
     .badge-prismatic {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 5px 12px 5px 8px;
+      gap: 10px;
+      padding: 6px 14px 6px 10px;
       background: rgba(18, 24, 38, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1.2px solid rgba(255, 255, 255, 0.16);
+      border: 1.3px solid rgba(255, 255, 255, 0.16);
       border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       color: #F8FAFC;
       text-decoration: none;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      animation: continuousAura 3.4s infinite ease-in-out;
+      animation: continuousAura 3.8s infinite ease-in-out;
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
     }
     .badge-prismatic:hover {
       transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 10px 30px -4px var(--badge-glow-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 32px -4px var(--badge-glow-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
     .badge-prismatic:active {
       transform: translateY(0px) scale(0.97);
@@ -311,41 +311,41 @@
     @keyframes continuousAura {
       0%, 100% {
         border-color: rgba(255, 255, 255, 0.16);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35), 0 0 0px transparent, inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), 0 0 0px transparent, inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
       50% {
         border-color: var(--badge-color);
-        box-shadow: 0 6px 22px -2px rgba(0, 0, 0, 0.4), 0 0 16px var(--badge-glow-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.45), 0 0 18px var(--badge-glow-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.45);
       }
     }
 
     /* Prismatic Glowing Gem Node - Continuous Breathing & Core Radiation */
     .badge-prismatic-gem {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 9999px;
       background: var(--badge-color);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      box-shadow: 0 0 10px var(--badge-glow);
+      box-shadow: 0 0 12px var(--badge-glow);
       animation: gemBreathing 2.2s infinite ease-in-out;
     }
     @keyframes gemBreathing {
       0%, 100% {
         transform: scale(0.92);
-        box-shadow: 0 0 6px var(--badge-glow);
+        box-shadow: 0 0 8px var(--badge-glow);
       }
       50% {
-        transform: scale(1.18);
-        box-shadow: 0 0 18px var(--badge-glow), 0 0 6px #FFFFFF;
+        transform: scale(1.2);
+        box-shadow: 0 0 20px var(--badge-glow), 0 0 8px #FFFFFF;
       }
     }
     .badge-prismatic-gem::after {
       content: '';
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
       border-radius: 9999px;
       background: #FFFFFF;
       opacity: 0.95;
@@ -354,57 +354,61 @@
     /* Prismatic Tag Divider & Spec Tag */
     .badge-prismatic-divider {
       width: 1px;
-      height: 10px;
-      background: rgba(255, 255, 255, 0.2);
+      height: 12px;
+      background: rgba(255, 255, 255, 0.22);
     }
     .badge-prismatic-spec {
-      font-size: 10.5px;
+      font-size: 11.5px;
       font-family: 'JetBrains Mono', Consolas, monospace;
       color: var(--text-dim);
       font-weight: 700;
-      letter-spacing: 0.2px;
-      animation: specGlow 3.4s infinite ease-in-out;
+      letter-spacing: 0.3px;
+      animation: specGlow 3.8s infinite ease-in-out;
     }
     @keyframes specGlow {
       0%, 100% { color: var(--text-dim); }
       50% { color: var(--badge-color); }
     }
 
-    /* Specular Light Sweep - Continuous Real-Time Animation */
+    /* TOP-TO-BOTTOM Specular Light Sweep - Continuous Real-Time Animation */
     .badge-prismatic::before {
       content: '';
       position: absolute;
-      top: -60%;
-      left: -120%;
-      width: 60%;
-      height: 220%;
-      background: linear-gradient(65deg, transparent 0%, rgba(255, 255, 255, 0.05) 20%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-      transform: rotate(25deg);
+      left: -20%;
+      top: -60px;
+      width: 140%;
+      height: 35px;
+      background: linear-gradient(175deg, transparent 0%, rgba(255, 255, 255, 0.08) 25%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.08) 75%, transparent 100%);
+      transform: rotate(15deg);
       pointer-events: none;
-      animation: continuousGlassSweep 3.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      animation: continuousGlassSweepDown 3.8s infinite cubic-bezier(0.22, 1, 0.36, 1);
     }
-    @keyframes continuousGlassSweep {
-      0% { left: -120%; opacity: 0; }
+    @keyframes continuousGlassSweepDown {
+      0% { transform: translateY(-50px) rotate(15deg); opacity: 0; }
       12% { opacity: 1; }
-      48% { left: 160%; opacity: 1; }
-      55%, 100% { left: 160%; opacity: 0; }
+      45% { transform: translateY(60px) rotate(15deg); opacity: 1; }
+      50%, 100% { transform: translateY(60px) rotate(15deg); opacity: 0; }
     }
 
-    /* Staggered Light Wave Across Tech Stack */
-    .badge-prismatic:nth-child(1), .badge-prismatic:nth-child(1)::before { animation-delay: 0.0s; }
-    .badge-prismatic:nth-child(2), .badge-prismatic:nth-child(2)::before { animation-delay: 0.18s; }
-    .badge-prismatic:nth-child(3), .badge-prismatic:nth-child(3)::before { animation-delay: 0.36s; }
-    .badge-prismatic:nth-child(4), .badge-prismatic:nth-child(4)::before { animation-delay: 0.54s; }
-    .badge-prismatic:nth-child(5), .badge-prismatic:nth-child(5)::before { animation-delay: 0.72s; }
-    .badge-prismatic:nth-child(6), .badge-prismatic:nth-child(6)::before { animation-delay: 0.90s; }
-    .badge-prismatic:nth-child(7), .badge-prismatic:nth-child(7)::before { animation-delay: 1.08s; }
-    .badge-prismatic:nth-child(8), .badge-prismatic:nth-child(8)::before { animation-delay: 1.26s; }
-    .badge-prismatic:nth-child(9), .badge-prismatic:nth-child(9)::before { animation-delay: 1.44s; }
-    .badge-prismatic:nth-child(10), .badge-prismatic:nth-child(10)::before { animation-delay: 1.62s; }
-    .badge-prismatic:nth-child(11), .badge-prismatic:nth-child(11)::before { animation-delay: 1.80s; }
-    .badge-prismatic:nth-child(12), .badge-prismatic:nth-child(12)::before { animation-delay: 1.98s; }
-    .badge-prismatic:nth-child(13), .badge-prismatic:nth-child(13)::before { animation-delay: 2.16s; }
-    .badge-prismatic:nth-child(14), .badge-prismatic:nth-child(14)::before { animation-delay: 2.34s; }
+    /* Top-to-Bottom Waterfall Cascade across the rows */
+    .badge-prismatic:nth-child(1), .badge-prismatic:nth-child(1)::before { animation-delay: 0.70s; }
+    .badge-prismatic:nth-child(2), .badge-prismatic:nth-child(2)::before { animation-delay: 0.85s; }
+    .badge-prismatic:nth-child(3), .badge-prismatic:nth-child(3)::before { animation-delay: 1.00s; }
+    .badge-prismatic:nth-child(4), .badge-prismatic:nth-child(4)::before { animation-delay: 1.15s; }
+    .badge-prismatic:nth-child(5), .badge-prismatic:nth-child(5)::before { animation-delay: 1.30s; }
+    .badge-prismatic:nth-child(6), .badge-prismatic:nth-child(6)::before { animation-delay: 1.45s; }
+    .badge-prismatic:nth-child(7), .badge-prismatic:nth-child(7)::before { animation-delay: 1.60s; }
+    
+    /* Row 2 */
+    .badge-prismatic:nth-child(8), .badge-prismatic:nth-child(8)::before { animation-delay: 1.80s; }
+    .badge-prismatic:nth-child(9), .badge-prismatic:nth-child(9)::before { animation-delay: 1.95s; }
+    .badge-prismatic:nth-child(10), .badge-prismatic:nth-child(10)::before { animation-delay: 2.10s; }
+    .badge-prismatic:nth-child(11), .badge-prismatic:nth-child(11)::before { animation-delay: 2.25s; }
+    .badge-prismatic:nth-child(12), .badge-prismatic:nth-child(12)::before { animation-delay: 2.40s; }
+    
+    /* Row 3 */
+    .badge-prismatic:nth-child(13), .badge-prismatic:nth-child(13)::before { animation-delay: 2.70s; }
+    .badge-prismatic:nth-child(14), .badge-prismatic:nth-child(14)::before { animation-delay: 2.90s; }
 
 
     /* =========================================================================
@@ -655,10 +659,10 @@
         </div>
       </div>
 
-      <!-- Top Master Action Pill: Open Live Deployment -->
-      <div style="display: flex; justify-content: center; margin-bottom: 24px;">
+      <!-- Top Master Action Pill: Open Live Deployment (Enlarged) -->
+      <div style="display: flex; justify-content: center; margin-bottom: 28px;">
         <a href="https://auxin-landing.vercel.app/" target="_blank" style="text-decoration: none;">
-          <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="34" style="filter: drop-shadow(0 6px 18px rgba(99, 102, 241, 0.35)); transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="44" style="filter: drop-shadow(0 8px 24px rgba(99, 102, 241, 0.4)); transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
         </a>
       </div>
 
@@ -778,27 +782,26 @@
 
       <!-- Live Production SVG Preview (Identical to GitHub README embed) -->
       <div style="margin-top: 36px; padding-top: 28px; border-top: 1px dashed rgba(255, 255, 255, 0.12);">
-        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #10B981; font-weight: 800; margin-bottom: 8px;">Direct Production Vector SVGs (GitHub Embed Test)</div>
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #10B981; font-weight: 800; margin-bottom: 8px;">Direct Production Vector SVGs (GitHub Embed Test • Enlarged 34px • Top-to-Bottom Sheen)</div>
         <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">Below is the live rack rendered directly from <code>docs/assets/badges/*.svg</code> via standard <code>&lt;img&gt;</code> tags. Every badge is an independent animated file:</div>
         
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; align-items: center;">
-          <a href="https://www.python.org/" target="_blank"><img src="docs/assets/badges/python.svg" alt="Python 3.12" height="28"></a>
-          <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="28"></a>
-          <a href="https://render.com/" target="_blank"><img src="docs/assets/badges/render.svg" alt="Render Cloud" height="28"></a>
-          <a href="https://nextjs.org/" target="_blank"><img src="docs/assets/badges/nextjs.svg" alt="Next.js 16" height="28"></a>
-          <a href="https://react.dev/" target="_blank"><img src="docs/assets/badges/react.svg" alt="React 19" height="28"></a>
-          <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="28"></a>
-          <a href="https://tailwindcss.com/" target="_blank"><img src="docs/assets/badges/tailwind.svg" alt="Tailwind v4" height="28"></a>
-          <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="28"></a>
-          <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Transactional Email" height="28"></a>
-          <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="28"></a>
-          <a href="https://razorpay.com/" target="_blank"><img src="docs/assets/badges/razorpay.svg" alt="Razorpay Escrow" height="28"></a>
-          <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="28"></a>
-          <a href="#pytest" target="_blank"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="28"></a>
-          <a href="#milo" target="_blank"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="28"></a>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 16px; align-items: center;">
+          <a href="https://www.python.org/" target="_blank"><img src="docs/assets/badges/python.svg" alt="Python 3.12" height="34"></a>
+          <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="34"></a>
+          <a href="https://render.com/" target="_blank"><img src="docs/assets/badges/render.svg" alt="Render Cloud" height="34"></a>
+          <a href="https://nextjs.org/" target="_blank"><img src="docs/assets/badges/nextjs.svg" alt="Next.js 16" height="34"></a>
+          <a href="https://react.dev/" target="_blank"><img src="docs/assets/badges/react.svg" alt="React 19" height="34"></a>
+          <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="34"></a>
+          <a href="https://tailwindcss.com/" target="_blank"><img src="docs/assets/badges/tailwind.svg" alt="Tailwind v4" height="34"></a>
+          <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="34"></a>
+          <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Transactional Email" height="34"></a>
+          <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="34"></a>
+          <a href="https://razorpay.com/" target="_blank"><img src="docs/assets/badges/razorpay.svg" alt="Razorpay Escrow" height="34"></a>
+          <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="34"></a>
+          <a href="#pytest" target="_blank"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="34"></a>
+          <a href="#milo" target="_blank"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="34"></a>
         </div>
       </div>
-    </section>
     </section>
 
 
