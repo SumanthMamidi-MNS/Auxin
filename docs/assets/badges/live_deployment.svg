@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="210" height="34" viewBox="0 0 210 34" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="216" height="38" viewBox="0 0 216 38" fill="none">
   <defs>
     <linearGradient id="bg_live" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.95"/>
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.96"/>
       <stop offset="100%" stop-color="#0F172A" stop-opacity="0.98"/>
     </linearGradient>
     <linearGradient id="sheen_live" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.6"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
-    <filter id="aura_live" x="-40%" y="-40%" width="180%" height="180%">
+    <filter id="aura_live" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="3.5" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
@@ -17,46 +17,64 @@
       </feMerge>
     </filter>
     <clipPath id="clip_live">
-      <rect x="1" y="1" width="208" height="32" rx="16" />
+      <rect x="3" y="2" width="210" height="34" rx="17" />
     </clipPath>
+    <style>
+      @keyframes sweep_live {
+        0% { transform: translateX(-80px); opacity: 0; }
+        12% { opacity: 1; }
+        48% { transform: translateX(250px); opacity: 1; }
+        52%, 100% { transform: translateX(250px); opacity: 0; }
+      }
+      @keyframes border_live {
+        0%, 100% { stroke: #6366F1; }
+        50% { stroke: #A5B4FC; }
+      }
+      .live-sheen {
+        animation: sweep_live 2.8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .live-border {
+        animation: border_live 2.8s infinite ease-in-out;
+      }
+    </style>
   </defs>
 
   <!-- Ambient Outer Glow Aura -->
-  <rect x="2" y="2" width="206" height="30" rx="15" fill="none" stroke="#818CF8" opacity="0.4" filter="url(#aura_live)">
+  <rect x="3" y="2" width="210" height="34" rx="17" fill="none" stroke="#818CF8" opacity="0.4" filter="url(#aura_live)">
     <animate attributeName="opacity" values="0.25;0.75;0.25" dur="2.8s" repeatCount="indefinite" />
     <animate attributeName="stroke-width" values="1.2;2.8;1.2" dur="2.8s" repeatCount="indefinite" />
   </rect>
 
   <!-- Base Capsule -->
-  <rect x="1" y="1" width="208" height="32" rx="16" fill="url(#bg_live)" />
+  <rect x="3" y="2" width="210" height="34" rx="17" fill="url(#bg_live)" />
 
   <!-- Animated Border -->
-  <rect x="1" y="1" width="208" height="32" rx="16" fill="none" stroke="#6366F1" stroke-width="1.4">
+  <rect class="live-border" x="3" y="2" width="210" height="34" rx="17" fill="none" stroke="#6366F1" stroke-width="1.4">
     <animate attributeName="stroke" values="#6366F1;#A5B4FC;#6366F1" dur="2.8s" repeatCount="indefinite" />
   </rect>
 
   <!-- Specular Top Rim -->
-  <path d="M 18 2 L 192 2" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1" stroke-linecap="round" />
+  <path d="M 21 3 L 195 3" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1" stroke-linecap="round" />
 
   <!-- Continuous Glass Light Sweep -->
   <g clip-path="url(#clip_live)">
-    <polygon points="0,0 45,0 20,34 -25,34" fill="url(#sheen_live)">
-      <animateTransform attributeName="transform" type="translate" from="-70 0" to="260 0" dur="2.5s" repeatCount="indefinite" />
+    <polygon class="live-sheen" points="0,0 48,0 22,34 -26,34" fill="url(#sheen_live)">
+      <animateTransform attributeName="transform" type="translate" from="-80 0" to="260 0" dur="2.8s" repeatCount="indefinite" />
     </polygon>
   </g>
 
   <!-- Glowing Radar Node -->
-  <circle cx="22" cy="17" r="4.5" fill="none" stroke="#818CF8">
-    <animate attributeName="r" values="4.5;10;13" dur="2s" repeatCount="indefinite" />
+  <circle cx="25" cy="19" r="4.5" fill="none" stroke="#818CF8">
+    <animate attributeName="r" values="4.5;10;13.5" dur="2s" repeatCount="indefinite" />
     <animate attributeName="opacity" values="0.9;0.3;0" dur="2s" repeatCount="indefinite" />
     <animate attributeName="stroke-width" values="1.6;1;0.2" dur="2s" repeatCount="indefinite" />
   </circle>
-  <circle cx="22" cy="17" r="4.2" fill="#818CF8">
+  <circle cx="25" cy="19" r="4.2" fill="#818CF8">
     <animate attributeName="r" values="3.8;4.8;3.8" dur="2s" repeatCount="indefinite" />
   </circle>
-  <circle cx="22" cy="17" r="1.8" fill="#FFFFFF" />
+  <circle cx="25" cy="19" r="1.8" fill="#FFFFFF" />
 
   <!-- Text -->
-  <text x="36" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="12.5" font-weight="700" fill="#FFFFFF" letter-spacing="0.3px">Open Live Deployment</text>
-  <text x="184" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#818CF8">→</text>
+  <text x="39" y="23" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="12.5" font-weight="700" fill="#FFFFFF" letter-spacing="0.3px">Open Live Deployment</text>
+  <text x="187" y="23" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#818CF8">→</text>
 </svg>
