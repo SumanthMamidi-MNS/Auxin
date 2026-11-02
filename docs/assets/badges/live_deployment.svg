@@ -1,91 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="260" height="48" viewBox="0 0 260 48" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="276" height="48" viewBox="0 0 276 48" fill="none">
   <defs>
-    <!-- Background Gradient -->
+    <!-- Background Gradient (Deep Royal Midnight Indigo) -->
     <linearGradient id="bg_live_large" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#221C58" stop-opacity="0.96"/>
-      <stop offset="100%" stop-color="#0E1328" stop-opacity="0.98"/>
+      <stop offset="0%" stop-color="#231E56" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#0E1226" stop-opacity="0.99"/>
     </linearGradient>
 
-    <!-- Top-to-Bottom Sheen Gradient -->
-    <linearGradient id="sheen_live_large" x1="0%" y1="0%" x2="30%" y2="100%">
+    <!-- Translucent Specular Sheen Gradient -->
+    <linearGradient id="sheen_live_large" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
-      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.1"/>
-      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.75"/>
-      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.1"/>
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.10"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
 
-    <filter id="aura_live_large" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
+    <!-- Capsule Boundary Clip (Zero halo/fuzz) -->
     <clipPath id="clip_live_large">
-      <rect x="4" y="3" width="252" height="42" rx="21" />
+      <rect x="0.75" y="0.75" width="274.5" height="46.5" rx="23.25" />
     </clipPath>
 
     <style>
-      @keyframes live_sheen_down {
-        0% { transform: translateY(-55px) rotate(12deg); opacity: 0; }
-        12% { opacity: 1; }
-        45% { transform: translateY(65px) rotate(12deg); opacity: 1; }
-        50%, 100% { transform: translateY(65px) rotate(12deg); opacity: 0; }
+      @keyframes gem_live_pulse {
+        0%, 100% { transform: scale(0.92); transform-origin: 26px 24px; }
+        50% { transform: scale(1.18); transform-origin: 26px 24px; }
       }
-      @keyframes live_border_pulse {
-        0%, 100% { stroke: #6366F1; stroke-width: 1.5px; }
-        50% { stroke: #A5B4FC; stroke-width: 2.2px; }
-      }
-      .live-sweep {
-        animation: live_sheen_down 3.8s infinite cubic-bezier(0.22, 1, 0.36, 1);
-        animation-delay: 0.0s;
-      }
-      .live-border {
-        animation: live_border_pulse 3.8s infinite ease-in-out;
-        animation-delay: 0.0s;
+      .gem-live-pulse {
+        animation: gem_live_pulse 2.2s infinite ease-in-out;
       }
     </style>
   </defs>
 
-  <!-- Ambient Outer Glow Aura -->
-  <rect x="4" y="3" width="252" height="42" rx="21" fill="none" stroke="#818CF8" opacity="0.45" filter="url(#aura_live_large)">
-    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3.8s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.2;3.2;1.2" dur="3.8s" repeatCount="indefinite" />
+  <!-- Base Capsule Body -->
+  <rect x="0.75" y="0.75" width="274.5" height="46.5" rx="23.25" fill="url(#bg_live_large)" />
+
+  <!-- Animated Glowing Indigo/Violet Border -->
+  <rect x="0.75" y="0.75" width="274.5" height="46.5" rx="23.25" fill="none" stroke="#6366F1" stroke-width="1.6">
+    <animate attributeName="stroke" values="#6366F1;#A5B4FC;#6366F1" dur="3.6s" begin="0.0s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.4;2.2;1.4" dur="3.6s" begin="0.0s" repeatCount="indefinite" />
   </rect>
 
-  <!-- Base Capsule -->
-  <rect x="4" y="3" width="252" height="42" rx="21" fill="url(#bg_live_large)" />
+  <!-- Top Rim Specular Reflection -->
+  <path d="M 28 2 L 248 2" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1.2" stroke-linecap="round" />
 
-  <!-- Animated Border -->
-  <rect class="live-border" x="4" y="3" width="252" height="42" rx="21" fill="none" stroke="#6366F1" stroke-width="1.6">
-    <animate attributeName="stroke" values="#6366F1;#A5B4FC;#6366F1" dur="3.8s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.5;2.2;1.5" dur="3.8s" repeatCount="indefinite" />
-  </rect>
-
-  <!-- Specular Top Rim -->
-  <path d="M 26 4.5 L 234 4.5" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1.2" stroke-linecap="round" />
-
-  <!-- TOP-TO-BOTTOM CONTINUOUS SHINY SWEEP -->
+  <!-- Continuous Top-to-Bottom Specular Sheen (Zero Stuck Bands) -->
   <g clip-path="url(#clip_live_large)">
-    <rect class="live-sweep" x="-30" y="-45" width="340" height="35" fill="url(#sheen_live_large)" transform="rotate(12)">
-      <animateTransform attributeName="transform" type="translate" from="0 -60" to="0 97" dur="3.8s" repeatCount="indefinite" />
-    </rect>
+    <g transform="rotate(14)">
+      <rect x="-30" y="-55" width="356" height="26" fill="url(#sheen_live_large)" opacity="0">
+        <animateTransform attributeName="transform" type="translate"
+          additive="sum"
+          values="0 -45; 0 103; 0 103; 0 -45"
+          keyTimes="0; 0.45; 0.50; 1"
+          dur="3.6s" begin="0.0s" repeatCount="indefinite" />
+        <animate attributeName="opacity"
+          values="0; 0.9; 0.9; 0; 0"
+          keyTimes="0; 0.10; 0.40; 0.46; 1"
+          dur="3.6s" begin="0.0s" repeatCount="indefinite" />
+      </rect>
+    </g>
   </g>
 
-  <!-- Glowing Radar Node -->
-  <circle cx="28" cy="24" r="5.2" fill="none" stroke="#818CF8">
-    <animate attributeName="r" values="5.2;12;16" dur="2s" repeatCount="indefinite" />
-    <animate attributeName="opacity" values="0.9;0.25;0" dur="2s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.8;1.1;0.2" dur="2s" repeatCount="indefinite" />
+  <!-- Radar Beacon Ring from Indicator -->
+  <circle cx="26" cy="24" r="5" fill="none" stroke="#818CF8">
+    <animate attributeName="r" values="5;11;16" dur="2.2s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.9;0.25;0" dur="2.2s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.8;1.0;0.2" dur="2.2s" repeatCount="indefinite" />
   </circle>
-  <circle cx="28" cy="24" r="5" fill="#818CF8">
-    <animate attributeName="r" values="4.5;5.8;4.5" dur="2s" repeatCount="indefinite" />
-  </circle>
-  <circle cx="28" cy="24" r="2" fill="#FFFFFF" />
 
-  <!-- Large Bold Typography -->
-  <text x="44" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="14.2" font-weight="800" fill="#FFFFFF" letter-spacing="0.35px">Open Live Deployment</text>
-  <text x="224" y="29.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15.5" font-weight="900" fill="#818CF8">→</text>
+  <!-- Glowing Indicator Dot -->
+  <circle class="gem-live-pulse" cx="26" cy="24" r="5" fill="#818CF8">
+    <animate attributeName="r" values="4.5;5.5;4.5" dur="2.2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="26" cy="24" r="2" fill="#FFFFFF" opacity="0.95" />
+
+  <!-- Primary Action Label -->
+  <text x="46" y="29.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" letter-spacing="0.3px">Open Live Deployment</text>
+
+  <!-- Action Arrow -->
+  <text x="238" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700" fill="#C7D2FE">
+    →
+    <animate attributeName="x" values="238;242;238" dur="1.8s" repeatCount="indefinite" />
+  </text>
 </svg>

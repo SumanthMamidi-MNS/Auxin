@@ -1,131 +1,87 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="138" height="38" viewBox="0 0 138 38" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="131" height="34" viewBox="0 0 131 34" fill="none">
   <defs>
-    <!-- Background Linear Gradient -->
+    <!-- Dark Obsidian Gradient Fill -->
     <linearGradient id="bg_nextjs" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#19202C" stop-opacity="0.96"/>
-      <stop offset="100%" stop-color="#0D121B" stop-opacity="0.98"/>
+      <stop offset="0%" stop-color="#161D29" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#0A0E16" stop-opacity="0.99"/>
     </linearGradient>
 
-    <!-- Top-to-Bottom Specular Sheen Gradient (Vertical sweep) -->
-    <linearGradient id="sheen_v_nextjs" x1="0%" y1="0%" x2="40%" y2="100%">
+    <!-- Translucent Specular Sheen Gradient -->
+    <linearGradient id="sheen_nextjs" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
-      <stop offset="25%" stop-color="#FFFFFF" stop-opacity="0.08"/>
-      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.65"/>
-      <stop offset="75%" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.08"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- Ambient Aura Glow Filter -->
-    <filter id="aura_nextjs" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="3.2" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Capsule Clip Path -->
+    <!-- Capsule Boundary Clip (Zero halo/fuzz) -->
     <clipPath id="clip_nextjs">
-      <rect x="4" y="2" width="130" height="34" rx="17" />
+      <rect x="0.75" y="0.75" width="129.5" height="32.5" rx="16.25" />
     </clipPath>
 
-    <!-- Keyframe Animations (Top-to-Bottom Sweep + Glow Pulse) -->
     <style>
-      @keyframes sweep_down_nextjs {
-        0% {
-          transform: translateY(-45px) rotate(15deg);
-          opacity: 0;
-        }
-        12% {
-          opacity: 1;
-        }
-        45% {
-          transform: translateY(69px) rotate(15deg);
-          opacity: 1;
-        }
-        50%, 100% {
-          transform: translateY(69px) rotate(15deg);
-          opacity: 0;
-        }
-      }
-      @keyframes aura_pulse_nextjs {
-        0%, 100% { stroke: rgba(255, 255, 255, 0.16); stroke-width: 1.2px; }
-        50% { stroke: #FFFFFF; stroke-width: 1.8px; }
-      }
       @keyframes gem_pulse_nextjs {
-        0%, 100% { transform: scale(0.92); transform-origin: 20px 19px; }
-        50% { transform: scale(1.18); transform-origin: 20px 19px; }
-      }
-      @keyframes spec_glow_nextjs {
-        0%, 100% { fill: #94A3B8; }
-        50% { fill: #FFFFFF; }
-      }
-
-      .sheen-down {
-        animation: sweep_down_nextjs 3.8s infinite cubic-bezier(0.22, 1, 0.36, 1);
-        animation-delay: 1.15s;
-      }
-      .capsule-border {
-        animation: aura_pulse_nextjs 3.8s infinite ease-in-out;
-        animation-delay: 1.15s;
+        0%, 100% { transform: scale(0.92); transform-origin: 18.0px 17.0px; }
+        50% { transform: scale(1.18); transform-origin: 18.0px 17.0px; }
       }
       .gem-pulse {
-        animation: gem_pulse_nextjs 2.2s infinite ease-in-out;
-      }
-      .spec-text {
-        animation: spec_glow_nextjs 3.8s infinite ease-in-out;
-        animation-delay: 1.15s;
+        animation: gem_pulse_nextjs 2.4s infinite ease-in-out;
       }
     </style>
   </defs>
 
-  <!-- Ambient Outer Glow Aura (Continuous Breathing) -->
-  <rect x="4" y="2" width="130" height="34" rx="17" fill="none" stroke="#FFFFFF" opacity="0.38" filter="url(#aura_nextjs)">
-    <animate attributeName="opacity" values="0.15;0.7;0.15" dur="3.8s" begin="1.15s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1;2.6;1" dur="3.8s" begin="1.15s" repeatCount="indefinite" />
-  </rect>
+  <!-- Base Obsidian Capsule Body -->
+  <rect x="0.75" y="0.75" width="129.5" height="32.5" rx="16.25" fill="url(#bg_nextjs)" />
 
-  <!-- Dark Obsidian Base Capsule -->
-  <rect x="4" y="2" width="130" height="34" rx="17" fill="url(#bg_nextjs)" />
-
-  <!-- Animated Sharp Border with Living Glow -->
-  <rect class="capsule-border" x="4" y="2" width="130" height="34" rx="17" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.3">
-    <animate attributeName="stroke" values="rgba(255,255,255,0.16);#FFFFFF;rgba(255,255,255,0.16)" dur="3.8s" begin="1.15s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.2;1.8;1.2" dur="3.8s" begin="1.15s" repeatCount="indefinite" />
+  <!-- Animated Neon Perimeter Border -->
+  <rect x="0.75" y="0.75" width="129.5" height="32.5" rx="16.25" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.3">
+    <animate attributeName="stroke" values="rgba(255,255,255,0.18);#FFFFFF;rgba(255,255,255,0.18)" dur="3.6s" begin="0.6s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.2;1.8;1.2" dur="3.6s" begin="0.6s" repeatCount="indefinite" />
   </rect>
 
   <!-- Specular Top Rim Reflection -->
-  <path d="M 20 3.2 L 118 3.2" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1.1" stroke-linecap="round" />
+  <path d="M 16 1.8 L 115 1.8" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1" stroke-linecap="round" />
 
-  <!-- CONTINUOUS TOP-TO-BOTTOM SHINY GLASS SWEEP -->
+  <!-- Continuous Top-to-Bottom Specular Sheen (Zero Stuck Bands) -->
   <g clip-path="url(#clip_nextjs)">
-    <rect class="sheen-down" x="-20" y="-35" width="198" height="28" fill="url(#sheen_v_nextjs)" transform="rotate(15)">
-      <animateTransform attributeName="transform" type="translate" from="0 -50" to="0 79" dur="3.8s" begin="1.15s" repeatCount="indefinite" />
-    </rect>
+    <g transform="rotate(14)">
+      <rect x="-30" y="-45" width="191" height="20" fill="url(#sheen_nextjs)" opacity="0">
+        <animateTransform attributeName="transform" type="translate"
+          additive="sum"
+          values="0 -35; 0 79; 0 79; 0 -35"
+          keyTimes="0; 0.45; 0.50; 1"
+          dur="3.6s" begin="0.6s" repeatCount="indefinite" />
+        <animate attributeName="opacity"
+          values="0; 0.85; 0.85; 0; 0"
+          keyTimes="0; 0.10; 0.40; 0.46; 1"
+          dur="3.6s" begin="0.6s" repeatCount="indefinite" />
+      </rect>
+    </g>
   </g>
 
   <!-- Pulsing Radar Beacon Ring from Gem -->
-  <circle cx="20" cy="19" r="4.2" fill="none" stroke="#FFFFFF">
-    <animate attributeName="r" values="4.2;9.5;13" dur="2.2s" repeatCount="indefinite" />
-    <animate attributeName="opacity" values="0.85;0.25;0" dur="2.2s" repeatCount="indefinite" />
-    <animate attributeName="stroke-width" values="1.6;1;0.2" dur="2.2s" repeatCount="indefinite" />
+  <circle cx="18.0" cy="17.0" r="4.2" fill="none" stroke="#FFFFFF">
+    <animate attributeName="r" values="4.2;9.5;13" dur="2.4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.85;0.25;0" dur="2.4s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.6;1;0.2" dur="2.4s" repeatCount="indefinite" />
   </circle>
 
   <!-- Glowing Gem Core -->
-  <circle class="gem-pulse" cx="20" cy="19" r="4.2" fill="#FFFFFF">
-    <animate attributeName="r" values="3.8;4.8;3.8" dur="2.2s" repeatCount="indefinite" />
+  <circle class="gem-pulse" cx="18.0" cy="17.0" r="4.2" fill="#FFFFFF">
+    <animate attributeName="r" values="3.8;4.8;3.8" dur="2.4s" repeatCount="indefinite" />
   </circle>
-  <circle cx="20" cy="19" r="1.6" fill="#FFFFFF" opacity="0.95" />
+  <circle cx="18.0" cy="17.0" r="1.6" fill="#FFFFFF" opacity="0.95" />
 
-  <!-- Title Text (Enlarged to 12.8px) -->
-  <text x="34" y="22.8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="12.8" font-weight="700" fill="#F8FAFC" letter-spacing="0.25px">Next.js</text>
+  <!-- Title Text -->
+  <text x="32.0" y="21.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="12.8" font-weight="700" fill="#F8FAFC" letter-spacing="0.25px">Next.js</text>
 
   <!-- Micro Divider Line -->
-  <line x1="97" y1="11" x2="97" y2="25" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.1" />
+  <line x1="94" y1="10" x2="94" y2="24" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.1" />
 
-  <!-- Spec / Version Text (Enlarged to 11.5px) -->
-  <text class="spec-text" x="106" y="22.5" font-family="'JetBrains Mono', Consolas, Monaco, monospace" font-size="11.5" font-weight="700" fill="#94A3B8" letter-spacing="0.3px">
+  <!-- Spec / Version Text -->
+  <text x="103.0" y="21.2" font-family="'JetBrains Mono', Consolas, Monaco, monospace" font-size="11.5" font-weight="700" fill="#94A3B8" letter-spacing="0.3px">
     16
-    <animate attributeName="fill" values="#94A3B8;#FFFFFF;#94A3B8" dur="3.8s" begin="1.15s" repeatCount="indefinite" />
+    <animate attributeName="fill" values="#94A3B8;#FFFFFF;#94A3B8" dur="3.6s" begin="0.6s" repeatCount="indefinite" />
   </text>
 </svg>
