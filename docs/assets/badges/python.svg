@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="28" viewBox="0 0 120 28" fill="none">
+  <defs>
+    <!-- Background Linear Gradient -->
+    <linearGradient id="bg_python" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181E29" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0E131C" stop-opacity="0.98"/>
+    </linearGradient>
+
+    <!-- Specular Sheen Gradient -->
+    <linearGradient id="sheen_python" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Outer Aura Glow Filter -->
+    <filter id="aura_python" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Capsule Clip Path for Sheen Sweep -->
+    <clipPath id="clip_python">
+      <rect x="0.75" y="0.75" width="118.5" height="26.5" rx="13.25" />
+    </clipPath>
+  </defs>
+
+  <!-- Ambient Outer Glow Aura (Continuous Breathing) -->
+  <rect x="1" y="1" width="118" height="26" rx="13" fill="none" stroke="#38BDF8" opacity="0.3" filter="url(#aura_python)">
+    <animate attributeName="opacity" values="0.15;0.65;0.15" dur="3.2s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1;2.2;1" dur="3.2s" repeatCount="indefinite" />
+  </rect>
+
+  <!-- Dark Obsidian Base Capsule -->
+  <rect x="0.75" y="0.75" width="118.5" height="26.5" rx="13.25" fill="url(#bg_python)" />
+
+  <!-- Animated Sharp Border with Living Glow -->
+  <rect x="0.75" y="0.75" width="118.5" height="26.5" rx="13.25" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.2">
+    <animate attributeName="stroke" values="rgba(255,255,255,0.16);#38BDF8;rgba(255,255,255,0.16)" dur="3.2s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.2;1.6;1.2" dur="3.2s" repeatCount="indefinite" />
+  </rect>
+
+  <!-- Specular Top Rim Reflection -->
+  <path d="M 14 1.5 L 106 1.5" stroke="rgba(255, 255, 255, 0.25)" stroke-width="1" stroke-linecap="round" />
+
+  <!-- CONTINUOUS SHINY GLASS SWEEP (Slanted Specular Sheen Beam) -->
+  <g clip-path="url(#clip_python)">
+    <polygon points="0,0 35,0 15,28 -20,28" fill="url(#sheen_python)">
+      <animateTransform attributeName="transform" type="translate" from="-60 0" to="160 0" dur="2.8s" repeatCount="indefinite" />
+    </polygon>
+  </g>
+
+  <!-- Pulsing Radar Beacon Ring from Gem -->
+  <circle cx="15" cy="14" r="3.8" fill="none" stroke="#38BDF8">
+    <animate attributeName="r" values="3.8;8;11" dur="2.2s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.85;0.3;0" dur="2.2s" repeatCount="indefinite" />
+    <animate attributeName="stroke-width" values="1.5;1;0.2" dur="2.2s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Glowing Gem Core -->
+  <circle cx="15" cy="14" r="3.8" fill="#38BDF8">
+    <animate attributeName="r" values="3.5;4.2;3.5" dur="2.2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="15" cy="14" r="1.5" fill="#FFFFFF" opacity="0.95" />
+
+  <!-- Title Text -->
+  <text x="26" y="17.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="11.8" font-weight="700" fill="#F8FAFC" letter-spacing="0.2px">Python</text>
+
+  <!-- Micro Divider Line -->
+  <line x1="76" y1="8.5" x2="76" y2="19.5" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1" />
+
+  <!-- Spec / Version Text (Subtle continuous brand color pulse) -->
+  <text x="83" y="17.2" font-family="'JetBrains Mono', Consolas, Monaco, monospace" font-size="10.5" font-weight="700" fill="#94A3B8" letter-spacing="0.3px">
+    3.12
+    <animate attributeName="fill" values="#94A3B8;#38BDF8;#94A3B8" dur="3.2s" repeatCount="indefinite" />
+  </text>
+</svg>

@@ -2,16 +2,31 @@
   <img src="docs/assets/readme_hero_logo.png" alt="Auxin" width="760">
 </p>
 
-<!-- Live Showcase Pill (Clickable Capsule from Look 3) -->
+<!-- Live Showcase Action Capsule -->
 <p align="center">
   <a href="https://auxin-landing.vercel.app/" target="_blank">
-    <img src="docs/assets/live_deployment_pill.png" alt="Open Live Deployment →" width="280">
+    <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="34">
   </a>
 </p>
 
-<!-- Glass Capsule Badges with Glowing Colored Pins (From Look 1) -->
+<!-- Kinetic Vector Capsule Badges (Continuously Animated Specular Glass & Glowing Pins) -->
 <p align="center">
-  <img src="docs/assets/badges_rack.png" alt="Auxin Technology Stack" width="820">
+  <a href="https://www.python.org/" target="_blank"><img src="docs/assets/badges/python.svg" alt="Python 3.12" height="28"></a>&nbsp;
+  <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="28"></a>&nbsp;
+  <a href="https://render.com/" target="_blank"><img src="docs/assets/badges/render.svg" alt="Render Cloud" height="28"></a>&nbsp;
+  <a href="https://nextjs.org/" target="_blank"><img src="docs/assets/badges/nextjs.svg" alt="Next.js 16" height="28"></a>&nbsp;
+  <a href="https://react.dev/" target="_blank"><img src="docs/assets/badges/react.svg" alt="React 19" height="28"></a>&nbsp;
+  <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="28"></a>&nbsp;
+  <a href="https://tailwindcss.com/" target="_blank"><img src="docs/assets/badges/tailwind.svg" alt="Tailwind v4" height="28"></a>
+  <br><br>
+  <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="28"></a>&nbsp;
+  <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Transactional Email" height="28"></a>&nbsp;
+  <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="28"></a>&nbsp;
+  <a href="https://razorpay.com/" target="_blank"><img src="docs/assets/badges/razorpay.svg" alt="Razorpay Escrow" height="28"></a>&nbsp;
+  <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="28"></a>
+  <br><br>
+  <a href="#6-end-to-end-architecture--quickstart"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="28"></a>&nbsp;
+  <a href="#3-milo-ai--domain-agricultural-copilot"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="28"></a>
 </p>
 
 <p align="center">
@@ -20,45 +35,12 @@
 
 ---
 
-<details open>
-<summary><strong>📑 Table of Contents</strong></summary>
+### 📑 Quick Navigation
 
-1. [Executive Summary & The Broken Mandi Chain](#1-executive-summary-the-broken-mandi-chain)
-   - [The Multi-Tier Broker Problem](#the-multi-tier-broker-problem)
-   - [The Auxin Direct Paradigm](#the-auxin-direct-paradigm)
-   - [Key Economic Impact Metrics](#key-economic-impact-metrics)
-2. [Live Production Showcase & Interactive Demo](#2-live-production-showcase-interactive-demo)
-   - [Live Vercel Application](#live-vercel-application)
-   - [Interactive Screen Explorer](#interactive-screen-explorer)
-3. [The Four Unified Portals](#3-the-four-unified-portals)
-   - [Customer Marketplace](#customer-marketplace)
-   - [Farmer Operations Suite](#farmer-operations-suite)
-   - [Courier HUD & Super Admin](#courier-hud-super-admin)
-4. [Milo AI — Domain Agricultural Copilot](#4-milo-ai-domain-agricultural-copilot)
-   - [Curated Agronomic Vectors](#curated-agronomic-vectors)
-   - [7-Stage Semantic RAG Pipeline](#7-stage-semantic-rag-pipeline)
-   - [Zero-Hallucination Rejection Shield](#zero-hallucination-rejection-shield)
-5. [25 KM Haversine Spatial Geofencing](#5-25-km-haversine-spatial-geofencing)
-   - [Mathematical Formulation](#mathematical-formulation)
-   - [Spatial Filtering Implementation](#spatial-filtering-implementation)
-6. [Two-Phase Atomic Escrow Commerce Engine](#6-two-phase-atomic-escrow-commerce-engine)
-   - [Escrow Vault Lock](#escrow-vault-lock)
-   - [Doorstep Inspection Handshake](#doorstep-inspection-handshake)
-   - [Atomic Multi-Party Settlement](#atomic-multi-party-settlement)
-7. [Cryptographic Doorstep OTP Handshake](#7-cryptographic-doorstep-otp-handshake)
-   - [CSPRNG 6-Digit Generation](#csprng-6-digit-generation)
-   - [Salted SHA-256 Storage & Bounded Retries](#salted-sha-256-storage-bounded-retries)
-8. [End-to-End System Architecture](#8-end-to-end-system-architecture)
-   - [Full System Topology](#full-system-topology)
-   - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
-9. [Automated Verification & Test Suite](#9-automated-verification-test-suite)
-   - [73/73 Test Suite Breakdown](#7373-test-suite-breakdown)
-10. [Comprehensive Tech Stack & Quickstart](#10-comprehensive-tech-stack-quickstart)
-    - [Technical Architecture Matrix](#technical-architecture-matrix)
-    - [One-Click Windows Launcher](#one-click-windows-launcher)
-    - [Manual CLI Setup](#manual-cli-setup)
-
-</details>
+| ⚡ **Core System** | 🛡️ **Commerce & Escrow** | 🤖 **AI & Telemetry** |
+| :--- | :--- | :--- |
+| [**Executive Summary & Mandi Economics**](#1-executive-summary--the-broken-mandi-chain)<br><sub>Zero-rot mandi elimination & +300% farmer margins</sub> | [**Two-Phase Escrow Commerce Engine**](#4-two-phase-atomic-escrow-commerce-engine)<br><sub>Razorpay vault lock & cryptographic doorstep OTP handshake</sub> | [**Milo AI — Agronomic Copilot**](#3-milo-ai--domain-agricultural-copilot)<br><sub>120+ agronomic vectors & 7-stage semantic RAG pipeline</sub> |
+| [**The Four Unified Portals**](#2-the-four-unified-portals)<br><sub>Customer Discovery, Farmer Radar, Courier HUD & Super Admin</sub> | [**25 KM Spatial Geofencing**](#5-25-km-haversine-spatial-geofencing)<br><sub>Spherical Haversine distance boundary & spatial filtering</sub> | [**Architecture & Quickstart**](#6-end-to-end-architecture--quickstart)<br><sub>Micro-monorepo topology, 73/73 test suite & one-click launcher</sub> |
 
 ---
 
@@ -105,29 +87,7 @@ THE AUXIN PARADIGM (DIRECT & INSTANT):
 
 ---
 
-## 2. Live Production Showcase & Interactive Demo
-
-### Live Vercel Application
-Auxin is deployed live on Vercel at:
-👉 **[https://auxin-landing.vercel.app/](https://auxin-landing.vercel.app/)**
-
-### Interactive Screen Explorer
-*Compact preview of production application &mdash; test all 50+ user flows on the live showcase:*
-
-<div align="center">
-  <a href="https://auxin-landing.vercel.app/">
-    <img src="docs/screenshots/hero_live_harvest.png" alt="Auxin Production Ecosystem" width="480" style="border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.4); border: 1px solid #30363D;">
-  </a>
-  <p><sub><b>Figure 2.1: The Auxin Ecosystem</b> &mdash; Customer Discovery, Cultivator Enterprise Radar, and Courier Mission HUD</sub></p>
-</div>
-
-> [!TIP]
-> **Explore All 50+ Live Screen Mockups**:
-> To inspect all user interfaces across **Customer, Farmer, Courier, and Super Admin** interactively without cluttering this document, visit the [**Live Screens Explorer &rarr;**](https://auxin-landing.vercel.app/)
-
----
-
-## 3. The Four Unified Portals
+## 2. The Four Unified Portals
 
 Auxin provides a unified codebase powering four role-tailored operational surfaces:
 
@@ -149,7 +109,7 @@ Auxin provides a unified codebase powering four role-tailored operational surfac
 
 ---
 
-## 4. Milo AI — Domain Agricultural Copilot
+## 3. Milo AI — Domain Agricultural Copilot
 
 ### Curated Agronomic Vectors
 Milo is an agricultural AI copilot integrated across client apps. It operates over a specialized knowledge store of **120+ agronomic vectors** covering non-cold-storage shelf lives, soil moisture thresholds, organic certifications, and regional mandi prices.
@@ -172,39 +132,7 @@ When queries fall outside verified agricultural data, Milo enforces an automated
 
 ---
 
-## 5. 25 KM Haversine Spatial Geofencing
-
-### Mathematical Formulation
-Auxin enforces a strict **25-kilometer spherical distance boundary** computed directly in the spatial data access layer:
-
-$$\Delta\sigma = 2 \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\left(\frac{\Delta\lambda}{2}\right)} \right)$$
-
-$$d = R \cdot \Delta\sigma \quad (\text{where } R = 6371.0088 \text{ km})$$
-
-### Spatial Filtering Implementation
-<details>
-<summary><b>View Python Haversine Function Code</b></summary>
-<br>
-
-Couriers only receive job offers, and customers only discover harvest lots, located within 25 km of their active coordinates:
-
-```python
-def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Calculates great-circle distance between two coordinates in kilometers."""
-    phi1, phi2 = math.radians(lat1), math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dlambda = math.radians(lon2 - lon1)
-    
-    a = math.sin(dphi / 2.0) ** 2 + \
-        math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2.0) ** 2
-    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
-    return 6371.0088 * c
-```
-</details>
-
----
-
-## 6. Two-Phase Atomic Escrow Commerce Engine
+## 4. Two-Phase Atomic Escrow Commerce Engine
 
 ### Escrow Vault Lock
 When an order is authorized, 100% of customer funds are locked in the Auxin Escrow Reserve account. Neither the farmer nor the courier receives funds prior to verified physical delivery.
@@ -250,7 +178,7 @@ Upon OTP verification, a single database transaction simultaneously marks the or
 
 ---
 
-## 7. Cryptographic Doorstep OTP Handshake
+### Cryptographic Doorstep OTP Handshake
 
 ### CSPRNG 6-Digit Generation
 OTPs are generated on order placement via Python's `secrets` module using a **Cryptographically Secure Pseudo-Random Number Generator (CSPRNG)**.
@@ -261,7 +189,39 @@ OTPs are generated on order placement via Python's `secrets` module using a **Cr
 
 ---
 
-## 8. End-to-End System Architecture
+## 5. 25 KM Haversine Spatial Geofencing
+
+### Mathematical Formulation
+Auxin enforces a strict **25-kilometer spherical distance boundary** computed directly in the spatial data access layer:
+
+$$\Delta\sigma = 2 \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\left(\frac{\Delta\lambda}{2}\right)} \right)$$
+
+$$d = R \cdot \Delta\sigma \quad (\text{where } R = 6371.0088 \text{ km})$$
+
+### Spatial Filtering Implementation
+<details>
+<summary><b>View Python Haversine Function Code</b></summary>
+<br>
+
+Couriers only receive job offers, and customers only discover harvest lots, located within 25 km of their active coordinates:
+
+```python
+def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calculates great-circle distance between two coordinates in kilometers."""
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+    
+    a = math.sin(dphi / 2.0) ** 2 + \
+        math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2.0) ** 2
+    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
+    return 6371.0088 * c
+```
+</details>
+
+---
+
+## 6. End-to-End Architecture & Quickstart
 
 ### Full System Topology
 Auxin coordinates an asynchronous micro-monorepo orchestrated across edge client apps, high-throughput REST APIs, and external infrastructure:
@@ -322,7 +282,7 @@ Role authorization is validated at the API gateway layer via Supabase JWT claims
 
 ---
 
-## 9. Automated Verification & Test Suite
+### Automated Test Suite (73/73 Tests Verified)
 
 ### 73/73 Test Suite Breakdown
 Auxin enforces continuous reliability through 73 automated integration and unit tests covering authentication, spatial bounds, escrow transactions, and security hardening:
@@ -356,7 +316,7 @@ tests/test_super_admin.py .............................. PASSED [100%]
 
 ---
 
-## 10. Comprehensive Tech Stack & Quickstart
+### Technical Architecture Matrix
 
 ### Technical Architecture Matrix
 
