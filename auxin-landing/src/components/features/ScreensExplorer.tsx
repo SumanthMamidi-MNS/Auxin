@@ -22,6 +22,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -993,7 +994,7 @@ export function ScreensExplorer() {
                    role === 'courier' ? 'Rider Portal' :
                    'Admin Portal'}
                 </span>
-                <span className={`text-[11px] px-2 py-0.5 rounded-full font-mono font-medium ${
+                <span className={`text-xs px-2.5 py-0.5 rounded-full font-mono font-semibold ${
                   isActive ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-600'
                 }`}>
                   {data.screens.length} Screens
@@ -1047,7 +1048,7 @@ export function ScreensExplorer() {
                         /* Graceful Fallback Specimen Card */
                         <div className="w-full h-full bg-gradient-to-b from-slate-900 to-[#0B0F19] text-white p-6 flex flex-col justify-between">
                           <div className="pt-10 space-y-2">
-                            <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            <span className="text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                               Screen {currentScreen.stepNum} • {currentScreen.id}
                             </span>
                             <h3 className="text-xl font-bold text-white font-['Poppins']">
@@ -1074,7 +1075,7 @@ export function ScreensExplorer() {
                           </div>
 
                           <div className="pb-4 text-center">
-                            <span className="text-[11px] text-slate-400">
+                            <span className="text-xs text-slate-400">
                               Direct from Auxin V4.0 Engine
                             </span>
                           </div>
@@ -1097,7 +1098,7 @@ export function ScreensExplorer() {
                 </div>
 
                 {/* Device Spec Badge */}
-                <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-mono text-slate-500">
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs font-mono font-medium text-slate-500">
                   <Smartphone className="w-3.5 h-3.5" />
                   <span>iPhone 16 Pro • Native 1179 × 2556 (3x DPR)</span>
                 </div>
@@ -1105,7 +1106,7 @@ export function ScreensExplorer() {
             ) : (
               /* ── MacBook Pro 16" Aluminum Laptop Chassis ── */
               <div className="relative w-full max-w-[640px] group cursor-pointer" onClick={() => setIsFullscreenModalOpen(true)}>
-                <div className="absolute top-3 right-4 z-40 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 backdrop-blur-md text-white text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-lg">
+                <div className="absolute top-3 right-4 z-40 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 backdrop-blur-md text-white text-xs font-mono font-bold px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-lg">
                   <Maximize2 className="w-3 h-3 text-emerald-400" />
                   <span>Inspect Fullscreen</span>
                 </div>
@@ -1125,7 +1126,7 @@ export function ScreensExplorer() {
                       /* Graceful Fallback Specimen Card for Laptop */
                       <div className="w-full h-full bg-gradient-to-b from-slate-900 to-[#0B0F19] text-white p-8 flex flex-col justify-between">
                         <div className="space-y-2">
-                          <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                          <span className="text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
                             Governance Console • {currentScreen.id}
                           </span>
                           <h3 className="text-2xl font-bold text-white font-['Poppins']">
@@ -1138,15 +1139,15 @@ export function ScreensExplorer() {
 
                         <div className="grid grid-cols-3 gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
                           <div>
-                            <span className="text-[11px] text-slate-400 block">{currentScreen.telemetry.label1}</span>
+                            <span className="text-xs text-slate-400 block">{currentScreen.telemetry.label1}</span>
                             <span className="text-sm font-semibold text-emerald-300">{currentScreen.telemetry.value1}</span>
                           </div>
                           <div>
-                            <span className="text-[11px] text-slate-400 block">{currentScreen.telemetry.label2}</span>
+                            <span className="text-xs text-slate-400 block">{currentScreen.telemetry.label2}</span>
                             <span className="text-sm font-semibold text-white">{currentScreen.telemetry.value2}</span>
                           </div>
                           <div>
-                            <span className="text-[11px] text-slate-400 block">{currentScreen.telemetry.label3}</span>
+                            <span className="text-xs text-slate-400 block">{currentScreen.telemetry.label3}</span>
                             <span className="text-sm font-semibold text-amber-400">{currentScreen.telemetry.value3}</span>
                           </div>
                         </div>
@@ -1179,7 +1180,7 @@ export function ScreensExplorer() {
                 </div>
 
                 {/* Device Spec Badge */}
-                <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-mono text-slate-500">
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs font-mono font-medium text-slate-500">
                   <Laptop className="w-3.5 h-3.5" />
                   <span>MacBook Pro 16" • Native 1802 × 915</span>
                 </div>
@@ -1262,34 +1263,34 @@ export function ScreensExplorer() {
             {/* Flow Intelligence Cards */}
             <div className="space-y-3.5">
               {/* Card 1: Actor Action */}
-              <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-1">
+              <SpotlightCard className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-1">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-wider">
                   <Activity className="w-3.5 h-3.5 text-blue-600" />
                   <span>Actor Intent & User Action</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p className="text-sm text-slate-700 leading-relaxed">
                   {currentScreen.actorIntent}
                 </p>
-              </div>
+              </SpotlightCard>
 
               {/* Card 2: Behind-the-Scenes Protocol */}
-              <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-1">
+              <SpotlightCard className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-1">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-wider">
                   <Cpu className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Protocol Engine & Distributed Ledger</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p className="text-sm text-slate-700 leading-relaxed">
                   {currentScreen.protocolAction}
                 </p>
-              </div>
+              </SpotlightCard>
 
               {/* Card 3: Live Telemetry Specimen */}
-              <div className="p-4 rounded-2xl bg-slate-900 text-white shadow-md space-y-2 border border-slate-800">
+              <SpotlightCard spotlightColor="rgba(16, 185, 129, 0.2)" className="p-4 rounded-2xl bg-slate-900 text-white shadow-md space-y-2 border border-slate-800">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-mono text-slate-400 uppercase tracking-wider">
                     Verified Telemetry Specimen
                   </span>
-                  <span className="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px]">
+                  <span className="flex items-center gap-1.5 text-emerald-400 font-mono text-xs font-bold">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                     LIVE DATA
                   </span>
@@ -1297,7 +1298,7 @@ export function ScreensExplorer() {
 
                 <div className="grid grid-cols-3 gap-2 pt-1 border-t border-slate-800 text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-mono">
+                    <span className="text-xs text-slate-400 block font-mono">
                       {currentScreen.telemetry.label1}
                     </span>
                     <span className="font-semibold text-white truncate block">
@@ -1305,7 +1306,7 @@ export function ScreensExplorer() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-mono">
+                    <span className="text-xs text-slate-400 block font-mono">
                       {currentScreen.telemetry.label2}
                     </span>
                     <span className="font-semibold text-emerald-300 truncate block">
@@ -1313,7 +1314,7 @@ export function ScreensExplorer() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-mono">
+                    <span className="text-xs text-slate-400 block font-mono">
                       {currentScreen.telemetry.value3}
                     </span>
                     <span className="font-semibold text-amber-400 truncate block">
@@ -1321,7 +1322,7 @@ export function ScreensExplorer() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             </div>
 
             {/* Deep Link Launch CTA */}

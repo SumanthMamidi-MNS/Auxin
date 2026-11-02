@@ -16,6 +16,8 @@
 
 import React, { useState } from 'react';
 import { TrendingUp, AlertCircle, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { CountUpTicker } from '@/components/ui/CountUpTicker';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
 export function ComparisonMatrix() {
   const [weeklySpend, setWeeklySpend] = useState<number>(2500);
@@ -53,7 +55,7 @@ export function ComparisonMatrix() {
         </div>
 
         {/* Interactive Spend & Savings Simulator */}
-        <div className="mt-6 sm:mt-8 bg-white rounded-3xl p-5 sm:p-7 border border-black/[0.08] max-w-4xl mx-auto shadow-[0_15px_35px_rgba(60,45,20,0.05)]">
+        <SpotlightCard className="mt-6 sm:mt-8 bg-white rounded-3xl p-5 sm:p-7 border border-black/[0.08] max-w-4xl mx-auto shadow-[0_15px_35px_rgba(60,45,20,0.05)] card-3d-highlight">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-black/[0.06]">
             <div>
               <span className="text-xs uppercase text-[#1B4332] font-bold tracking-wider">
@@ -64,7 +66,7 @@ export function ComparisonMatrix() {
               </h3>
             </div>
             <div className="text-left sm:text-right">
-              <span className="text-[11px] text-[#64748B] font-medium">Direct Cultivator Enrichment</span>
+              <span className="text-xs text-[#475569] font-semibold">Direct Cultivator Enrichment</span>
               <div className="text-lg sm:text-xl font-extrabold font-mono text-[#B45309]">
                 +₹{annualFarmerExtra.toLocaleString('en-IN')} / year
               </div>
@@ -82,7 +84,7 @@ export function ComparisonMatrix() {
               onChange={(e) => setWeeklySpend(Number(e.target.value))}
               className="w-full h-2 bg-[#FAF7F2] rounded-lg appearance-none cursor-pointer accent-[#1B4332]"
             />
-            <div className="flex justify-between text-[11px] text-[#64748B] font-medium">
+            <div className="flex justify-between text-xs text-[#475569] font-semibold">
               <span>₹500 / week (Small Household)</span>
               <span className="hidden sm:inline">₹5,000 / week</span>
               <span>₹10,000 / week (Large Family)</span>
@@ -98,7 +100,7 @@ export function ComparisonMatrix() {
                   <AlertCircle className="w-4 h-4 text-amber-700" />
                   Legacy Mandi Model
                 </span>
-                <span className="text-[10px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">
                   4-Tier Commission
                 </span>
               </div>
@@ -135,7 +137,7 @@ export function ComparisonMatrix() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-amber-600/15 text-[10px] text-amber-900 space-y-0.5">
+              <div className="pt-2 border-t border-amber-600/15 text-xs text-amber-950 space-y-1 font-medium">
                 <p>• 48h to 72h transit lag in uncooled Mandi sheds</p>
                 <p>• 15–45 day delayed credit cycles for farmers</p>
                 <p>• Zero verifiable soil or chemical traceability</p>
@@ -149,7 +151,7 @@ export function ComparisonMatrix() {
                   <CheckCircle2 className="w-4 h-4 text-emerald-700" />
                   Auxin Hyper-Local Protocol
                 </span>
-                <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
                   100% Direct Margin
                 </span>
               </div>
@@ -186,14 +188,14 @@ export function ComparisonMatrix() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-emerald-600/15 text-[10px] text-emerald-900 space-y-0.5">
+              <div className="pt-2 border-t border-emerald-600/15 text-xs text-emerald-950 space-y-1 font-medium">
                 <p>• Under 2h pluck-to-doorstep direct delivery</p>
                 <p>• Instant Razorpay 2-phase cryptographic escrow release</p>
                 <p>• NPOP Certified Organic soil telemetry via Milo AI</p>
               </div>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </div>
     </section>
   );

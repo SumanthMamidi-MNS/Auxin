@@ -47,11 +47,11 @@ export function FloatingBadges({ mouseXRatio = 0.5, mouseYRatio = 0.5 }: Floatin
               <span className="text-xs font-bold text-[#0F172A] tracking-tight">
                 Courier Vikram En Route
               </span>
-              <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-100/70 px-1.5 py-0.5 rounded-full border border-emerald-600/15">
+              <span className="text-xs font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-600/20">
                 12m away
               </span>
             </div>
-            <span className="text-[11px] text-[#64748B] font-medium">
+            <span className="text-xs text-[#475569] font-medium">
               Live GPS • Electric Cargo Bike
             </span>
           </div>
@@ -74,11 +74,11 @@ export function FloatingBadges({ mouseXRatio = 0.5, mouseYRatio = 0.5 }: Floatin
               <span className="text-xs font-bold text-[#0F172A] tracking-tight">
                 Ratnagiri Alphonso
               </span>
-              <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/70 px-1.5 py-0.5 rounded-full border border-amber-600/20">
+              <span className="text-xs font-bold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-600/20">
                 0h Storage
               </span>
             </div>
-            <span className="text-[11px] text-[#B45309] font-medium">
+            <span className="text-xs text-[#B45309] font-semibold">
               Plucked 06:30 AM Today (NPOP)
             </span>
           </div>
@@ -98,12 +98,12 @@ export function FloatingBadges({ mouseXRatio = 0.5, mouseYRatio = 0.5 }: Floatin
           </div>
           <div className="flex flex-col text-left pr-2">
             <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-[#0F172A]">
+              <span className="text-xs font-bold text-[#0F172A]">
                 Escrow Locked
               </span>
               <CheckCircle2 className="w-3 h-3 text-emerald-700" />
             </div>
-            <span className="text-[10px] font-mono text-[#64748B]">
+            <span className="text-xs font-mono font-medium text-[#64748B]">
               ₹360.00 Doorstep Guard
             </span>
           </div>

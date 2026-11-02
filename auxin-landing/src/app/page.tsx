@@ -16,6 +16,7 @@ import React, { useState, useEffect } from 'react';
 import { SplashScreen } from '@/components/layout/SplashScreen';
 import { StickyNavbar } from '@/components/layout/StickyNavbar';
 import { HeroSection } from '@/components/hero/HeroSection';
+import { InfiniteMarqueeStream } from '@/components/layout/InfiniteMarqueeStream';
 import { ComparisonMatrix } from '@/components/features/ComparisonMatrix';
 import { ScreensExplorer } from '@/components/features/ScreensExplorer';
 import { BentoInnovations } from '@/components/features/BentoInnovations';
@@ -78,6 +79,9 @@ export default function LandingPage() {
         {/* ── 02. Hero Stage & 3D Titanium Phone Rig ── */}
         <HeroSection heroImage="/screenshots/04_mobile_customer_product_detail.png" />
 
+        {/* ── Continuous Infinite Agritech Telemetry & Architecture Stream ── */}
+        <InfiniteMarqueeStream />
+
         {/* ── 03. Mandi vs. Auxin Margin Economics & Household Savings Slider ── */}
         <div className="reveal-on-scroll">
           <ComparisonMatrix />
@@ -117,6 +121,7 @@ export default function LandingPage() {
         <AmbientFooter />
 
         {/* ── 10. Premier Coming Soon Luxury Announcement Modal ── */}
+
         <ComingSoonModal />
       </main>
     </>

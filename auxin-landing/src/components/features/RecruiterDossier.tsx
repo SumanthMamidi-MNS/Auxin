@@ -14,6 +14,8 @@
  */
 
 import React, { useState } from 'react';
+import { BorderBeam } from '@/components/ui/BorderBeam';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { Key, ArrowUpRight, Copy, Check, ExternalLink, Award } from 'lucide-react';
 import { showComingSoonModal } from '../layout/ComingSoonModal';
 
@@ -105,7 +107,8 @@ export function RecruiterDossier() {
         </div>
 
         {/* Architect Bio & Badges Card */}
-        <div className="mt-14 bg-white rounded-3xl p-6 sm:p-10 border border-black/[0.08] max-w-5xl mx-auto shadow-[0_20px_50px_rgba(60,45,20,0.06)]">
+        <SpotlightCard className="relative mt-14 bg-white rounded-3xl p-6 sm:p-10 border border-black/[0.08] max-w-5xl mx-auto shadow-[0_20px_50px_rgba(60,45,20,0.06)] card-3d-highlight">
+          <BorderBeam duration={10} colorFrom="#10B981" colorTo="#D97706" borderWidth={2} />
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-black/[0.06]">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#1B4332] via-[#2D6A4F] to-[#D4AF37] p-[2px] shadow-sm">
@@ -118,11 +121,11 @@ export function RecruiterDossier() {
                   <h3 className="text-2xl font-bold text-[#0F172A] tracking-tight font-['Outfit']">
                     Sumanth Mamidi
                   </h3>
-                  <span className="text-[11px] font-bold text-[#1B4332] bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-600/15">
+                  <span className="text-xs font-bold text-[#1B4332] bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/20">
                     Lead Architect &amp; Sole Contributor
                   </span>
                 </div>
-                <p className="text-xs text-[#64748B] font-medium mt-1">
+                <p className="text-xs sm:text-[13px] text-[#475569] font-medium mt-1">
                   Full-Stack Distributed Systems • Agritech Infrastructure • 3D Web UI
                 </p>
               </div>
@@ -176,7 +179,7 @@ export function RecruiterDossier() {
                 <Key className="w-3.5 h-3.5 text-[#D4AF37]" />
                 One-Click Sandbox Test Credentials
               </span>
-              <span className="text-[11px] text-[#64748B] font-medium hidden sm:inline">
+              <span className="text-xs text-[#475569] font-semibold hidden sm:inline">
                 Click credentials to copy or click Launch to enter
               </span>
             </div>
@@ -185,7 +188,7 @@ export function RecruiterDossier() {
               {CREDENTIALS.map((cred) => (
                 <div
                   key={cred.role}
-                  className="rounded-2xl p-4 bg-[#FAF7F2] border border-black/[0.06] hover:border-emerald-600/30 transition-all space-y-3"
+                  className="rounded-2xl p-4 sm:p-5 bg-[#FAF7F2] border border-black/[0.06] hover:border-emerald-600/30 card-3d-highlight transition-all space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
@@ -201,14 +204,14 @@ export function RecruiterDossier() {
                     </a>
                   </div>
 
-                  <p className="text-[11px] text-[#64748B] leading-snug">
+                  <p className="text-xs sm:text-[13px] text-[#475569] leading-relaxed">
                     {cred.description}
                   </p>
 
                   <div className="p-3 rounded-xl bg-white border border-black/[0.06] flex items-center justify-between text-xs font-mono shadow-2xs">
                     <div className="space-y-0.5">
-                      <div className="text-[#0F172A] text-[11px] font-semibold">{cred.email}</div>
-                      <div className="text-[#64748B] text-[10px]">Password: {cred.pass}</div>
+                      <div className="text-[#0F172A] text-xs font-bold">{cred.email}</div>
+                      <div className="text-[#64748B] text-xs">Password: {cred.pass}</div>
                     </div>
                     <button
                       onClick={() => handleCopy(`${cred.email}:${cred.pass}`, cred.role)}
@@ -226,7 +229,15 @@ export function RecruiterDossier() {
               ))}
             </div>
           </div>
-        </div>
+        </SpotlightCard>
+
+        {/* Floating Copy Feedback Toast */}
+        {copiedKey && (
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-semibold shadow-2xl flex items-center gap-2 animate-fade-in pointer-events-none">
+            <Check className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Copied {copiedKey} credentials to clipboard!</span>
+          </div>
+        )}
       </div>
     </section>
   );

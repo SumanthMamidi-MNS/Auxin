@@ -15,6 +15,8 @@
  */
 
 import React, { useState, useRef } from 'react';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
+import { CountUpTicker } from '@/components/ui/CountUpTicker';
 import { 
   Radar, 
   ShieldCheck, 
@@ -188,14 +190,14 @@ export function BentoInnovations() {
         {/* 4-Cell Bento Grid */}
         <div className="mt-5 sm:mt-6 grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
           {/* ── Cell 1: 25 KM Strict Haversine Radar (Span 2 cols) ── */}
-          <div className="md:col-span-2 bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+          <SpotlightCard className="md:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] card-3d-highlight relative overflow-hidden flex flex-col justify-between">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-600/15 flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/20 flex items-center gap-1.5">
                   <Radar className="w-3 h-3 text-emerald-700 animate-spin" />
                   Innovation 01 • Haversine Geofence
                 </span>
-                <span className="text-[10px] text-[#64748B] font-medium">
+                <span className="text-xs text-[#475569] font-semibold">
                   Strict 25.0 km Boundary
                 </span>
               </div>
@@ -204,7 +206,7 @@ export function BentoInnovations() {
                 Autonomous 25 km Radar Logistics
               </h3>
 
-              <p className="text-[#475569] text-xs max-w-xl leading-relaxed">
+              <p className="text-[#475569] text-sm max-w-xl leading-relaxed">
                 Every customer order is mathematically bounded by real-time GPS coordinate triangulation. If a farm is outside the 25.0 km radius, it does not appear in your feed. This guarantees produce travels under 120 minutes from soil to kitchen.
               </p>
             </div>
@@ -230,7 +232,7 @@ export function BentoInnovations() {
                 className="w-full h-1.5 bg-white rounded-lg appearance-none cursor-pointer accent-[#1B4332]"
               />
 
-              <div className="flex items-center justify-between text-[10px] font-medium">
+              <div className="flex items-center justify-between text-xs font-semibold">
                 <span className="text-[#64748B]">0 km (Farm Gate)</span>
                 {simDistance <= 25 ? (
                   <span className="text-emerald-800 font-bold flex items-center gap-1">
@@ -244,13 +246,13 @@ export function BentoInnovations() {
                 <span className="text-[#64748B]">25 km Limit</span>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
 
           {/* ── Cell 2: 3D Cryptographic Escrow Vault OTP Simulator (Span 1 col) ── */}
-          <div className="bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+          <SpotlightCard spotlightColor="rgba(217, 119, 6, 0.12)" className="bg-white rounded-3xl p-5 sm:p-6 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] card-3d-highlight-gold relative overflow-hidden flex flex-col justify-between">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-600/20 flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full border border-amber-600/25 flex items-center gap-1.5">
                   <ShieldCheck className="w-3 h-3 text-amber-700" />
                   Innovation 02 • Escrow Vault
                 </span>
@@ -260,14 +262,14 @@ export function BentoInnovations() {
                 2-Phase Doorstep Escrow
               </h3>
 
-              <p className="text-[#475569] text-[11px] leading-relaxed">
+              <p className="text-[#475569] text-sm leading-relaxed">
                 Funds remain locked in a Razorpay cryptographic escrow vault until you inspect produce at your doorstep and verify the 6-digit OTP.
               </p>
             </div>
 
             {/* OTP Simulator */}
             <div className="mt-3 p-3 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-2.5">
-              <div className="flex items-center justify-between text-[11px] font-medium text-[#64748B]">
+              <div className="flex items-center justify-between text-xs font-bold text-[#475569]">
                 <span>DELIVERY OTP SIMULATOR:</span>
                 {vaultUnlocked ? (
                   <span className="text-emerald-800 font-bold flex items-center gap-1">
@@ -303,12 +305,12 @@ export function BentoInnovations() {
                   <div className="text-xs font-bold text-emerald-900 font-mono">
                     ✅ Escrow Settled Instantly
                   </div>
-                  <div className="text-[10px] text-emerald-800 font-mono">
+                  <div className="text-xs text-emerald-800 font-mono">
                     ₹360 to Ramesh Kumar • ₹40 to Courier Vikram
                   </div>
                   <button
                     onClick={resetVault}
-                    className="btn-press text-[10px] text-[#64748B] hover:text-[#0F172A] underline font-medium cursor-pointer"
+                    className="btn-press text-xs text-[#64748B] hover:text-[#0F172A] underline font-medium cursor-pointer"
                   >
                     Reset Simulator
                   </button>
@@ -322,13 +324,13 @@ export function BentoInnovations() {
                 </button>
               )}
             </div>
-          </div>
+          </SpotlightCard>
 
           {/* ── Cell 3: Milo AI Autonomous Copilot (Span 1 col) ── */}
-          <div className="bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+          <SpotlightCard spotlightColor="rgba(217, 119, 6, 0.12)" className="bg-white rounded-3xl p-5 sm:p-6 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] card-3d-highlight-gold relative overflow-hidden flex flex-col justify-between">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-600/15 flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/20 flex items-center gap-1.5">
                   <Bot className="w-3 h-3 text-emerald-700" />
                   Innovation 03 • Milo AI
                 </span>
@@ -338,38 +340,38 @@ export function BentoInnovations() {
                 Agronomic Intelligence
               </h3>
 
-              <p className="text-[#475569] text-[11px] leading-relaxed">
+              <p className="text-[#475569] text-sm leading-relaxed">
                 Fine-tuned AI copilot trained on regional Indian soil indices, crop harvest cycles, and real-time wholesale Mandi arbitrage.
               </p>
             </div>
 
             <div className="mt-3 p-3 rounded-2xl bg-[#FAF7F2] border border-black/[0.06] space-y-2 text-xs">
               <div className="flex items-center justify-between text-[#475569] pb-1 border-b border-black/[0.05]">
-                <span className="flex items-center gap-1.5 font-medium text-[11px]">
+                <span className="flex items-center gap-1.5 font-medium text-xs font-medium">
                   <Droplets className="w-3 h-3 text-blue-600" /> Soil Moisture
                 </span>
-                <span className="text-[#0F172A] font-bold font-mono text-[11px]">68% (Optimal)</span>
+                <span className="text-[#0F172A] font-bold font-mono text-xs font-medium">68% (Optimal)</span>
               </div>
               <div className="flex items-center justify-between text-[#475569] pb-1 border-b border-black/[0.05]">
-                <span className="flex items-center gap-1.5 font-medium text-[11px]">
+                <span className="flex items-center gap-1.5 font-medium text-xs font-medium">
                   <Sun className="w-3 h-3 text-amber-600" /> Sunlight Index
                 </span>
-                <span className="text-[#0F172A] font-bold font-mono text-[11px]">8.4 hrs / day</span>
+                <span className="text-[#0F172A] font-bold font-mono text-xs font-medium">8.4 hrs / day</span>
               </div>
               <div className="flex items-center justify-between text-[#475569]">
-                <span className="flex items-center gap-1.5 font-medium text-[11px]">
+                <span className="flex items-center gap-1.5 font-medium text-xs font-medium">
                   <Thermometer className="w-3 h-3 text-[#1B4332]" /> Brix Sweetness
                 </span>
-                <span className="text-[#1B4332] font-bold font-mono text-[11px]">18.5° Brix</span>
+                <span className="text-[#1B4332] font-bold font-mono text-xs font-medium">18.5° Brix</span>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
 
           {/* ── Cell 4: 4:5 Zero Cold-Storage Specimen Card (Span 2 cols) ── */}
-          <div className="md:col-span-2 bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] relative overflow-hidden flex flex-col justify-between">
+          <SpotlightCard className="md:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-black/[0.08] shadow-[0_10px_25px_rgba(60,45,20,0.03)] card-3d-highlight relative overflow-hidden flex flex-col justify-between">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
               <div className="sm:col-span-7 space-y-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-600/20 inline-block">
+                <span className="text-xs font-medium font-bold uppercase tracking-wider text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-600/20 inline-block">
                   Innovation 04 • Zero Spoilage Specimen
                 </span>
 
@@ -382,20 +384,20 @@ export function BentoInnovations() {
                 </p>
 
                 <div className="pt-1 flex flex-wrap gap-1.5 text-xs font-medium">
-                  <span className="px-2 py-0.5 rounded-full bg-[#FAF7F2] border border-black/[0.06] text-[#475569] text-[10px]">
+                  <span className="px-2 py-0.5 rounded-full bg-[#FAF7F2] border border-black/[0.06] text-[#475569] text-xs">
                     NPOP Organic Certified
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-600/20 text-emerald-800 text-[10px]">
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-600/20 text-emerald-800 text-xs">
                     Zero Formalin / Carbides
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-600/20 text-amber-800 text-[10px]">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-600/20 text-amber-800 text-xs">
                     Plucked 06:30 AM
                   </span>
                 </div>
               </div>
 
               <div className="sm:col-span-5 rounded-2xl bg-[#FAF7F2] border border-black/[0.08] p-3 space-y-2 shadow-2xs">
-                <div className="text-[10px] font-bold text-[#1B4332] uppercase tracking-wider">
+                <div className="text-xs font-bold text-[#1B4332] uppercase tracking-wider">
                   Cultivator Passport
                 </div>
                 <div className="flex items-center gap-2.5">
@@ -404,20 +406,20 @@ export function BentoInnovations() {
                   </div>
                   <div>
                     <div className="font-bold text-[#0F172A] text-xs">Ramesh Kumar</div>
-                    <div className="text-[10px] text-[#64748B]">Sohna Orchards (14.2 km)</div>
+                    <div className="text-xs text-[#64748B]">Sohna Orchards (14.2 km)</div>
                   </div>
                 </div>
-                <div className="pt-1 border-t border-black/[0.05] flex justify-between text-[11px]">
+                <div className="pt-1 border-t border-black/[0.05] flex justify-between text-xs font-medium">
                   <span className="text-[#64748B]">Lifetime Deliveries:</span>
-                  <span className="text-[#0F172A] font-bold font-mono">1,420 crates</span>
+                  <span className="text-[#0F172A] font-bold font-mono"><CountUpTicker end={1420} suffix=" crates" /></span>
                 </div>
-                <div className="flex justify-between text-[11px]">
+                <div className="flex justify-between text-xs font-medium">
                   <span className="text-[#64748B]">Customer Rating:</span>
                   <span className="text-amber-700 font-bold font-mono">★ 4.96 / 5.0</span>
                 </div>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
         </div>
       </div>
     </section>

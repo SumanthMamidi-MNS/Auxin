@@ -15,6 +15,7 @@
  */
 
 import React, { useState } from 'react';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import Image from 'next/image';
 import { 
   ShoppingBag, 
@@ -236,7 +237,7 @@ export function RolePortalsStage() {
         </div>
 
         {/* Active Role Showcase Display */}
-        <div className="mt-12 bg-white rounded-3xl p-6 sm:p-10 border border-black/[0.08] shadow-[0_20px_50px_rgba(60,45,20,0.06)] transition-all duration-300">
+        <SpotlightCard className="mt-12 bg-white rounded-3xl p-6 sm:p-10 border border-black/[0.08] shadow-[0_20px_50px_rgba(60,45,20,0.06)] card-3d-highlight transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Column: Role Details & Specs */}
             <div className="lg:col-span-7 space-y-6 text-left">
@@ -244,7 +245,7 @@ export function RolePortalsStage() {
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-600/15">
                   {role.badge}
                 </span>
-                <span className="text-xs text-[#64748B] font-medium">
+                <span className="text-xs font-semibold text-[#475569]">
                   {role.roleTitle}
                 </span>
               </div>
@@ -267,10 +268,10 @@ export function RolePortalsStage() {
                       className="p-4 rounded-2xl bg-[#FAF7F2] border border-black/[0.05] space-y-1.5"
                     >
                       <FeatIcon className="w-4 h-4 text-[#1B4332]" />
-                      <h4 className="text-xs font-bold text-[#0F172A] tracking-tight font-['Poppins']">
+                      <h4 className="text-sm font-bold text-[#0F172A] tracking-tight font-['Poppins']">
                         {feat.title}
                       </h4>
-                      <p className="text-[11px] text-[#64748B] leading-snug">
+                      <p className="text-xs text-[#475569] leading-relaxed">
                         {feat.desc}
                       </p>
                     </div>
@@ -285,7 +286,7 @@ export function RolePortalsStage() {
                     <div className="text-2xl font-extrabold text-[#0F172A] font-['Poppins']">
                       {m.value}
                     </div>
-                    <div className="text-xs text-[#64748B] font-medium">
+                    <div className="text-xs font-semibold text-[#475569]">
                       {m.label}
                     </div>
                   </div>
@@ -349,7 +350,7 @@ export function RolePortalsStage() {
               </div>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </div>
     </section>
   );

@@ -15,6 +15,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Bot, Sparkles, Terminal, CornerDownLeft } from 'lucide-react';
+import { BorderBeam } from '@/components/ui/BorderBeam';
+import { CountUpTicker } from '@/components/ui/CountUpTicker';
 
 interface PromptPreset {
   id: string;
@@ -113,7 +115,7 @@ export function MiloPlayground() {
               <button
                 key={p.id}
                 onClick={() => setSelectedPrompt(p)}
-                className={`btn-press px-4 py-2 rounded-full text-xs font-semibold transition-all text-left flex items-center gap-2 border cursor-pointer ${
+                className={`btn-press px-4 py-2 rounded-full text-xs sm:text-[13px] font-semibold transition-all text-left flex items-center gap-2 border cursor-pointer ${
                   isSelected
                     ? 'bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white border-transparent shadow-sm'
                     : 'bg-white border-black/[0.08] text-[#475569] hover:text-[#0F172A] hover:bg-black/[0.03]'
@@ -127,7 +129,8 @@ export function MiloPlayground() {
         </div>
 
         {/* Interactive Ivory Parchment Console */}
-        <div className="mt-8 max-w-4xl mx-auto bg-white rounded-3xl border border-black/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(60,45,20,0.06)]">
+        <div className="relative mt-8 max-w-4xl mx-auto bg-white rounded-3xl border border-black/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(60,45,20,0.06)] card-3d-highlight">
+          <BorderBeam duration={10} colorFrom="#10B981" colorTo="#F59E0B" borderWidth={2} />
           {/* Console Window Header */}
           <div className="px-6 py-3.5 bg-[#FAF7F2] border-b border-black/[0.06] flex items-center justify-between text-xs font-medium">
             <div className="flex items-center gap-2">
@@ -139,7 +142,7 @@ export function MiloPlayground() {
             <div className="flex items-center gap-4 text-[#64748B] text-xs">
               <span className="text-emerald-800 flex items-center gap-1.5 font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping" />
-                LATENCY: 18ms
+                LATENCY: <CountUpTicker end={18} suffix="ms" />
               </span>
               <span className="hidden sm:inline font-mono">TEMPERATURE: 0.2</span>
             </div>
@@ -149,7 +152,7 @@ export function MiloPlayground() {
           <div className="p-6 sm:p-8 space-y-6 text-left text-sm">
             {/* User Input Prompt */}
             <div className="space-y-2">
-              <div className="text-xs text-[#64748B] font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <div className="text-xs sm:text-[13px] text-[#475569] font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Terminal className="w-3.5 h-3.5 text-[#1B4332]" />
                 <span>Selected Inquiry:</span>
               </div>
@@ -161,11 +164,11 @@ export function MiloPlayground() {
 
             {/* AI Streaming Response */}
             <div className="space-y-2">
-              <div className="text-xs text-[#1B4332] font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <div className="text-xs sm:text-[13px] text-[#1B4332] font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Bot className="w-3.5 h-3.5 text-[#1B4332]" />
                 <span>Milo Reasoning &amp; Telemetry Recommendation:</span>
               </div>
-              <div className="p-5 sm:p-6 rounded-2xl bg-[#FDFCF9] border border-emerald-600/20 text-[#334155] whitespace-pre-wrap leading-relaxed shadow-2xs font-sans">
+              <div className="p-5 sm:p-6 rounded-2xl bg-[#FDFCF9] border border-emerald-600/20 text-sm sm:text-[15px] text-[#1E293B] whitespace-pre-wrap leading-relaxed shadow-2xs font-sans font-normal">
                 {displayedText}
                 {isTyping && (
                   <span className="inline-block w-2 h-4 bg-[#1B4332] ml-1 animate-pulse" />

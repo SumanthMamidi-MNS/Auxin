@@ -15,6 +15,8 @@
  */
 
 import React, { useState } from 'react';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
+import { BorderBeam } from '@/components/ui/BorderBeam';
 import { Terminal, Layers, ShieldCheck, Database, MapPin, Cpu, Check, Copy } from 'lucide-react';
 
 interface ApiEndpoint {
@@ -129,57 +131,58 @@ export function TechArchitecture() {
 
         {/* 4 Architectural Pillars Grid */}
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+          <SpotlightCard className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] card-3d-highlight space-y-3.5">
             <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-[#1B4332]">
               <Cpu className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               Next.js 16 App Router
             </h3>
-            <p className="text-xs text-[#64748B] leading-relaxed">
+            <p className="text-sm text-[#475569] leading-relaxed">
               Turbopack compilation, React 19 Server Components, Tailwind CSS v4, hardware-accelerated 3D spatial gyro perspective, Framer Motion springs.
             </p>
-          </div>
+          </SpotlightCard>
 
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+          <SpotlightCard className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] card-3d-highlight space-y-3.5">
             <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-[#1B4332]">
               <Database className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               FastAPI Async Engine
             </h3>
-            <p className="text-xs text-[#64748B] leading-relaxed">
+            <p className="text-sm text-[#475569] leading-relaxed">
               Python 3.12 async workers, Pydantic v2 strict models, connection pooling, and sub-15ms response latency under peak batch load.
             </p>
-          </div>
+          </SpotlightCard>
 
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+          <SpotlightCard className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] card-3d-highlight space-y-3.5">
             <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-600/20 flex items-center justify-center text-amber-800">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               2-Phase Escrow Webhooks
             </h3>
-            <p className="text-xs text-[#64748B] leading-relaxed">
+            <p className="text-sm text-[#475569] leading-relaxed">
               Razorpay cryptographic escrow hold, dual-signature webhook verification, and automated IMPS instant bank disbursements.
             </p>
-          </div>
+          </SpotlightCard>
 
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] space-y-3.5">
+          <SpotlightCard className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.08] shadow-[0_15px_35px_rgba(60,45,20,0.04)] card-3d-highlight space-y-3.5">
             <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-[#1B4332]">
               <MapPin className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold text-[#0F172A] tracking-tight font-['Poppins']">
               Leaflet 25km Haversine
             </h3>
-            <p className="text-xs text-[#64748B] leading-relaxed">
+            <p className="text-sm text-[#475569] leading-relaxed">
               Real-time geospatial polygon geofencing, OpenStreetMap vector tiles, GPS vehicle telemetry, and zero cross-zone routing leakage.
             </p>
-          </div>
+          </SpotlightCard>
         </div>
 
         {/* Interactive API Terminal */}
-        <div className="mt-14 bg-white rounded-3xl border border-black/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(60,45,20,0.06)] max-w-5xl mx-auto">
+        <div className="relative mt-14 bg-white rounded-3xl border border-black/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(60,45,20,0.06)] card-3d-highlight max-w-5xl mx-auto">
+          <BorderBeam duration={12} colorFrom="#10B981" colorTo="#2D6A4F" borderWidth={1.5} />
           {/* Header Bar */}
           <div className="px-6 py-4 bg-[#FAF7F2] border-b border-black/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs font-medium">
             <div className="flex items-center gap-2 text-[#0F172A] font-bold">
@@ -207,7 +210,7 @@ export function TechArchitecture() {
           {/* Endpoint Details Bar */}
           <div className="px-6 py-3 bg-[#FDFCF9] border-b border-black/[0.06] flex items-center justify-between text-xs font-mono">
             <div className="flex items-center gap-3">
-              <span className={`px-2.5 py-0.5 rounded-full font-bold text-[11px] ${
+              <span className={`px-2.5 py-0.5 rounded-full font-bold text-xs ${
                 endpoint.method === 'GET' 
                   ? 'bg-emerald-100 text-emerald-900 border border-emerald-600/20' 
                   : 'bg-amber-100 text-amber-900 border border-amber-600/20'
@@ -231,7 +234,7 @@ export function TechArchitecture() {
           </div>
 
           {/* JSON Payload Display */}
-          <div className="p-6 sm:p-8 bg-[#0F172A] font-mono text-xs text-left overflow-x-auto max-h-[380px]">
+          <div className="p-6 sm:p-8 bg-[#0F172A] font-mono text-xs sm:text-[13px] text-left overflow-x-auto max-h-[380px]">
             <pre className="text-emerald-300 leading-relaxed">
               {JSON.stringify(endpoint.responseJson, null, 2)}
             </pre>

@@ -30,7 +30,7 @@ export function AmbientFooter() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Massive Conversion Banner */}
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-black/[0.08] text-center space-y-6 shadow-[0_20px_50px_rgba(60,45,20,0.06)] max-w-4xl mx-auto">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-black/[0.08] text-center space-y-6 shadow-[0_20px_50px_rgba(60,45,20,0.06)] card-3d-highlight max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF7F2] border border-black/[0.06] text-[#1B4332] text-xs font-semibold shadow-2xs">
             <Radio className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
             25 km Agro-Logistics Radar Online
@@ -75,19 +75,19 @@ export function AmbientFooter() {
                   <span className="font-extrabold text-base tracking-tight text-[#0F172A] font-['Outfit']">
                     AUXIN
                   </span>
-                  <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-600/20">
+                  <span className="text-xs font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-600/20">
                     v4.0
                   </span>
                 </div>
-                <span className="text-[11px] text-[#64748B] font-medium leading-tight">
+                <span className="text-xs text-[#475569] font-medium leading-tight">
                   Direct-From-Farm Protocol
                 </span>
               </div>
             </div>
-            <p className="text-xs text-[#64748B] max-w-sm leading-relaxed">
+            <p className="text-xs sm:text-[13px] text-[#475569] max-w-sm leading-relaxed">
               India&apos;s flagship direct-from-farm protocol. Eliminating middleman exploitation with 25 km geofenced logistics and 2-phase Razorpay escrow.
             </p>
-            <div className="flex items-center gap-2 text-[11px] font-semibold text-emerald-800">
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping inline-block" />
               <span>Platform Status: Operational (99.98%)</span>
             </div>
@@ -95,7 +95,7 @@ export function AmbientFooter() {
 
           {/* Col 1 */}
           <div className="space-y-3">
-            <div className="font-bold text-[#0F172A] uppercase tracking-wider text-[11px]">
+            <div className="font-bold text-[#0F172A] uppercase tracking-wider text-xs">
               Ecosystem
             </div>
             <ul className="space-y-2 text-[#475569]">
@@ -124,7 +124,7 @@ export function AmbientFooter() {
 
           {/* Col 2 */}
           <div className="space-y-3">
-            <div className="font-bold text-[#0F172A] uppercase tracking-wider text-[11px]">
+            <div className="font-bold text-[#0F172A] uppercase tracking-wider text-xs">
               Protocol
             </div>
             <ul className="space-y-2 text-[#475569]">
@@ -153,7 +153,7 @@ export function AmbientFooter() {
 
           {/* Col 3 */}
           <div className="space-y-3">
-            <div className="font-bold text-[#0F172A] uppercase tracking-wider text-[11px]">
+            <div className="font-bold text-[#0F172A] uppercase tracking-wider text-xs">
               Engineering
             </div>
             <ul className="space-y-2 text-[#475569]">

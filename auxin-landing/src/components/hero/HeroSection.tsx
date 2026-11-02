@@ -15,6 +15,7 @@
 
 import React from 'react';
 import { Hero3DRig } from './Hero3DRig';
+import { CountUpTicker } from '@/components/ui/CountUpTicker';
 import { TopoMeshCanvas } from './TopoMeshCanvas';
 import { ArrowUpRight, Terminal, Sparkles, CheckCircle2 } from 'lucide-react';
 import { showComingSoonModal } from '../layout/ComingSoonModal';
@@ -28,7 +29,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ heroImage }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[88vh] pt-20 sm:pt-24 pb-16 flex items-center justify-center overflow-hidden bg-white">
+    <section id="hero" className="relative min-h-[88vh] pt-20 sm:pt-24 pb-16 flex items-center justify-center overflow-hidden bg-white">
       {/* ── Organic Cartography Topo Mesh Canvas ── */}
       <TopoMeshCanvas />
 
@@ -87,76 +88,99 @@ export function HeroSection({ heroImage }: HeroSectionProps) {
             </div>
 
             {/* Fast Sandbox Access Chips */}
-            <div className="pt-2 flex flex-wrap items-center gap-2 text-xs text-[#64748B]">
-              <span className="font-semibold text-[11px] text-[#475569]">One-Click Portals:</span>
+            <div className="pt-2 flex flex-wrap items-center gap-2.5 text-xs text-[#475569]">
+              <span className="font-bold text-xs uppercase tracking-wide text-[#334155]">One-Click Portals:</span>
               <a
                 href={`${APP_URL}/customer/home`}
-                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
+                className="btn-press px-3.5 py-1.5 rounded-full bg-white hover:bg-emerald-50/80 border border-slate-200/90 hover:border-emerald-600/40 text-slate-700 hover:text-[#1B4332] text-xs sm:text-[13px] font-semibold shadow-2xs transition-colors"
               >
                 Customer Portal
               </a>
               <a
                 href={`${APP_URL}/auth?role=farmer`}
-                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
+                className="btn-press px-3.5 py-1.5 rounded-full bg-white hover:bg-emerald-50/80 border border-slate-200/90 hover:border-emerald-600/40 text-slate-700 hover:text-[#1B4332] text-xs sm:text-[13px] font-semibold shadow-2xs transition-colors"
               >
                 Farmer Portal
               </a>
               <a
                 href={`${APP_URL}/auth?role=delivery`}
-                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
+                className="btn-press px-3.5 py-1.5 rounded-full bg-white hover:bg-emerald-50/80 border border-slate-200/90 hover:border-emerald-600/40 text-slate-700 hover:text-[#1B4332] text-xs sm:text-[13px] font-semibold shadow-2xs transition-colors"
               >
                 Rider Portal
               </a>
               <a
                 href={`${ADMIN_URL}/auth`}
-                className="btn-press px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-black/[0.06] hover:border-emerald-600/30 text-[#475569] hover:text-[#1B4332] font-medium shadow-2xs transition-colors"
+                className="btn-press px-3.5 py-1.5 rounded-full bg-white hover:bg-emerald-50/80 border border-slate-200/90 hover:border-emerald-600/40 text-slate-700 hover:text-[#1B4332] text-xs sm:text-[13px] font-semibold shadow-2xs transition-colors"
               >
                 Admin Portal
               </a>
             </div>
 
-            {/* Metrics Ribbon */}
+            {/* Metrics Ribbon with Dynamic Numeric Counters */}
             <div className="pt-6 border-t border-black/[0.06] grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div>
-                <div className="text-3xl font-extrabold text-[#1B4332] font-['Outfit'] tracking-tight">
-                  100%
-                </div>
-                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                <CountUpTicker
+                  end={100}
+                  suffix="%"
+                  className="text-3xl font-extrabold text-[#1B4332] font-['Outfit'] tracking-tight"
+                />
+                <div className="text-xs sm:text-[13px] text-[#475569] font-medium mt-1">
                   Direct Margin to Cultivator
                 </div>
               </div>
 
               <div>
-                <div className="text-3xl font-extrabold text-[#0F172A] font-['Outfit'] tracking-tight">
-                  &lt; 2h
-                </div>
-                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                <CountUpTicker
+                  end={120}
+                  suffix=" min"
+                  className="text-3xl font-extrabold text-[#0F172A] font-['Outfit'] tracking-tight"
+                />
+                <div className="text-xs sm:text-[13px] text-[#475569] font-medium mt-1">
                   Pluck-to-Plate Window
                 </div>
               </div>
 
               <div>
-                <div className="text-3xl font-extrabold text-[#0F172A] font-['Outfit'] tracking-tight">
-                  25 km
-                </div>
-                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                <CountUpTicker
+                  end={25}
+                  suffix=" km"
+                  className="text-3xl font-extrabold text-[#0F172A] font-['Outfit'] tracking-tight"
+                />
+                <div className="text-xs sm:text-[13px] text-[#475569] font-medium mt-1">
                   Haversine Logistics Radar
                 </div>
               </div>
 
               <div>
-                <div className="text-3xl font-extrabold text-[#B45309] font-['Outfit'] tracking-tight">
-                  ₹0
-                </div>
-                <div className="text-xs text-[#64748B] font-medium mt-0.5">
+                <CountUpTicker
+                  end={0}
+                  prefix="₹"
+                  className="text-3xl font-extrabold text-[#B45309] font-['Outfit'] tracking-tight"
+                />
+                <div className="text-xs sm:text-[13px] text-[#475569] font-medium mt-1">
                   Mandi Broker Deductions
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: 3D Champagne Device Canvas */}
+          {/* Right Column: 3D Champagne Device Canvas + High-Tech Radar Atmosphere */}
           <div className="lg:col-span-5 relative flex items-center justify-center">
+            {/* Cyber Radar Pulse Backdrop */}
+            <div className="absolute -inset-10 flex items-center justify-center pointer-events-none opacity-40">
+              <div className="relative w-96 h-96 rounded-full border border-emerald-500/20 flex items-center justify-center">
+                <div className="absolute w-72 h-72 rounded-full border border-emerald-500/25" />
+                <div className="absolute w-48 h-48 rounded-full border border-emerald-500/30" />
+                {/* Rotating Radar Sweep Beam */}
+                <div className="absolute inset-0 rounded-full animate-radar-sweep bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(16,185,129,0.25)_360deg)]" />
+                {/* Geofence GPS Coordinates Ping */}
+                <div className="absolute top-8 right-8 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-emerald-600/20 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-beacon-ping" />
+                  <span className="text-[11px] font-mono font-bold text-emerald-900">GPS: 17.3850° N, 78.4867° E</span>
+                </div>
+              </div>
+            </div>
+
             <Hero3DRig imageSrc={heroImage} />
           </div>
         </div>
