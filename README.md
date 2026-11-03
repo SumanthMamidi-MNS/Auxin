@@ -9,9 +9,11 @@
 </h3>
 
 <p align="center">
+  <br>
   <a href="https://auxin-premier.vercel.app/" target="_blank" rel="noopener">
     <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="46">
   </a>
+  <br>&nbsp;
 </p>
 
 <!-- Kinetic Vector Capsule Badges (Sculpted 3-Line Arrangement: 5 • 4 • 5) -->
@@ -36,6 +38,8 @@
   <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="31"></a>&nbsp;&nbsp;
   <a href="#8-automated-verification--quality-assurance-suite"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="31"></a>
 </p>
+
+<br>
 
 <p align="center">
   Auxin connects regional farmers directly to urban consumers, eliminating predatory broker cartels.<br>
