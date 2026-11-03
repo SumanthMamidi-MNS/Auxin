@@ -4,12 +4,9 @@
   </a>
 </p>
 
+<!-- Tagline & Live Deployment CTA with Minimal Vertical Gap -->
 <p align="center">
-  <strong>Direct-From-Farm Hyper-Local Protocol &bull; 25 km Autonomous Geofence &bull; Zero-Intermediary Atomic Escrow</strong>
-</p>
-
-<!-- Live Showcase Primary Action Button -->
-<p align="center">
+  <strong>Direct-From-Farm Hyper-Local Protocol &bull; 25 km Autonomous Geofence &bull; Zero-Intermediary Atomic Escrow</strong><br><br>
   <a href="https://auxin-premier.vercel.app/" target="_blank">
     <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="46">
   </a>
@@ -17,33 +14,33 @@
 
 <br>
 
-<!-- Kinetic Vector Capsule Badges (Sculpted 3-Line Arrangement: 5 • 3 • 6) -->
+<!-- Kinetic Vector Capsule Badges (Sculpted 3-Line Arrangement: 5 • 4 • 5) -->
 <p align="center">
   <!-- Line 1: Frontend & Language Core (5 Badges) -->
-  <a href="https://nextjs.org/" target="_blank"><img src="docs/assets/badges/nextjs.svg" alt="Next.js 16" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://react.dev/" target="_blank"><img src="docs/assets/badges/react.svg" alt="React 19" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://tailwindcss.com/" target="_blank"><img src="docs/assets/badges/tailwind.svg" alt="Tailwind v4" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://nextjs.org/" target="_blank"><img src="docs/assets/badges/nextjs.svg" alt="Next.js 16" height="31"></a>&nbsp;&nbsp;
+  <a href="https://react.dev/" target="_blank"><img src="docs/assets/badges/react.svg" alt="React 19" height="31"></a>&nbsp;&nbsp;
+  <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="31"></a>&nbsp;&nbsp;
+  <a href="https://tailwindcss.com/" target="_blank"><img src="docs/assets/badges/tailwind.svg" alt="Tailwind v4" height="31"></a>&nbsp;&nbsp;
   <a href="https://www.python.org/" target="_blank"><img src="docs/assets/badges/python.svg" alt="Python 3.12" height="31"></a>
   <br><br>
-  <!-- Line 2: Core Platform Services & Financial Rails (3 Badges) -->
-  <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Resend Email" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <!-- Line 2: Platform Services, Financial Rails & Intelligence (4 Badges) -->
+  <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="31"></a>&nbsp;&nbsp;
+  <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Resend Email" height="31"></a>&nbsp;&nbsp;
+  <a href="#4-milo-agronomic-copilot--retrieval-augmented-generation"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="31"></a>&nbsp;&nbsp;
   <a href="https://razorpay.com/" target="_blank"><img src="docs/assets/badges/razorpay.svg" alt="Razorpay Escrow" height="31"></a>
   <br><br>
-  <!-- Line 3: Backend Engines, Infrastructure, Spatial, QA & AI Base (6 Badges) -->
-  <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://render.com/" target="_blank"><img src="docs/assets/badges/render.svg" alt="Render Cloud" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#8-automated-verification--quality-assurance-suite"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#4-milo-agronomic-copilot--retrieval-augmented-generation"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="31"></a>
+  <!-- Line 3: Backend Engines, Infrastructure, Spatial & QA (5 Badges) -->
+  <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="31"></a>&nbsp;&nbsp;
+  <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="31"></a>&nbsp;&nbsp;
+  <a href="https://render.com/" target="_blank"><img src="docs/assets/badges/render.svg" alt="Render Cloud" height="31"></a>&nbsp;&nbsp;
+  <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="31"></a>&nbsp;&nbsp;
+  <a href="#8-automated-verification--quality-assurance-suite"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="31"></a>
 </p>
 
 <p align="center">
-  Auxin is a decentralized agritech protocol that eliminates predatory intermediary broker cartels, returning up to 300% higher profit margins directly to regional farmers while delivering harvest-fresh organic produce to consumers at fair prices.<br>
-  Operating within a strict 25-kilometer spatial geofence, local delivery partners transport fresh harvests directly from farm gates to urban doorsteps within two hours of packing, secured by an atomic two-phase escrow engine.<br>
-  The platform integrates cryptographic doorstep OTP verification, real-time routing telemetry, and Milo—a specialized agronomic AI copilot powered by retrieval-augmented generation for soil insights, disease diagnostics, and regional price transparency.
+  Auxin is a direct-from-farm agritech protocol eliminating predatory intermediary broker syndicates.<br>
+  Couriers deliver fresh harvests within a 25 km geofence in two hours via atomic escrow.<br>
+  Secured by cryptographic doorstep OTP verification and Milo agronomic AI copilot.
 </p>
 
 ---
