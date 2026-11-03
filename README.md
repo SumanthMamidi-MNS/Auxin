@@ -5,70 +5,68 @@
 </p>
 
 <p align="center">
-  <strong>🌾 Decentralized Direct-From-Farm Protocol &bull; 25 km Autonomous Geofence &bull; 0% Intermediary Atomic Escrow ⚡</strong>
+  <strong>Direct-From-Farm Hyper-Local Protocol &bull; 25 km Autonomous Geofence &bull; Zero-Intermediary Atomic Escrow</strong>
 </p>
 
-<!-- Apex: Live Showcase Action Capsule (Noticeably Enlarged Primary Button) -->
+<!-- Live Showcase Primary Action Button -->
 <p align="center">
   <a href="https://auxin-premier.vercel.app/" target="_blank">
     <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="46">
   </a>
 </p>
 
-<!-- Kinetic Vector Capsule Badges (Pyramid Hierarchy: Apex 1 -> 2 -> 3 -> 4 -> 5) -->
+<br>
+
+<!-- Kinetic Vector Capsule Badges (Sculpted 3-Line Arrangement: 5 • 3 • 6) -->
 <p align="center">
-  <!-- Tier 1: Flagship Core Pair (2 Badges) -->
+  <!-- Line 1: Frontend & Language Core (5 Badges) -->
   <a href="https://nextjs.org/" target="_blank"><img src="docs/assets/badges/nextjs.svg" alt="Next.js 16" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="31"></a>
-  <br><br>
-  <!-- Tier 2: Triad Foundations (3 Badges) -->
   <a href="https://react.dev/" target="_blank"><img src="docs/assets/badges/react.svg" alt="React 19" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.python.org/" target="_blank"><img src="docs/assets/badges/python.svg" alt="Python 3.12" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="31"></a>
-  <br><br>
-  <!-- Tier 3: Frameworks & Cloud Services (4 Badges) -->
+  <a href="https://www.typescriptlang.org/" target="_blank"><img src="docs/assets/badges/typescript.svg" alt="TypeScript 5" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://tailwindcss.com/" target="_blank"><img src="docs/assets/badges/tailwind.svg" alt="Tailwind v4" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Resend Email" height="31"></a>
+  <a href="https://www.python.org/" target="_blank"><img src="docs/assets/badges/python.svg" alt="Python 3.12" height="31"></a>
   <br><br>
-  <!-- Tier 4: Foundation Base (5 Badges) -->
-  <a href="https://razorpay.com/" target="_blank"><img src="docs/assets/badges/razorpay.svg" alt="Razorpay Escrow" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <!-- Line 2: Core Platform Services & Financial Rails (3 Badges) -->
+  <a href="https://supabase.com/" target="_blank"><img src="docs/assets/badges/supabase.svg" alt="Supabase Auth" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://resend.com/" target="_blank"><img src="docs/assets/badges/email.svg" alt="Resend Email" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://razorpay.com/" target="_blank"><img src="docs/assets/badges/razorpay.svg" alt="Razorpay Escrow" height="31"></a>
+  <br><br>
+  <!-- Line 3: Backend Engines, Infrastructure, Spatial, QA & AI Base (6 Badges) -->
+  <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="docs/assets/badges/fastapi.svg" alt="FastAPI Async" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.sqlalchemy.org/" target="_blank"><img src="docs/assets/badges/sqlalchemy.svg" alt="SQLAlchemy 2.0" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://render.com/" target="_blank"><img src="docs/assets/badges/render.svg" alt="Render Cloud" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#8-automated-verification--continuous-reliability-7373-tests"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#4-milo-ai--agronomic-copilot--7-stage-rag-pipeline"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="31"></a>
+  <a href="https://leafletjs.com/" target="_blank"><img src="docs/assets/badges/leaflet.svg" alt="Leaflet GPS" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="#8-automated-verification--quality-assurance-suite"><img src="docs/assets/badges/pytest.svg" alt="73/73 Pytest (100%)" height="31"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="#4-milo-agronomic-copilot--retrieval-augmented-generation"><img src="docs/assets/badges/milo.svg" alt="Milo AI RAG" height="31"></a>
 </p>
 
 <p align="center">
-  <strong>Auxin</strong> is a decentralized, zero-intermediary agritech protocol that dismantles predatory APMC broker cartels—delivering <strong>+300% direct margins</strong> to regional farmers while providing harvest-fresh organic produce to urban doorsteps at fair retail prices.<br>
-  Operating within a strict <strong>25 km spatial geofence</strong>, local couriers transport freshly picked lots directly from farm gates in <strong>under 2 hours</strong>, secured by an atomic two-phase escrow engine that guarantees zero financial risk for both growers and consumers.<br>
-  Powered by <strong>cryptographic doorstep OTP verification</strong>, turn-by-turn routing telemetry, and <strong>Milo</strong>—a specialized 7-stage RAG AI copilot delivering agronomic intelligence, yield diagnostics, and fair-price transparency across regional agricultural networks.
+  Auxin is a decentralized agritech protocol that eliminates predatory intermediary broker cartels, returning up to 300% higher profit margins directly to regional farmers while delivering harvest-fresh organic produce to consumers at fair prices.<br>
+  Operating within a strict 25-kilometer spatial geofence, local delivery partners transport fresh harvests directly from farm gates to urban doorsteps within two hours of packing, secured by an atomic two-phase escrow engine.<br>
+  The platform integrates cryptographic doorstep OTP verification, real-time routing telemetry, and Milo—a specialized agronomic AI copilot powered by retrieval-augmented generation for soil insights, disease diagnostics, and regional price transparency.
 </p>
 
 ---
 
 <details open>
-<summary><strong>📑 Table of Contents • Architecture & Technical Index</strong></summary>
+<summary><strong>Table of Contents</strong></summary>
 
-| # | Architecture Pillar | Core Engineering & Operational Scope | Action |
-|:---:|:---|:---|:---:|
-| **01** | 🌱 **The Agritech Imperative** | Multi-Tier APMC Broker Exploitation vs. Direct 2-Hour Hyper-Local Route | [Explore &rarr;](#1-the-agritech-imperative--the-broken-broker-chain) |
-| **02** | 🚀 **Live Production Ecosystem** | Vercel Edge Deployment, Live Simulation & Top 3 Desktop Portals | [Launch &rarr;](#2-live-production-ecosystem--application-portals) |
-| **03** | 👥 **The Four Unified Personas** | Consumer Marketplace, Farmer Operations, Courier HUD & Super Admin | [Inspect &rarr;](#3-the-four-unified-personas--operational-huds) |
-| **04** | 🧠 **Milo AI Agronomic Copilot** | 120+ Curated Vectors, 7-Stage Hybrid RAG & Rejection Shield | [Analyze &rarr;](#4-milo-ai--agronomic-copilot--7-stage-rag-pipeline) |
-| **05** | 📍 **25 KM Spatial Geofence** | Spherical Haversine Great-Circle Math & Spatial Dispatch Filtering | [Calculate &rarr;](#5-25-km-spatial-geofence--haversine-routing-engine) |
-| **06** | 🛡️ **Two-Phase Atomic Escrow** | 100% Reserve Vault Lock, Merchant Chargeback Elimination & Settlement | [Trace &rarr;](#6-two-phase-atomic-escrow-commerce-engine) |
-| **07** | 🔐 **Cryptographic Doorstep OTP** | CSPRNG Entropy, Salted SHA-256 Storage & Bounded 3-Retry Lockout | [Verify &rarr;](#7-cryptographic-doorstep-otp-verification-handshake) |
-| **08** | ✅ **Automated Verification Suite** | Continuous Reliability Matrix (73/73 Pytest Suites Passing in 44s) | [Audit &rarr;](#8-automated-verification--continuous-reliability-7373-tests) |
-| **09** | 🌐 **Distributed System Topology** | Next.js 16 + FastAPI Async + Supabase Auth + WebSockets Micro-Monorepo | [Architect &rarr;](#9-distributed-system-topology--real-time-websockets) |
-| **10** | ⚡ **Tech Stack & Developer Guide** | Full Production Dependency Matrix & One-Click Windows Quickstart | [Deploy &rarr;](#10-comprehensive-tech-stack--rapid-developer-quickstart) |
+1. [Executive Summary & Market Inefficiencies](#1-executive-summary--market-inefficiencies)
+2. [Production Architecture & Unified Application Portals](#2-production-architecture--unified-application-portals)
+3. [Stakeholder Workflows & Persona Control Interfaces](#3-stakeholder-workflows--persona-control-interfaces)
+4. [Milo Agronomic Copilot & Retrieval-Augmented Generation](#4-milo-agronomic-copilot--retrieval-augmented-generation)
+5. [Spatial Geofencing & Haversine Distance Bounds](#5-spatial-geofencing--haversine-distance-bounds)
+6. [Two-Phase Atomic Escrow Settlement Engine](#6-two-phase-atomic-escrow-settlement-engine)
+7. [Cryptographic Doorstep Handshake & OTP Verification](#7-cryptographic-doorstep-handshake--otp-verification)
+8. [Automated Verification & Quality Assurance Suite](#8-automated-verification--quality-assurance-suite)
+9. [Distributed System Topology & WebSocket Synchronization](#9-distributed-system-topology--websocket-synchronization)
+10. [Infrastructure Deployment & Local Development Setup](#10-infrastructure-deployment--local-development-setup)
 
 </details>
 
 ---
 
-## 1. The Agritech Imperative & The Broken Broker Chain
+## 1. Executive Summary & Market Inefficiencies
 
 ### The Multi-Tier Broker Problem
 <details>
@@ -111,7 +109,7 @@ THE AUXIN PARADIGM (DIRECT & INSTANT):
 
 ---
 
-## 2. Live Production Ecosystem & Application Portals
+## 2. Production Architecture & Unified Application Portals
 
 Auxin is deployed live on Vercel at:
 👉 **[https://auxin-premier.vercel.app/](https://auxin-premier.vercel.app/)**
@@ -138,7 +136,7 @@ Turn-by-turn Leaflet route navigation, 25 km geofenced dispatch, farm gate inspe
 
 ---
 
-## 3. The Four Unified Personas & Operational HUDs
+## 3. Stakeholder Workflows & Persona Control Interfaces
 
 Auxin provides a unified codebase powering four role-tailored operational surfaces:
 
@@ -160,7 +158,7 @@ Auxin provides a unified codebase powering four role-tailored operational surfac
 
 ---
 
-## 4. Milo AI — Agronomic Copilot & 7-Stage RAG Pipeline
+## 4. Milo Agronomic Copilot & Retrieval-Augmented Generation
 
 ### Curated Agronomic Vectors
 Milo is an agricultural AI copilot integrated across client apps. It operates over a specialized knowledge store of **120+ agronomic vectors** covering non-cold-storage shelf lives, soil moisture thresholds, organic certifications, and regional mandi prices.
@@ -183,7 +181,7 @@ When queries fall outside verified agricultural data, Milo enforces an automated
 
 ---
 
-## 5. 25 KM Spatial Geofence & Haversine Routing Engine
+## 5. Spatial Geofencing & Haversine Distance Bounds
 
 ### Mathematical Formulation
 Auxin enforces a strict **25-kilometer spherical distance boundary** computed directly in the spatial data access layer:
@@ -215,7 +213,7 @@ def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) ->
 
 ---
 
-## 6. Two-Phase Atomic Escrow Commerce Engine
+## 6. Two-Phase Atomic Escrow Settlement Engine
 
 ### Escrow Vault Lock
 When an order is authorized, 100% of customer funds are locked in the Auxin Escrow Reserve account. Neither the farmer nor the courier receives funds prior to verified physical delivery.
@@ -261,7 +259,7 @@ Upon OTP verification, a single database transaction simultaneously marks the or
 
 ---
 
-## 7. Cryptographic Doorstep OTP Verification Handshake
+## 7. Cryptographic Doorstep Handshake & OTP Verification
 
 ### CSPRNG 6-Digit Generation
 OTPs are generated on order placement via Python's `secrets` module using a **Cryptographically Secure Pseudo-Random Number Generator (CSPRNG)**.
@@ -272,7 +270,7 @@ OTPs are generated on order placement via Python's `secrets` module using a **Cr
 
 ---
 
-## 8. Automated Verification & Continuous Reliability (73/73 Tests)
+## 8. Automated Verification & Quality Assurance Suite
 
 ### 100% Reliability Verification Across 73 Automated Tests
 Auxin enforces strict mission-critical stability across payments, spatial bounds, and authentication. All 73 tests execute and pass in under 45 seconds:
@@ -315,7 +313,7 @@ tests/test_super_admin.py .............................. PASSED [100%]
 
 ---
 
-## 9. Distributed System Topology & Real-Time WebSockets
+## 9. Distributed System Topology & WebSocket Synchronization
 
 ### Monorepo Architecture & Distributed Services
 Auxin coordinates an asynchronous micro-monorepo orchestrated across edge client apps, high-throughput REST APIs, and external infrastructure:
@@ -376,7 +374,7 @@ Role authorization is validated at the API gateway layer via Supabase JWT claims
 
 ---
 
-## 10. Comprehensive Tech Stack & Rapid Developer Quickstart
+## 10. Infrastructure Deployment & Local Development Setup
 
 ### Technical Architecture Matrix
 
