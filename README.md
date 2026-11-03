@@ -3,16 +3,16 @@
     <img src="docs/assets/auxin_header.svg" alt="AUXIN" height="76">
   </a>
 </p>
+<h3 align="center">
+  <strong>Direct-From-Farm Hyper-Local Protocol &amp; Atomic Escrow</strong><br>
+  <small>25 km Autonomous Geofence &bull; Zero Intermediary Brokers &bull; Milo Agronomic Copilot</small>
+</h3>
 
-<!-- Tagline & Live Deployment CTA with Minimal Vertical Gap -->
 <p align="center">
-  <strong>Direct-From-Farm Hyper-Local Protocol &bull; 25 km Autonomous Geofence &bull; Zero-Intermediary Atomic Escrow</strong><br><br>
-  <a href="https://auxin-premier.vercel.app/" target="_blank">
+  <a href="https://auxin-premier.vercel.app/" target="_blank" rel="noopener">
     <img src="docs/assets/badges/live_deployment.svg" alt="Open Live Deployment →" height="46">
   </a>
 </p>
-
-<br>
 
 <!-- Kinetic Vector Capsule Badges (Sculpted 3-Line Arrangement: 5 • 4 • 5) -->
 <p align="center">
@@ -38,9 +38,9 @@
 </p>
 
 <p align="center">
-  Auxin is a direct-from-farm agritech protocol eliminating predatory intermediary broker syndicates.<br>
-  Couriers deliver fresh harvests within a 25 km geofence in two hours via atomic escrow.<br>
-  Secured by cryptographic doorstep OTP verification and Milo agronomic AI copilot.
+  Auxin connects regional farmers directly to urban consumers, eliminating predatory broker cartels.<br>
+  Fresh harvests are delivered within a 25 km geofence in under two hours, secured by atomic escrow.<br>
+  Protected by cryptographic doorstep OTP verification and guided by Milo, the agronomic AI copilot.
 </p>
 
 ---
